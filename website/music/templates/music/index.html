@@ -1,0 +1,24 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'music/style.css' %}" />
+    <title>Homepage</title>
+</head>
+<body>
+
+{% if all_albums %}
+<ul>
+    {% for album in all_albums %}
+        <li><a href="{% url 'music:detail' album.id %}">{{ album.album_title }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+    <h1>You have no albums</h1>
+{% endif %}
+
+
+</body>
+</html>
