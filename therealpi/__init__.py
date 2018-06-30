@@ -65,11 +65,16 @@ def logout():
 
 @app.route('/_add_event', methods=["GET", "POST"])
 def add_event():
-    events = request.form.to_dict()
-    events["Time"] = events.pop("Hour") + ':' + events.pop("Minute")
-    schedule.insert_one(events)
-
-    return jsonify(error="There was error")
+    try:
+        events = request.form.to_dict()
+        events["Time"] = events.pop("Hour") + ':' + events.pop("Minute")
+        events["Special Reminders"] = [events["Special Reminders"]]
+        schedule.insert_one(events)
+    except Exception as e:
+        print(e.__traceback__)
+        return jsonify(error="There was error")
+    else:
+        return jsonify()
 
 
 if __name__ == '__main__':
@@ -77,7 +82,12 @@ if __name__ == '__main__':
     in_production = True
     if in_production:
         app.secret_key = "test"
-    app.run(debug=False, host='0.0.0.0')
+        host = ''
+        debug = True
+    else:
+        host = '0.0.0.0'
+        debug = False
+    app.run(debug=debug, host=host)
 
 
 

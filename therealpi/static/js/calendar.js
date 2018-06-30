@@ -308,7 +308,6 @@ $('#datepicker').datepicker({
 })();
 
 $("#add-event-form").on('submit', function(){
-    console.log("Hereeresdfsdf!!");
     $.ajax({
        data: {
            "Title": $("#title").val(),
