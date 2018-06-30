@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, sessions, session, redirect, url_for
 from pymongo import MongoClient
+from functools import wraps
 
 app = Flask(__name__)
 client = MongoClient('localhost')
@@ -7,7 +8,17 @@ db = client.schedule
 users = db.users
 schedule = db.events
 
-app.secret_key = "super secret"
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "logged_in" in session and session["logged_in"]:
+            return f(*args, **kwargs)
+        else:
+            return redirect(url_for("main_page"))
+
+    return wrap
+
 
 @app.route('/')
 def main_page():
@@ -15,6 +26,7 @@ def main_page():
 
 
 @app.route('/calendar')
+@login_required
 def calendar():
     return render_template("calendar.html", default="cal")
 
@@ -61,6 +73,10 @@ def add_event():
 
 
 if __name__ == '__main__':
+    # A local variable that make testing in production possible. Set equal to false when shipped over
+    in_production = True
+    if in_production:
+        app.secret_key = "test"
     app.run(debug=False, host='0.0.0.0')
 
 
