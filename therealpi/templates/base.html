@@ -58,6 +58,11 @@
             <li class="nav-item {% if default == 'contact' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
             </li>
+            {% if session.admin %}
+            <li class="nav-item {% if default == 'contact' %}active{% else %}{% endif %}">
+                <a class="nav-link" href="{{ url_for('contact') }}">Admin</a>
+            </li>
+            {% endif %}
         </ul>
 
         {% if not session.logged_in %}
@@ -100,7 +105,7 @@
         </div>
         {% else %}
         <a href="{{ url_for("logout") }}" >
-            <button type="button" class="btn" >
+            <button type="button" class="btn btn-lg" >
                 <i class="fa fa-sign-out" style="font-size:23px;color:#28a745;"></i>
             </button>
         </a>

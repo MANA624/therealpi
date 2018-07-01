@@ -312,9 +312,9 @@ $("#add-event-form").on('submit', function(){
        data: {
            "Title": $("#title").val(),
            "Special Reminders": $("#special").val(),
-           Date: $("#datepicker").val(),
-           Hour: $("#hour").val(),
-           Minute: $("#minute").val()
+           "Date": $("#datepicker").val(),
+           "Hour": $("#hour").val(),
+           "Minute": $("#minute").val()
        },
         type: "POST",
         url: "_add_event"

@@ -63,7 +63,7 @@ def logout():
     return redirect(url_for("main_page"))
 
 
-@app.route('/_add_event', methods=["GET", "POST"])
+@app.route('/_add_event', methods=["POST"])
 def add_event():
     try:
         events = request.form.to_dict()
@@ -71,15 +71,15 @@ def add_event():
         events["Special Reminders"] = [events["Special Reminders"]]
         schedule.insert_one(events)
     except Exception as e:
-        print(e.__traceback__)
+        print(e)
         return jsonify(error="There was error")
-    else:
-        return jsonify()
+
+    return jsonify(success="Event successfully added!")
 
 
 if __name__ == '__main__':
     # A local variable that make testing in production possible. Set equal to false when shipped over
-    in_production = True
+    in_production = False
     if in_production:
         app.secret_key = "test"
         host = ''
