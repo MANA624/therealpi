@@ -79,7 +79,7 @@ def add_event():
 
 if __name__ == '__main__':
     # A local variable that make testing in production possible. Set equal to false when shipped over
-    in_production = False
+    in_production = True
     if in_production:
         app.secret_key = "test"
         host = ''

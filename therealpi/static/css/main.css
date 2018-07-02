@@ -10,7 +10,25 @@ main {
     background-color: darkgray;
     //background-color: #343a40;
     //background-color: white;
+}
+
+h1 {
     text-align: center;
+}
+
+.p-section{
+    margin: 0 auto;
+}
+
+.info-text{
+    text-indent: 35px;
+}
+
+#closing{
+    margin-right: 40px;
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.6em;
 }
 
 #mynav {
