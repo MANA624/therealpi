@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from pymongo import MongoClient
-from helpers import *
 from datetime import datetime, timedelta
+from functools import wraps
 
 app = Flask(__name__)
 client = MongoClient('localhost')
@@ -9,6 +9,17 @@ db = client.schedule
 users = db.users
 schedule = db.events
 roommate = db.roommate
+
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "logged_in" in session and session["logged_in"]:
+            return f(*args, **kwargs)
+        else:
+            return redirect(url_for("main_page"))
+
+    return wrap
 
 
 @app.route('/')
