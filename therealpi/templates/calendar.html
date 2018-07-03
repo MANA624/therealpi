@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block title %}Calendar{% endblock %}
+
+{% block top_includes %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
+<!--<script src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>-->
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+<script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+{% endblock %}
 
 {% block body %}
 
@@ -200,11 +208,5 @@
   <button class="btn btn-primary" type="submit">Submit form</button>
 </form>
 
-
-
-
-    <!--<script src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>-->
-    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
-    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
 
 {% endblock %}

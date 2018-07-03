@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block top_includes %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
 {% block body %}
 
     <h1>Welcome to The Real Pi!</h1>
@@ -40,8 +44,9 @@
         <p class="info-text">
             Please log in if I
             gave you a username and password (potential employers will see this on my resume, which may or may not
-            be publicly posted on this very site). You will see my resume page with, well, my resume, as well as a
-            deeper look into my work and educational experience that you can't fit on one page. There is also a contact
+            be publicly posted on this very site). You will see my resume page with my actual resume as well as a
+            deeper look into my work and educational experience that one cannot fit on a single page.
+            There is also a contact
             page for anyone who wants to get a hold of me for any reason. If you log in, you'll see my Calendar page,
             where I keep track of my schedule and critical events that are coming up. You will also see my admin panel,
             as well as the site my roommates and I use to calculate how much we need to pay for rent.

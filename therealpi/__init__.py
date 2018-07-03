@@ -1,23 +1,14 @@
-from flask import Flask, render_template, request, jsonify, sessions, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 from pymongo import MongoClient
-from functools import wraps
+from helpers import *
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 client = MongoClient('localhost')
 db = client.schedule
 users = db.users
 schedule = db.events
-
-
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if "logged_in" in session and session["logged_in"]:
-            return f(*args, **kwargs)
-        else:
-            return redirect(url_for("main_page"))
-
-    return wrap
+roommate = db.roommate
 
 
 @app.route('/')
@@ -44,6 +35,32 @@ def resume():
 @app.route('/contact')
 def contact():
     return render_template("contact.html", default="contact")
+
+
+@app.route('/roommates')
+@login_required
+def roommates():
+    month = (datetime.now() - timedelta(days=1)).strftime("%B")
+    search = roommate.find_one({"month": month})
+    if search is None:
+        new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
+        search = {"month": new_month, "rent": [2090, 0, 0, 0], "aaron": ["1", ""],
+                  "austin": ["0", ""], "matt": ["5", ""], "ryan": ["100", ""]}
+        roommate.insert_one(search)
+    return render_template("roommates.html", default="roommates", info=search)
+
+
+@app.route('/_update_roommate', methods=["POST"])
+@login_required
+def update_roommate():
+    month = (datetime.now() - timedelta(days=1)).strftime("%B")
+    update = dict(request.form)
+    update["month"] = month
+    try:
+        roommate.find_one_and_replace({"month": month}, update)
+        return jsonify()
+    except:
+        return jsonify({"error": "Couldn't update info!"})
 
 
 @app.route('/_check_login', methods=["POST"])

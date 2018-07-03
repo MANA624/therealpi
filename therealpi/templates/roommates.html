@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Rent Payments{% endblock %}
+
+{% block top_includes %}
+    <script src="{{ url_for('static', filename='js/roommates.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+<form class="form-horizontal" id="cost-form">
+<h1>Cost of rent for {{ info["month"] }}</h1>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Rent</label>
+        <div class="col-sm-5">
+            <input class="form-control" id="rent" placeholder="Cost of Rent" value="{{ info['rent'][0] }}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" >Water Billback</label>
+        <div class="col-sm-5">
+            <input class="form-control" id="water" placeholder="Amount Water" value="{{ info['rent'][1] }}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" >Trash Billback</label>
+        <div class="col-sm-5">
+            <input class="form-control" id="trash" placeholder="Amount Trash" value="{{ info['rent'][2] }}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" >Util Billback</label>
+        <div class="col-sm-5">
+            <input class="form-control" id="util" placeholder="Amount Util" value="{{ info['rent'][3] }}">
+        </div>
+    </div>
+    <h1>Other considerations</h1>
+    <div class="form-group">
+        <div class="col-sm-5 input-group">
+            Ryan paid &nbsp &nbsp $
+            <input type="text" class="form-control" id="ryan-amount" placeholder="Ryan paid" value="{{ info['ryan'][0] }}">
+            &nbsp &nbsp for &nbsp &nbsp
+            <input type="text" class="form-control" id="ryan-reason" placeholder="Reason" value="{{ info['ryan'][1] }}">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-5 input-group">
+            Bryan paid &nbsp &nbsp $
+            <input type="text" class="form-control" id="aaron-amount" placeholder="Bryan paid" value="{{ info['aaron'][0] }}">
+            &nbsp &nbsp for &nbsp &nbsp
+            <input type="text" class="form-control" id="aaron-reason" placeholder="Reason" value="{{ info['aaron'][1] }}">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-5 input-group">
+            Matt paid &nbsp &nbsp $
+            <input type="text" class="form-control" id="matt-amount" placeholder="Matt paid" value="{{ info['matt'][0] }}">
+            &nbsp &nbsp for &nbsp &nbsp
+            <input type="text" class="form-control" id="matt-reason" placeholder="Reason" value="{{ info['matt'][1] }}">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-5 input-group">
+            Austin paid &nbsp &nbsp $
+            <input type="text" class="form-control" id="austin-amount" placeholder="Austin paid" value="{{ info['austin'][0] }}">
+            &nbsp &nbsp for &nbsp &nbsp
+            <input type="text" class="form-control" id="austin-reason" placeholder="Reason" value="{{ info['austin'][1] }}">
+        </div>
+    </div>
+    <div class="input-group">
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-primary" id="save">Save</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+    <p>So, Ryan pays $<span id="ryan-price">???</span></p>
+    <p>So, Bryan pays $<span id="aaron-price">???</span></p>
+    <p>So, Matt pays $<span id="matt-price">???</span></p>
+    <p>So, Austin pays $<span id="austin-price">???</span></p>
+
+
+{% endblock %}
