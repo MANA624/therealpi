@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, abort
 from pymongo import MongoClient
+from passlib.hash import sha256_crypt
 from datetime import datetime, timedelta
 from functools import wraps
 
@@ -11,15 +12,39 @@ schedule = db.events
 roommate = db.roommate
 
 
+"""
+    BEGIN BLOCK: HELPER FUNCTIONS
+"""
+
+
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         if "logged_in" in session and session["logged_in"]:
             return f(*args, **kwargs)
         else:
-            return redirect(url_for("main_page"))
+            abort(403)
 
     return wrap
+
+
+def roommate_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "logged_in" in session and session["roommate"]:
+            return f(*args, **kwargs)
+        else:
+            abort(403)
+
+    return wrap
+
+
+"""
+    END SECTION: HELPER FUNCTIONS
+"""
+"""
+    BEGIN SECTION: TEMPLATE RENDERING
+"""
 
 
 @app.route('/')
@@ -31,6 +56,11 @@ def main_page():
 @login_required
 def calendar():
     return render_template("calendar.html", default="cal")
+
+
+@app.route('/admin')
+def admin():
+    return render_template("admin.html", default="admin")
 
 
 @app.route('/test')
@@ -49,7 +79,7 @@ def contact():
 
 
 @app.route('/roommates')
-@login_required
+@roommate_required
 def roommates():
     month = (datetime.now() - timedelta(days=1)).strftime("%B")
     search = roommate.find_one({"month": month})
@@ -61,11 +91,19 @@ def roommates():
     return render_template("roommates.html", default="roommates", info=search)
 
 
+"""
+    END SECTION: TEMPLATE RENDERING
+"""
+"""
+    BEGIN SECTION: AJAX REQUESTS
+"""
+
+
 @app.route('/_update_roommate', methods=["POST"])
 @login_required
 def update_roommate():
     month = (datetime.now() - timedelta(days=1)).strftime("%B")
-    update = dict(request.form)
+    update = request.form.to_dict(flat=False)
     update["month"] = month
     try:
         roommate.find_one_and_replace({"month": month}, update)
@@ -78,8 +116,11 @@ def update_roommate():
 def check_login():
     username = request.form["username"]
     password = request.form["password"]
-    if users.find_one({"username": username, "password": password}) is not None:
+    user = users.find_one({"username": username, "password": password})
+    if user is not None:
         session["logged_in"] = True
+        for privilege in user["other"]:
+            session[privilege] = True
         return jsonify()
     else:
         return jsonify(error="Bad credentials. Please try again")
@@ -105,10 +146,54 @@ def add_event():
     return jsonify(success="Event successfully added!")
 
 
+@app.route('/_create_user', methods=["POST"])
+def create_user():
+    try:
+        print(request)
+        user = dict(request.form)
+        user['password'] = sha256_crypt.encrypt(user['password'][0])
+        user['other'].remove('')
+        user['username'] = user['username'][0]
+        print(user)
+        users.insert_one(user)
+    except Exception as e:
+        print(e)
+        return jsonify(error="There was error")
+    return jsonify()
+
+
+"""
+    END SECTION: AJAX REQUESTS
+"""
+
+"""
+    BEGIN SECTION: ERROR HANDLING
+"""
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template('500.html'), 500
+
+
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template('403.html'), 403
+
+"""
+    END SECTION: ERROR HANDLING
+"""
+
+
 if __name__ == '__main__':
-    # A local variable that make testing in production possible. Set equal to false when shipped over
-    in_production = False
-    if in_production:
+    # A local variable that make testing in development possible. Set equal to false when shipped over
+    in_development = True
+    if in_development:
         app.secret_key = "test"
         host = ''
         debug = True

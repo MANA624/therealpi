@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Admin{% endblock %}
+
+
+{% block top_includes %}
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/formValidator.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+
+    <h1>The Admin Page</h1>
+    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
+        <form class="needs-validation" id="create-user-form" novalidate>
+            <h2 class="div-header">Add New User</h2>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="user">Username</label>
+                    <input type="text" class="form-control" id="user" placeholder="Username" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="pass">Password</label>
+                    <input type="password" class="form-control" id="pass" placeholder="Password" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="col-md-6 mb-5">
+                    <label for="confirm-pass">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm-pass" placeholder="Confirm Pass" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="roommate-checkbox">
+                <label for="roommate-checkbox">
+                    Roommate
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="employer-checkbox">
+                <label for="employer-checkbox">
+                    Employer
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="admin-checkbox">
+                <label for="admin-checkbox">
+                    Admin
+                </label>
+            </div>
+            <br/>
+            <br/>
+
+            <button class="btn btn-primary" type="submit">Submit form</button>
+        </form>
+    </div>
+    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
+        More content
+    </div>
+
+
+{% endblock %}
+
+
