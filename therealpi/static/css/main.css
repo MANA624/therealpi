@@ -3,13 +3,22 @@ body {
 }
 
 main {
-    margin: auto;
-    margin-bottom: 200px;
+    margin: 0 auto 200px auto;
     width: 75%;
     //height: 1000px;
     background-color: darkgray;
     //background-color: #343a40;
     //background-color: white;
+}
+
+h1 {
+    text-align: center;
+    padding: 25px;
+    font-size: 3em;
+}
+
+#popUpWindow{
+    //z-index: 1;
 }
 
 #mynav {
@@ -18,12 +27,34 @@ main {
     //width: 100%
 }
 
+.corner-icon {
+    color:#28a745;
+}
+
 .modal {
     //z-index: 2;
 }
 
 .navbar-brand {
     font-family: 'Orbitron', sans-serif;
+}
+
+.content-div {
+    background-color: #343a40;
+    border: solid 4px white;
+    border-radius: 20px;
+    padding: 40px;
+    margin: 0 auto 70px auto;
+    color: lightgray;
+    // display: inline-block;
+}
+
+.div-header {
+    font-size: 1.5em;
+    font-family: 'Open Sans', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #32CD32;
 }
 
 #container{

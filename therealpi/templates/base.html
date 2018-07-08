@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:600" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- JS code -->
@@ -43,12 +44,12 @@
             <li class="nav-item {% if default == 'home' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('main_page') }}">Home</a>
             </li>
-            {% if session.logged_in %}
+            {% if session.admin %}
             <li class="nav-item {% if default == 'cal' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('calendar') }}">Calendar</a>
             </li>
             {% endif %}
-            {% if session.logged_in %}
+            {% if session.roommate %}
             <li class="nav-item {% if default == 'roommates' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('roommates') }}">Roommates</a>
             </li>
@@ -60,15 +61,15 @@
                 <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
             </li>
             {% if session.admin %}
-            <li class="nav-item {% if default == 'contact' %}active{% else %}{% endif %}">
-                <a class="nav-link" href="{{ url_for('contact') }}">Admin</a>
+            <li class="nav-item {% if default == 'admin' %}active{% else %}{% endif %}">
+                <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
             </li>
             {% endif %}
         </ul>
 
         {% if not session.logged_in %}
         <button type="button" class="btn" data-toggle="modal" data-target="#popUpWindow">
-            <i class="fa fa-user" style="font-size:23px;color:#28a745;"></i>
+            <i class="fa fa-user corner-icon fa-lg"></i>
         </button>
 
         <div class="modal fade" id="popUpWindow" aria-labelledby="popUpWindow">
@@ -105,9 +106,19 @@
             </div>
         </div>
         {% else %}
+{#        <div class="nav navbar-nav pull-md-right">#}
+{#            <div class="nav nav-item">#}
+{#                <p class="navbar-text">Signed in as User#1234</p>#}
+{#            </div>#}
+{#            <ul class="nav navbar-nav">#}
+{#                <li class="nav-item">#}
+{#                    <a class="nav-link" href="#">Sign In</a>#}
+{#                </li>#}
+{#            </ul>#}
+{#        </div>#}
         <a href="{{ url_for("logout") }}" >
-            <button type="button" class="btn btn-lg" >
-                <i class="fa fa-sign-out" style="font-size:23px;color:#28a745;"></i>
+            <button type="button" class="btn" >
+                <i class="fa fa-sign-out corner-icon fa-lg"></i>
             </button>
         </a>
         {% endif %}
