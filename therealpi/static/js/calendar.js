@@ -280,57 +280,37 @@ $(document).ready(function () {
 
   /* END REGION: CALENDAR */
   /* BEGIN REGION: FORM*/
+    // Code for the date picker
+    $('#datepicker').datepicker({
+        uiLibrary: 'bootstrap4'
+    });
 
-  // Code for the date picker
-  $('#datepicker').datepicker({
-      uiLibrary: 'bootstrap4'
-  });
+    $(document).on('submit', "#add-event-form", function(event){
+        var form = document.getElementById('add-event-form');
+        if(form.checkValidity() == false || $("#datepicker").val() == ""){
+            return false;
+        }
+        else{
+            $.ajax({
+                data: {
+                    "Title": $("#title").val(),
+                    "Special Reminders": $("#special").val(),
+                    "Date": $("#datepicker").val(),
+                    "Hour": $("#hour").val(),
+                    "Minute": $("#minute").val()
+                },
+                type: "POST",
+                url: "_add_event"
 
-  // Vanilla Javascript for the form in general
-  // Example starter JavaScript for disabling form submissions if there are invalid fields
-  (function() {
-    'use strict';
-    window.addEventListener('load', function() {
-      // Fetch all the forms we want to apply custom Bootstrap validation styles to
-      var forms = document.getElementsByClassName('needs-validation');
-      // Loop over them and prevent submission
-      var validation = Array.prototype.filter.call(forms, function(form) {
-        form.addEventListener('submit', function(event) {
-          if (form.checkValidity() === false) {
+            }).done(function(data){
+                if(data.error){
+                    alert(data.error);
+                }
+                else{
+                    window.location = "/calendar";
+                }
+            });
             event.preventDefault();
-            event.stopPropagation();
-          }
-          else{
-              event.preventDefault();
-          }
-          form.classList.add('was-validated');
-        }, false);
-      });
-    }, false);
-  })();
-
-  $(document).on('submit', "#add-event-form", function(event){
-      $.ajax({
-         data: {
-             "Title": $("#title").val(),
-             "Special Reminders": $("#special").val(),
-             "Date": $("#datepicker").val(),
-             "Hour": $("#hour").val(),
-             "Minute": $("#minute").val()
-         },
-          type: "POST",
-          url: "_add_event"
-
-      }).done(function(data){
-          if(data.error){
-              alert(data.error);
-          }
-          else{
-              window.location = "/calendar";
-          }
-      });
-
-      event.preventDefault();
-  });
-
+        }
+    });
 });
