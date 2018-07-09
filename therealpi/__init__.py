@@ -116,8 +116,8 @@ def update_roommate():
 def check_login():
     username = request.form["username"]
     password = request.form["password"]
-    user = users.find_one({"username": username, "password": password})
-    if user is not None:
+    user = users.find_one({"username": username})
+    if sha256_crypt.verify(password, user["password"]):
         session["logged_in"] = True
         for privilege in user["other"]:
             session[privilege] = True
