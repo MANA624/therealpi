@@ -1,0 +1,51 @@
+DONE
+-------------
+Require login for calendar
+Run on Apache
+But domain name
+Pull from Github
+Run over HTTPS
+Secure password with hash
+Put special items in list, not string
+Create admin panel to create new users
+Finish home page
+
+
+Not done
+------------
+Require login to submit forms
+Secure local Mongo with password (rather than localhost exception)
+Create unique index on username Mongo
+Make datepicker disabled and required
+Escape user input strings
+Error checking for time and date
+Create config files for dev and prod
+Update text box sizes on phone
+Add session variables to redirect to current page after login
+Remove jsonify() calls from AJAX responses
+Switch from local files to CDNs
+Enhance 403 page
+Sort out 403 vs. 401
+Make 500 page
+JQuery update AJAX to handle errors properly (use .done and .fail)
+Finish resume page
+Finish about page
+Finish contact page
+Get calendar to work
+Plug calendar into the backend
+Add robots.txt and sitemap.xml
+Create SMTP server
+Enable loading for user for login
+Create flash notification system
+Make navbar fixed at top
+Add proper error handling to site
+Add csrf security token
+Create REST API
+Use of ditch virtualenv
+Create backend template for job postings
+Create admin panel to manage job postings
+
+
+
+
+
