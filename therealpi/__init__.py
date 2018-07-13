@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, abort
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, abort, send_file, safe_join
 from pymongo import MongoClient
 from passlib.hash import sha256_crypt
 from datetime import datetime, timedelta
 from functools import wraps
+import os.path
 
 app = Flask(__name__)
 client = MongoClient('localhost')
@@ -93,6 +94,22 @@ def roommates():
 
 """
     END SECTION: TEMPLATE RENDERING
+"""
+"""
+    BEGIN SECTION: DOWNLOADS
+"""
+
+
+@app.route("/return_file/<filename>")
+def return_file(filename):
+    path = safe_join(app.root_path, url_for('static', filename="downloads/"+filename)[1:])
+    if os.path.isfile(path):
+        return send_file(path)
+    else:
+        abort(404)
+
+"""
+    END SECTION: DOWNLOADS
 """
 """
     BEGIN SECTION: AJAX REQUESTS
@@ -192,7 +209,7 @@ def forbidden(e):
 
 if __name__ == '__main__':
     # A local variable that make testing in development possible. Set equal to false when shipped over
-    in_development = False
+    in_development = True
     if in_development:
         app.secret_key = "test"
         host = ''
@@ -201,6 +218,3 @@ if __name__ == '__main__':
         host = '0.0.0.0'
         debug = False
     app.run(debug=debug, host=host)
-
-
-

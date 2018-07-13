@@ -27,6 +27,11 @@ h1 {
     //width: 100%
 }
 
+#container{
+    //background-color: #343a40;
+    background-color: white;
+}
+
 .corner-icon {
     color:#28a745;
 }
@@ -55,9 +60,4 @@ h1 {
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #32CD32;
-}
-
-#container{
-    //background-color: #343a40;
-    background-color: white;
 }
