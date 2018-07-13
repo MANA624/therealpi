@@ -44,23 +44,23 @@
             <li class="nav-item {% if default == 'home' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('main_page') }}">Home</a>
             </li>
-            {% if session.admin %}
-            <li class="nav-item {% if default == 'cal' %}active{% else %}{% endif %}">
-                <a class="nav-link" href="{{ url_for('calendar') }}">Calendar</a>
-            </li>
-            {% endif %}
-            {% if session.roommate %}
-            <li class="nav-item {% if default == 'roommates' %}active{% else %}{% endif %}">
-                <a class="nav-link" href="{{ url_for('roommates') }}">Roommates</a>
-            </li>
-            {% endif %}
             <li class="nav-item {% if default == 'res' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('resume') }}">Resume</a>
             </li>
             <li class="nav-item {% if default == 'contact' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
             </li>
-            {% if session.admin %}
+            {% if session.roommate or session.employer %}
+            <li class="nav-item {% if default == 'roommates' %}active{% else %}{% endif %}">
+                <a class="nav-link" href="{{ url_for('roommates') }}">Roommates</a>
+            </li>
+            {% endif %}
+            {% if session.admin or session.employer %}
+            <li class="nav-item {% if default == 'cal' %}active{% else %}{% endif %}">
+                <a class="nav-link" href="{{ url_for('calendar') }}">Calendar</a>
+            </li>
+            {% endif %}
+            {% if session.admin or session.employer %}
             <li class="nav-item {% if default == 'admin' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
             </li>
@@ -124,6 +124,10 @@
         {% endif %}
     </div>
 </nav>
+
+<div class="alert alert-success" role="alert">
+  <strong>Well done!</strong> You successfully read this important alert message.
+</div>
 
 <div class="container-fluid">
     <div class="row flex-xl-nowrap">
