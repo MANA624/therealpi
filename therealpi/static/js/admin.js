@@ -4,6 +4,10 @@ $(document).ready(function(){
         if(form.checkValidity() == false){
             return false;
         }
+        else if($("#pass").val() !== $("#confirm-pass").val()){
+            $("#add-user-error-text").html("Passwords do not match!");
+            return false;
+        }
         else{
             var privileges = [''];
             if($("#roommate-checkbox").is(":checked")){
@@ -25,12 +29,11 @@ $(document).ready(function(){
                 url: "_create_user",
                 traditional: true
             }).done(function(data){
-                if(data.error){
-                    alert(data.error);
-                }
-                else{
-                    window.location = "/admin";
-                }
+                // window.location = "/admin";
+                $("#create-user-form")[0].reset();
+                createAlert("success", "Success!", data)
+            }).fail(function(data){
+                createAlert("danger", "Oops!", data.responseText)
             });
             event.preventDefault();
 

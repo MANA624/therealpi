@@ -52,15 +52,11 @@ $(document).ready(function() {
             },
             type: "POST",
             url: "_update_roommate"
-
-      }).done(function(data){
-          if(data.error){
-              alert(data.error);
-          }
-          else{
-              alert("You successfully updated the info!");
-          }
-      });
+        }).done(function(data){
+            createAlert("success", "Congrats!", data);
+        }).fail(function(data){
+            createAlert("danger", "Error!", data.responseText)
+        });
 
     })
 });

@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, abort, send_file, safe_join
+from flask import Flask, render_template, request, session, redirect, url_for, abort, send_file, safe_join, \
+    flash, Response
 from pymongo import MongoClient
 from passlib.hash import sha256_crypt
 from datetime import datetime, timedelta
@@ -15,6 +16,17 @@ roommate = db.roommate
 
 """
     BEGIN BLOCK: HELPER FUNCTIONS
+"""
+
+
+def my_flash(type, title, content):
+    flash(type + ':' + title + ':' + content)
+
+"""
+    END SECTION: HELPER FUNCTIONS
+"""
+"""
+    BEGIN SECTION: REQUIRED LOGINS
 """
 
 
@@ -39,9 +51,8 @@ def roommate_required(f):
 
     return wrap
 
-
 """
-    END SECTION: HELPER FUNCTIONS
+    END SECTION: REQUIRED LOGINS
 """
 """
     BEGIN SECTION: TEMPLATE RENDERING
@@ -124,9 +135,9 @@ def update_roommate():
     update["month"] = month
     try:
         roommate.find_one_and_replace({"month": month}, update)
-        return jsonify()
+        return Response("Successfully updated info")
     except:
-        return jsonify({"error": "Couldn't update info!"})
+        return Response("Couldn't update information in database", status=503)
 
 
 @app.route('/_check_login', methods=["POST"])
@@ -134,13 +145,14 @@ def check_login():
     username = request.form["username"]
     password = request.form["password"]
     user = users.find_one({"username": username})
-    if sha256_crypt.verify(password, user["password"]):
+    if user and sha256_crypt.verify(password, user["password"]):
         session["logged_in"] = True
         for privilege in user["other"]:
             session[privilege] = True
-        return jsonify()
+        my_flash("success", "Login Success!", "Welcome " + username + '!')
+        return Response()
     else:
-        return jsonify(error="Bad credentials. Please try again")
+        return Response("Bad credentials. Please try again", status=401)
 
 
 @app.route('/_logout', methods=["GET", "POST"])
@@ -158,25 +170,23 @@ def add_event():
         schedule.insert_one(events)
     except Exception as e:
         print(e)
-        return jsonify(error="There was error")
+        return Response("Could not create an event!", status=503)
 
-    return jsonify(success="Event successfully added!")
+    return Response("You successfully created an event")
 
 
 @app.route('/_create_user', methods=["POST"])
 def create_user():
     try:
-        print(request)
         user = dict(request.form)
         user['password'] = sha256_crypt.encrypt(user['password'][0])
         user['other'].remove('')
         user['username'] = user['username'][0]
-        print(user)
         users.insert_one(user)
     except Exception as e:
         print(e)
-        return jsonify(error="There was error")
-    return jsonify()
+        return Response("There was an error accessing the database", status=503)
+    return Response("User successfully created!")
 
 
 """

@@ -16,6 +16,7 @@
     </script>-->
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}">
     </script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/umd/popper.min.js') }}">
     </script>
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}">
@@ -85,6 +86,7 @@
                     </div>
 
                     <!-- Body (form) -->
+                    <h5 class="text-danger form-error-message" id="login-error-message"></h5>
                     <div class="modal-body">
                         <form role="form" id="login-form">
                             <div class="form-group">
@@ -124,6 +126,18 @@
         {% endif %}
     </div>
 </nav>
+
+<div id="alert-box">
+{% for message in get_flashed_messages() %}
+    {% set working = message.split(':') %}
+    <script type="text/javascript">
+{#        $(document).ready(function(){#}
+            createAlert("{{ working[0] }}", "{{ working[1] }}", "{{ working[2] }}");
+{#            createAlert("success", "Yay", "This worked! It really worked");#}
+{#        });#}
+    </script>
+{% endfor %}
+</div>
 
 
 

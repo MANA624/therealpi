@@ -27,6 +27,13 @@ h1 {
     //width: 100%
 }
 
+#alert-box {
+    position: fixed;
+    z-index: 1;
+    /*width: 50%;*/
+    right: 20px;
+}
+
 #container{
     //background-color: #343a40;
     background-color: white;
@@ -42,6 +49,11 @@ h1 {
 
 .navbar-brand {
     font-family: 'Orbitron', sans-serif;
+}
+
+.form-error-message {
+    /*margin: 0 auto;*/
+    text-align: center;
 }
 
 .content-div {

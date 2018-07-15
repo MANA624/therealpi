@@ -287,6 +287,7 @@ $(document).ready(function () {
 
     $(document).on('submit', "#add-event-form", function(event){
         var form = document.getElementById('add-event-form');
+
         if(form.checkValidity() == false || $("#datepicker").val() == ""){
             return false;
         }
@@ -301,14 +302,11 @@ $(document).ready(function () {
                 },
                 type: "POST",
                 url: "_add_event"
-
             }).done(function(data){
-                if(data.error){
-                    alert(data.error);
-                }
-                else{
-                    window.location = "/calendar";
-                }
+                $('#add-event-form')[0].reset();
+                  createAlert("success", "Success!", data);
+            }).fail(function(data){
+                createAlert("danger", "Oops!", data.responseText)
             });
             event.preventDefault();
         }
