@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    var toDollars = function(num){
+        return (Math.ceil(num*100) / 100).toFixed(2)
+    };
+
     $(document).on('submit', "#cost-form", function (event) {
         var total = Number($("#rent").val()) +
             Number($("#water").val()) +
@@ -21,10 +25,10 @@ $(document).ready(function() {
         mattTotal += ryanLess/3 + aaronLess/3 - mattLess + austinLess/3;
         austinTotal += ryanLess/3 + aaronLess/3 + mattLess/3 - austinLess;
 
-        $("#ryan-price").html(ryanTotal);
-        $("#aaron-price").html(aaronTotal);
-        $("#matt-price").html(mattTotal);
-        $("#austin-price").html(austinTotal);
+        $("#ryan-price").html(toDollars(ryanTotal));
+        $("#aaron-price").html(toDollars(aaronTotal));
+        $("#matt-price").html(toDollars(mattTotal));
+        $("#austin-price").html(toDollars(austinTotal));
         event.preventDefault();
     });
 

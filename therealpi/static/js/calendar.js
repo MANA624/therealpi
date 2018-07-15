@@ -291,6 +291,9 @@ $(document).ready(function () {
         if(form.checkValidity() == false || $("#datepicker").val() == ""){
             return false;
         }
+        else if($("#datepicker").val() === ""){
+
+        }
         else{
             $.ajax({
                 data: {
