@@ -26,6 +26,7 @@ Error checking for time and date
 Create config files for dev and prod
 Add session variables to redirect to current page after login
 Switch from local files to CDNs
+Add school schedule to calendar page
 Enhance 404 page
 Sort out 403 vs. 401
 Make 500 page
@@ -44,8 +45,6 @@ Create REST API
 Use of ditch virtualenv
 Create backend template for job postings
 Create admin panel to manage job postings
-
-
 
 
 

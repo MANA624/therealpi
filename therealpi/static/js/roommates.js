@@ -20,10 +20,10 @@ $(document).ready(function() {
             mattLess = Number($("#matt-amount").val()),
             austinLess = Number($("#austin-amount").val());
 
-        ryanTotal += -ryanLess + aaronLess/3 + mattLess/3 + austinLess/3;
-        aaronTotal += ryanLess/3 - aaronLess + mattLess/3 + austinLess/3;
-        mattTotal += ryanLess/3 + aaronLess/3 - mattLess + austinLess/3;
-        austinTotal += ryanLess/3 + aaronLess/3 + mattLess/3 - austinLess;
+        ryanTotal += -ryanLess*3/4 + aaronLess/4 + mattLess/4 + austinLess/4;
+        aaronTotal += ryanLess/4 - aaronLess*3/4 + mattLess/4 + austinLess/4;
+        mattTotal += ryanLess/4 + aaronLess/4 - mattLess*3/4 + austinLess/4;
+        austinTotal += ryanLess/4 + aaronLess/4 + mattLess/4 - austinLess*3/4;
 
         $("#ryan-price").html(toDollars(ryanTotal));
         $("#aaron-price").html(toDollars(aaronTotal));

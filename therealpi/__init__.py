@@ -100,6 +100,7 @@ def roommates():
         search = {"month": new_month, "rent": [2090, 0, 0, 0], "aaron": ["1", ""],
                   "austin": ["0", ""], "matt": ["5", ""], "ryan": ["100", ""]}
         roommate.insert_one(search)
+    my_flash("info", "Notice!", "Just fixed a bug. Enter the full amount for Other Considerations")
     return render_template("roommates.html", default="roommates", info=search)
 
 
@@ -219,7 +220,7 @@ def forbidden(e):
 
 if __name__ == '__main__':
     # A local variable that make testing in development possible. Set equal to false when shipped over
-    in_development = True
+    in_development = False
     host = '0.0.0.0'
     if in_development:
         app.secret_key = "test"
