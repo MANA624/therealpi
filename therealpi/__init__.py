@@ -67,7 +67,8 @@ def main_page():
 @app.route('/calendar')
 @login_required
 def calendar():
-    return render_template("calendar.html", default="cal")
+    return render_template("test.html", default="cal")
+    # return render_template("calendar.html", default="cal")
 
 
 @app.route('/admin')
