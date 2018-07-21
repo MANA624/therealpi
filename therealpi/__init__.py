@@ -5,6 +5,7 @@ from passlib.hash import sha256_crypt
 from datetime import datetime, timedelta
 from functools import wraps
 import os.path
+from pprint import pprint
 
 app = Flask(__name__)
 client = MongoClient('localhost')
@@ -67,8 +68,20 @@ def main_page():
 @app.route('/calendar')
 @login_required
 def calendar():
-    return render_template("test.html", default="cal")
-    # return render_template("calendar.html", default="cal")
+    date_today = datetime.today().strftime("%Y-%m-%d")
+    events_raw = schedule.find()
+    # needed_keys = ["Time", "Title"]
+    events = []
+    for doc in events_raw:
+        date_list = doc["Date"].split('/')
+        date_list.insert(0, date_list.pop(2))
+        new_date = '-'.join(date_list)
+        new_doc = {
+            "title": doc["Title"] + ': ' + doc["Special Reminders"][0],
+            "start": new_date + 'T' + doc["Time"] + ":00"
+        }
+        events.append(new_doc)
+    return render_template("calendar.html", default="cal", date=date_today, events=events)
 
 
 @app.route('/admin')
@@ -221,7 +234,7 @@ def forbidden(e):
 
 if __name__ == '__main__':
     # A local variable that make testing in development possible. Set equal to false when shipped over
-    in_development = False
+    in_development = True
     host = '0.0.0.0'
     if in_development:
         app.secret_key = "test"
