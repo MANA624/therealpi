@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for, abort, send_file, safe_join, \
-    flash, Response
+    flash, Response, jsonify
 from pymongo import MongoClient
 from passlib.hash import sha256_crypt
 from datetime import datetime, timedelta
@@ -22,6 +22,13 @@ roommate = db.roommate
 
 def my_flash(type, title, content):
     flash(type + ':' + title + ':' + content)
+
+
+def to_fc_date_format(date, time):
+    date_list = date.split('/')
+    date_list.insert(0, date_list.pop(2))
+    new_date = '-'.join(date_list)
+    return new_date + 'T' + time + ":00"
 
 """
     END SECTION: HELPER FUNCTIONS
@@ -73,12 +80,9 @@ def calendar():
     # needed_keys = ["Time", "Title"]
     events = []
     for doc in events_raw:
-        date_list = doc["Date"].split('/')
-        date_list.insert(0, date_list.pop(2))
-        new_date = '-'.join(date_list)
         new_doc = {
-            "title": doc["Title"] + ': ' + doc["Special Reminders"][0],
-            "start": new_date + 'T' + doc["Time"] + ":00"
+            "title": doc["title"] + ': ' + doc["more_info"],
+            "start": doc["datetime"].strftime("%Y-%m-%dT%H:%M:00")
         }
         events.append(new_doc)
     return render_template("calendar.html", default="cal", date=date_today, events=events)
@@ -179,15 +183,18 @@ def logout():
 @app.route('/_add_event', methods=["POST"])
 def add_event():
     try:
-        events = request.form.to_dict()
-        events["Time"] = events.pop("Hour") + ':' + events.pop("Minute")
-        events["Special Reminders"] = [events["Special Reminders"]]
-        schedule.insert_one(events)
+        event = request.form.to_dict()
+        date = [int(x) for x in event.pop("date").split('/')]
+        event["datetime"] = datetime(year=date[2], month=date[0], day=date[1], hour=int(event.pop("hour")),
+                                     minute=int(event.pop("minute")))
+        print(event)
+        schedule.insert_one(event)
     except Exception as e:
         print(e)
         return Response("Could not create an event!", status=503)
-
-    return Response("You successfully created an event")
+    # send_dict = {'title': event['']}
+    event.pop("_id")
+    return jsonify(message="You successfully created an event", event=event)
 
 
 @app.route('/_create_user', methods=["POST"])

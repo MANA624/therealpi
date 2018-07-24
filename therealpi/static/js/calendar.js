@@ -24,19 +24,29 @@ $(document).ready(function () {
 
         }
         else{
+            var title = $("#title").val(),
+                special = $("#special").val(),
+                date = $("#datepicker").val(),
+                hour = $("#hour").val(),
+                minute = $("#minute").val();
             $.ajax({
                 data: {
-                    "Title": $("#title").val(),
-                    "Special Reminders": $("#special").val(),
-                    "Date": $("#datepicker").val(),
-                    "Hour": $("#hour").val(),
-                    "Minute": $("#minute").val()
+                    "title": title,
+                    "more_info": special,
+                    "date": date,
+                    "hour": hour,
+                    "minute": minute
                 },
                 type: "POST",
                 url: "_add_event"
             }).done(function(data){
                 $('#add-event-form')[0].reset();
-                  createAlert("success", "Success!", data);
+                createAlert("success", "Success!", data.message);
+                var eventData = {
+                    'title': data.event["title"],
+                    'start': date.event["start"]
+                };
+                $('#calendar').fullCalendar('renderEvent', eventData, true);
             }).fail(function(data){
                 createAlert("danger", "Oops!", data.responseText)
             });

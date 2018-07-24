@@ -17,6 +17,7 @@ JQuery update AJAX to handle errors properly (use .done and .fail)
 
 Not done
 ------------
+Change all dates and times to Python datetime objects
 Require login to submit forms
 Secure local Mongo with password (rather than localhost exception)
 Create unique index on username Mongo
@@ -45,6 +46,15 @@ Create REST API
 Use of ditch virtualenv
 Create backend template for job postings
 Create admin panel to manage job postings
+Create README
+Change Mongo schema to not delete messages
+Change Mongo schema to make texting optional
+Bug: Textboxes don't turn red on calendar on phone
+
+Donate to
+---------
+Let's Encrypt
+Full Calendar
 
 
 
