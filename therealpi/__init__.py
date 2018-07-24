@@ -241,7 +241,7 @@ def forbidden(e):
 
 if __name__ == '__main__':
     # A local variable that make testing in development possible. Set equal to false when shipped over
-    in_development = True
+    in_development = False
     host = '0.0.0.0'
     if in_development:
         app.secret_key = "test"
