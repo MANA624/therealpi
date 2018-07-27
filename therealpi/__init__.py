@@ -188,7 +188,6 @@ def add_event():
         event["datetime"] = datetime(year=date[2], month=date[0], day=date[1], hour=int(event.pop("hour")),
                                      minute=int(event.pop("minute")))
         event["send_text"] = event["send_text"] == "true"
-        print(event)
         schedule.insert_one(event)
     except Exception as e:
         print(e)
@@ -242,7 +241,7 @@ def forbidden(e):
 
 if __name__ == '__main__':
     # A local variable that make testing in development possible. Set equal to false when shipped over
-    in_development = True
+    in_development = False
     host = '0.0.0.0'
     if in_development:
         app.secret_key = "test"
