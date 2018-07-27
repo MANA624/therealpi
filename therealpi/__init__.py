@@ -118,7 +118,7 @@ def roommates():
         search = {"month": new_month, "rent": [2090, 0, 0, 0], "aaron": ["1", ""],
                   "austin": ["0", ""], "matt": ["5", ""], "ryan": ["100", ""]}
         roommate.insert_one(search)
-    my_flash("info", "Notice!", "Just fixed a bug. Enter the full amount for Other Considerations")
+    my_flash("info", "Notice!", "Please save any changes so others can see!")
     return render_template("roommates.html", default="roommates", info=search)
 
 
@@ -187,6 +187,7 @@ def add_event():
         date = [int(x) for x in event.pop("date").split('/')]
         event["datetime"] = datetime(year=date[2], month=date[0], day=date[1], hour=int(event.pop("hour")),
                                      minute=int(event.pop("minute")))
+        event["send_text"] = event["send_text"] == "true"
         print(event)
         schedule.insert_one(event)
     except Exception as e:
@@ -241,7 +242,7 @@ def forbidden(e):
 
 if __name__ == '__main__':
     # A local variable that make testing in development possible. Set equal to false when shipped over
-    in_development = False
+    in_development = True
     host = '0.0.0.0'
     if in_development:
         app.secret_key = "test"

@@ -13,17 +13,17 @@ Create flash notification system
 Remove jsonify() calls from AJAX responses
 Update text box sizes on phone
 JQuery update AJAX to handle errors properly (use .done and .fail)
+Change all dates and times to Python datetime objects
+Error checking for time and date
+Make datepicker disabled and required
 
 
 Not done
 ------------
-Change all dates and times to Python datetime objects
 Require login to submit forms
 Secure local Mongo with password (rather than localhost exception)
 Create unique index on username Mongo
-Make datepicker disabled and required
 Escape user input strings
-Error checking for time and date
 Create config files for dev and prod
 Add session variables to redirect to current page after login
 Switch from local files to CDNs
@@ -39,11 +39,12 @@ Plug calendar into the backend
 Add robots.txt and sitemap.xml
 Create SMTP server
 Enable loading for user for login
+Change to faster hash algorithm
 Make navbar fixed at top
 Add proper error handling to site
 Add csrf security token
 Create REST API
-Use of ditch virtualenv
+Use or ditch virtualenv
 Create backend template for job postings
 Create admin panel to manage job postings
 Create README
