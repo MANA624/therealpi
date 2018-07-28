@@ -16,6 +16,9 @@ JQuery update AJAX to handle errors properly (use .done and .fail)
 Change all dates and times to Python datetime objects
 Error checking for time and date
 Make datepicker disabled and required
+Plug calendar into the backend
+Get calendar to work
+Change Mongo schema to optionally not delete messages
 
 
 Not done
@@ -34,12 +37,10 @@ Make 500 page
 Finish resume page
 Finish about page
 Finish contact page
-Get calendar to work
-Plug calendar into the backend
 Add robots.txt and sitemap.xml
 Create SMTP server
 Enable loading for user for login
-Change to faster hash algorithm
+Update from ahs256_crypt to pbkdf2_sha256 to improve speed
 Make navbar fixed at top
 Add proper error handling to site
 Add csrf security token
@@ -48,9 +49,9 @@ Use or ditch virtualenv
 Create backend template for job postings
 Create admin panel to manage job postings
 Create README
-Change Mongo schema to not delete messages
 Change Mongo schema to make texting optional
 Bug: Textboxes don't turn red on calendar on phone
+Change padding inside content-div to percent for wider phone view
 
 Donate to
 ---------

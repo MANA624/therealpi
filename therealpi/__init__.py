@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for, abort, send_file, safe_join, \
     flash, Response, jsonify
 from pymongo import MongoClient
-from passlib.hash import sha256_crypt
+from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
 from functools import wraps
 import os.path
@@ -164,7 +164,7 @@ def check_login():
     username = request.form["username"]
     password = request.form["password"]
     user = users.find_one({"username": username})
-    if user and sha256_crypt.verify(password, user["password"]):
+    if user and pbkdf2_sha256.verify(password, user["password"]):
         session["logged_in"] = True
         for privilege in user["other"]:
             session[privilege] = True
@@ -201,7 +201,7 @@ def add_event():
 def create_user():
     try:
         user = dict(request.form)
-        user['password'] = sha256_crypt.encrypt(user['password'][0])
+        user['password'] = pbkdf2_sha256.encrypt(user['password'][0])
         user['other'].remove('')
         user['username'] = user['username'][0]
         users.insert_one(user)
