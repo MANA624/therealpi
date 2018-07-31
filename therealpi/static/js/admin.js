@@ -27,6 +27,7 @@ $(document).ready(function(){
                 },
                 type: "POST",
                 url: "_create_user",
+                dataType: "json",
                 traditional: true
             }).done(function(data){
                 // window.location = "/admin";

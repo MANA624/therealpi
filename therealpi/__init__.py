@@ -5,7 +5,6 @@ from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
 from functools import wraps
 import os.path
-from pprint import pprint
 
 app = Flask(__name__)
 client = MongoClient('localhost')
@@ -20,15 +19,8 @@ roommate = db.roommate
 """
 
 
-def my_flash(type, title, content):
-    flash(type + ':' + title + ':' + content)
-
-
-def to_fc_date_format(date, time):
-    date_list = date.split('/')
-    date_list.insert(0, date_list.pop(2))
-    new_date = '-'.join(date_list)
-    return new_date + 'T' + time + ":00"
+def my_flash(msg_type, title, content):
+    flash(msg_type + ':' + title + ':' + content)
 
 """
     END SECTION: HELPER FUNCTIONS
@@ -45,18 +37,26 @@ def login_required(f):
             return f(*args, **kwargs)
         else:
             abort(403)
-
     return wrap
 
 
-def roommate_required(f):
+def roommate_required_post(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if "logged_in" in session and session["roommate"]:
+        if "logged_in" in session and "roommate" in session:
             return f(*args, **kwargs)
         else:
-            abort(403)
+            return Response("You don't have the rights to do that!", status=403)
+    return wrap
 
+
+def admin_required_post(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "logged_in" in session and "admin" in session:
+            return f(*args, **kwargs)
+        else:
+            return Response("You don't have the rights to do that!", status=403)
     return wrap
 
 """
@@ -70,6 +70,30 @@ def roommate_required(f):
 @app.route('/')
 def main_page():
     return render_template("home.html", default="home")
+
+
+@app.route('/resume')
+def resume():
+    return render_template("resume.html", default="res")
+
+
+@app.route('/contact')
+def contact():
+    return render_template("contact.html", default="contact")
+
+
+@app.route('/roommates')
+@login_required
+def roommates():
+    month = (datetime.now() - timedelta(days=1)).strftime("%B")
+    search = roommate.find_one({"month": month})
+    if search is None:
+        new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
+        search = {"month": new_month, "rent": [2090, 0, 0, 0], "aaron": ["1", ""],
+                  "austin": ["0", ""], "matt": ["5", ""], "ryan": ["100", ""]}
+        roommate.insert_one(search)
+    my_flash("info", "Notice!", "Please save any changes so others can see!")
+    return render_template("roommates.html", default="roommates", info=search)
 
 
 @app.route('/calendar')
@@ -89,38 +113,9 @@ def calendar():
 
 
 @app.route('/admin')
+@login_required
 def admin():
     return render_template("admin.html", default="admin")
-
-
-@app.route('/test')
-def test():
-    return render_template("test.html")
-
-
-@app.route('/resume')
-def resume():
-    return render_template("resume.html", default="res")
-
-
-@app.route('/contact')
-def contact():
-    return render_template("contact.html", default="contact")
-
-
-@app.route('/roommates')
-@roommate_required
-def roommates():
-    month = (datetime.now() - timedelta(days=1)).strftime("%B")
-    search = roommate.find_one({"month": month})
-    if search is None:
-        new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
-        search = {"month": new_month, "rent": [2090, 0, 0, 0], "aaron": ["1", ""],
-                  "austin": ["0", ""], "matt": ["5", ""], "ryan": ["100", ""]}
-        roommate.insert_one(search)
-    my_flash("info", "Notice!", "Please save any changes so others can see!")
-    return render_template("roommates.html", default="roommates", info=search)
-
 
 """
     END SECTION: TEMPLATE RENDERING
@@ -146,19 +141,6 @@ def return_file(filename):
 """
 
 
-@app.route('/_update_roommate', methods=["POST"])
-@login_required
-def update_roommate():
-    month = (datetime.now() - timedelta(days=1)).strftime("%B")
-    update = request.form.to_dict(flat=False)
-    update["month"] = month
-    try:
-        roommate.find_one_and_replace({"month": month}, update)
-        return Response("Successfully updated info")
-    except:
-        return Response("Couldn't update information in database", status=503)
-
-
 @app.route('/_check_login', methods=["POST"])
 def check_login():
     username = request.form["username"]
@@ -180,7 +162,21 @@ def logout():
     return redirect(url_for("main_page"))
 
 
+@app.route('/_update_roommate', methods=["POST"])
+@roommate_required_post
+def update_roommate():
+    month = (datetime.now() - timedelta(days=1)).strftime("%B")
+    update = request.form.to_dict(flat=False)
+    update["month"] = month
+    try:
+        roommate.find_one_and_replace({"month": month}, update)
+        return Response("Successfully updated info")
+    except:
+        return Response("Couldn't update information in database", status=503)
+
+
 @app.route('/_add_event', methods=["POST"])
+@admin_required_post
 def add_event():
     try:
         event = request.form.to_dict()
@@ -198,6 +194,7 @@ def add_event():
 
 
 @app.route('/_create_user', methods=["POST"])
+@admin_required_post
 def create_user():
     try:
         user = dict(request.form)
