@@ -22,6 +22,7 @@ Change Mongo schema to not delete messages
 Change Mongo schema to make texting optional
 Update from sha256_crypt to pbkdf2_sha256 to improve speed
 Require login to submit forms
+Create config files for dev and prod
 
 
 Not done
@@ -29,7 +30,6 @@ Not done
 Create unique index on username Mongo on laptop (    db.users.insert({"username": "admin", "other": 1})   )
 Secure local Mongo with password (rather than localhost exception)
 Escape user input strings
-Create config files for dev and prod
 Add session variables to redirect to current page after login
 Switch from local files to CDNs
 Add school schedule to calendar page

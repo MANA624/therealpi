@@ -25,130 +25,33 @@
     <div class="col-12 col-md-10 col-xl-10 content-div">
         <h2 class="div-header">Extended Work Experience</h2>
         <br/>
-{#        <div class="container">#}
-{#            <div id="accordion" class="accordion">#}
-{#                <div class="card mb-0">#}
-{##}
-{#                    <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">#}
-{#                        <a class="card-title">#}
-{#                            Northrop Grumman#}
-{#                        </a>#}
-{#                    </div>#}
-{#                    <div id="collapseOne" class="card-body collapse" data-parent="#accordion" >#}
-{#                        <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt#}
-{#                            aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat#}
-{#                            craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.#}
-{#                        </p>#}
-{#                    </div>#}
-{##}
-{#                    <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">#}
-{#                        <a class="card-title">#}
-{#                            Computer Science Course Assistant#}
-{#                        </a>#}
-{#                    </div>#}
-{#                    <div id="collapseTwo" class="card-body collapse" data-parent="#accordion" >#}
-{#                        <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt#}
-{#                            aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat#}
-{#                            craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.#}
-{#                        </p>#}
-{#                    </div>#}
-{##}
-{#                    <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">#}
-{#                        <a class="card-title">#}
-{#                            Subway#}
-{#                        </a>#}
-{#                    </div>#}
-{#                    <div id="collapseThree" class="collapse" data-parent="#accordion" >#}
-{#                        <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt#}
-{#                            aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. samus labore sustainable VHS.#}
-{#                        </div>#}
-{#                    </div>#}
-{##}
-{#                    <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">#}
-{#                        <a class="card-title">#}
-{#                            Angel Fire Bike Shop#}
-{#                        </a>#}
-{#                    </div>#}
-{#                    <div id="collapseFour" class="collapse" data-parent="#accordion" >#}
-{#                        <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt#}
-{#                            aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. samus labore sustainable VHS.#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-
         <div class="container">
             <div class="accordion-option">
 {#                <a href="javascript:void(0)" class="toggle-accordion active" accordion-id="#accordion"></a>#}
             </div>
             <div class="clearfix"></div>
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            {% for listing in listings %}
                 <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingOne">
+                    <div class="panel-heading" role="tab" id="heading{{ loop.index }}">
                         <h4 class="panel-title">
-                            <a class="collapsed panel-anchor" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                Northrop Grumman
+                            <a class="collapsed panel-anchor" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                                {{ listing["heading"] }}
                             </a>
                         </h4>
                     </div>
 
-                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div id="collapse{{ loop.index }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading{{ loop.index }}">
                         <div class="panel-body">
-                            <p class="job-text"><span class="job-span">Dates worked: </span> May 2017 - Present</p>
-                            <p class="job-text"><span class="job-span">Job Title: </span>College Technical Intern</p>
+                            <p class="job-text"><span class="job-span">Dates worked: </span>{{ listing["dates_worked"] }}</p>
+                            <p class="job-text"><span class="job-span">Job Title: </span>{{ listing["job_title"] }}</p>
                             <p class="job-text"><span class="job-span">Job description: </span>
-                                Worked on prototyping proprietary system within the company, using versatile
-                                technologies such as Python, Django, Flask, MongoDB, Cassandra, REST frameworks,
-                                Javascript, and more. Worked using an agile development methodology on a team of 8+
-                                members, using Github to manage version control.
+                                {{ listing["job_description"] }}
                             </p>
                         </div>
                     </div>
                 </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingTwo">
-                        <h4 class="panel-title">
-                            <a class="collapsed panel-anchor" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                CU Boulder Course Assistant
-                            </a>
-                        </h4>
-                    </div>
-
-                    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
-                        <div class="panel-body">
-                            <p class="job-text"><span class="job-span">Dates worked: </span>December 2017 - May 2017</p>
-                            <p class="job-text"><span class="job-span">Job Title: </span>Course Assistant</p>
-                            <p class="job-text"><span class="job-span">Job description: </span>
-                                Worked under Professor Christian Ketelsen at The University of Colorado at Boulder to
-                                assist students in learning discrete mathematics. I held many office hours and offered
-                                feedback on the course to the professor.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingThree">
-                        <h4 class="panel-title">
-                            <a class="collapsed panel-anchor" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Subway
-                            </a>
-                        </h4>
-                    </div>
-
-                    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
-                        <div class="panel-body">
-                            <p class="job-text"><span class="job-span">Dates worked: </span>May 2016 - August 2016</p>
-                            <p class="job-text"><span class="job-span">Job Title: </span>Sandwich Artist 2.0</p>
-                            <p class="job-text"><span class="job-span">Job description: </span>
-                                Worked in a high-stress environment to accurately and efficiently produce customer
-                                sandwiches. Other tasks included dishwashing, cleaning, food preparation, and training
-                                other employees.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            {% endfor %}
             </div>
         </div>
     </div>

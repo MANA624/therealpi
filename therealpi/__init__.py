@@ -1,14 +1,16 @@
 from flask import Flask, render_template, request, session, redirect, url_for, abort, send_file, safe_join, \
     flash, Response, jsonify
-from pymongo import MongoClient
+from pymongo import MongoClient, DESCENDING
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
 from functools import wraps
 import os.path
+from pprint import pprint
 
 app = Flask(__name__)
 client = MongoClient('localhost')
 db = client.schedule
+jobs = db.jobs
 users = db.users
 schedule = db.events
 roommate = db.roommate
@@ -74,7 +76,10 @@ def main_page():
 
 @app.route('/resume')
 def resume():
-    return render_template("resume.html", default="res")
+    listings = []
+    for listing in jobs.find().sort([("order", DESCENDING)]):
+        listings.append(listing)
+    return render_template("resume.html", default="res", listings=listings)
 
 
 @app.route('/contact')
@@ -85,7 +90,7 @@ def contact():
 @app.route('/roommates')
 @login_required
 def roommates():
-    month = (datetime.now() - timedelta(days=1)).strftime("%B")
+    month = (datetime.now() - timedelta(days=2)).strftime("%B")
     search = roommate.find_one({"month": month})
     if search is None:
         new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
@@ -208,6 +213,22 @@ def create_user():
     return Response("User successfully created!")
 
 
+@app.route('/_create_job', methods=["POST"])
+@admin_required_post
+def create_job():
+    try:
+        job = request.form.to_dict()
+        if jobs.find().count() > 0:
+            max_job = jobs.find_one(sort=[("order", -1)])["order"] + 5
+        else:
+            max_job = 10
+        job["order"] = max_job
+        jobs.insert_one(job)
+    except Exception as e:
+        print(e)
+        return Response("There was an error accessing the database", status=503)
+    return Response("User successfully created!")
+
 """
     END SECTION: AJAX REQUESTS
 """
@@ -237,6 +258,5 @@ def forbidden(e):
 
 
 if __name__ == '__main__':
-    # A local variable that make testing in development possible. Set equal to false when shipped over
     host = '0.0.0.0'
     app.run(host=host)

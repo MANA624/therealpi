@@ -65,11 +65,59 @@
             <br/>
             <br/>
 
-            <button class="btn btn-primary" type="submit">Submit form</button>
+            <button class="btn btn-primary" type="submit" class="submit-button">Create User</button>
         </form>
     </div>
+
+    <!--  Add a new job!  -->
+
     <div class="col-12 col-md-10 col-xl-10 p-section content-div">
-        More content
+        <form class="needs-validation" id="create-job-form" novalidate>
+            <h2 class="div-header">Add Another Job</h2>
+
+            <h5 class="text-danger form-error-message" id="add-user-error-text"></h5>
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="heading">Heading</label>
+                    <input type="text" class="form-control" id="heading" placeholder="Heading" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="dates">Dates Worked</label>
+                    <input type="text" class="form-control" id="dates" placeholder="Dates Worked" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="title">Job Title</label>
+                    <input type="text" class="form-control" id="title" placeholder="Job Title" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-8 mb-5">
+                    <label for="description">Job Description</label>
+                    <textarea rows="4" class="form-control" id="description" placeholder="Job Description" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary submit-button" type="submit">Create Job</button>
+        </form>
     </div>
 
 
