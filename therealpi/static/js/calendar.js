@@ -10,6 +10,7 @@ function deleteEvent(id){
     }).done(function(data){
         createAlert("success", "Success!", data);
         $('#calendar').fullCalendar('removeEvents', [id]);
+        $(".fc-event").css("background-color", "red");
     }).fail(function(data){
         createAlert("danger", "Oops!", data.responseText)
     });
