@@ -1,7 +1,10 @@
 $(document).ready(function(){
     $("#create-user-form").submit(function(event){
         var form = document.getElementById('create-user-form');
-        if($("#pass").val() !== $("#confirm-pass").val()){
+        if(form.checkValidity() == false){
+            return false
+        }
+        else if($("#pass").val() !== $("#confirm-pass").val()){
             $("#add-user-error-text").html("Passwords do not match!");
             return false;
         }
@@ -24,7 +27,6 @@ $(document).ready(function(){
                 },
                 type: "POST",
                 url: "_create_user",
-                dataType: "json",
                 traditional: true
             }).done(function(data){
                 // window.location = "/admin";
@@ -40,9 +42,9 @@ $(document).ready(function(){
 
 
     $("#create-job-form").submit(function(event){
-        var form = document.getElementById('create-user-form');
-        if(false){
-            return false;
+        var form = $('#create-job-form');
+        if(form[0].checkValidity() == false){
+            return false
         }
         else{
             $.ajax({

@@ -54,6 +54,11 @@ $(document).ready(function () {
 
     $(document).on('submit', "#add-event-form", function(event){
         var form = document.getElementById('add-event-form');
+        console.log(form.checkValidity());
+
+        if(form.checkValidity() == false){
+            return false
+        }
         if($("#datepicker").val() == ""){
             $("#add-event-error-text").html("You must pick a date!");
         }
@@ -87,7 +92,7 @@ $(document).ready(function () {
             }).fail(function(data){
                 createAlert("danger", "Oops!", data.responseText)
             });
-            event.preventDefault();
         }
+        event.preventDefault();
     });
 });

@@ -23,11 +23,13 @@ Change Mongo schema to make texting optional
 Update from sha256_crypt to pbkdf2_sha256 to improve speed
 Require login to submit forms
 Create config files for dev and prod
-
+Create unique index on username Mongo
+Create backend template for job postings
+Create admin panel to manage job postings
+Add ability to delete event for calendar
 
 Not done
 ------------
-Create unique index on username Mongo on laptop (    db.users.insert({"username": "admin", "other": 1})   )
 Secure local Mongo with password (rather than localhost exception)
 Escape user input strings
 Add session variables to redirect to current page after login
@@ -47,8 +49,6 @@ Add proper error handling to site
 Add csrf security token
 Create REST API
 Use or ditch virtualenv
-Create backend template for job postings
-Create admin panel to manage job postings
 Create README
 Bug: Textboxes don't turn red on calendar on phone
 Bug: Creating a user doesn't always work the first time
