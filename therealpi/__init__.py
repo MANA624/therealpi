@@ -203,7 +203,9 @@ def add_event():
 def delete_event():
     try:
         id = request.form["_id"]
-        schedule.delete_one({"_id": ObjectId(id)})
+        result = schedule.delete_one({"_id": ObjectId(id)})
+        if not result.deleted_count:
+            raise NameError("No object with that id found!")
     except Exception as e:
         print(e)
         return Response("Could not delete that event!", status=503)
