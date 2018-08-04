@@ -5,7 +5,7 @@ from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
 from functools import wraps
 import os.path
-from pprint import pprint
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 client = MongoClient('localhost')
@@ -48,7 +48,7 @@ def roommate_required_post(f):
         if "logged_in" in session and "roommate" in session:
             return f(*args, **kwargs)
         else:
-            return Response("You don't have the rights to do that!", status=403)
+            return Response("You don't have the privileges to do that!", status=403)
     return wrap
 
 
@@ -58,7 +58,7 @@ def admin_required_post(f):
         if "logged_in" in session and "admin" in session:
             return f(*args, **kwargs)
         else:
-            return Response("You don't have the rights to do that!", status=403)
+            return Response("You don't have the privileges to do that!", status=403)
     return wrap
 
 """
@@ -106,12 +106,12 @@ def roommates():
 def calendar():
     date_today = datetime.today().strftime("%Y-%m-%d")
     events_raw = schedule.find()
-    # needed_keys = ["Time", "Title"]
     events = []
     for doc in events_raw:
         new_doc = {
             "title": doc["title"] + ': ' + doc["more_info"],
-            "start": doc["datetime"].strftime("%Y-%m-%dT%H:%M:00")
+            "start": doc["datetime"].strftime("%Y-%m-%dT%H:%M:00"),
+            "id": doc["_id"]
         }
         events.append(new_doc)
     return render_template("calendar.html", default="cal", date=date_today, events=events)
@@ -198,6 +198,18 @@ def add_event():
     return jsonify(message="You successfully created an event", event=event)
 
 
+@app.route('/_delete_event', methods=["POST"])
+@admin_required_post
+def delete_event():
+    try:
+        id = request.form["_id"]
+        schedule.delete_one({"_id": ObjectId(id)})
+    except Exception as e:
+        print(e)
+        return Response("Could not delete that event!", status=503)
+    return Response("You successfully deleted that event")
+
+
 @app.route('/_create_user', methods=["POST"])
 @admin_required_post
 def create_user():
@@ -227,7 +239,7 @@ def create_job():
     except Exception as e:
         print(e)
         return Response("There was an error accessing the database", status=503)
-    return Response("User successfully created!")
+    return Response("Job successfully created!")
 
 """
     END SECTION: AJAX REQUESTS

@@ -1,11 +1,51 @@
+/* BEGIN REGION: CALENDAR */
+
+function deleteEvent(id){
+    $.ajax({
+        data: {
+            "_id": id
+        },
+        type: "POST",
+        url: "_delete_event"
+    }).done(function(data){
+        createAlert("success", "Success!", data);
+        $('#calendar').fullCalendar('removeEvents', [id]);
+    }).fail(function(data){
+        createAlert("danger", "Oops!", data.responseText)
+    });
+}
+
 $(document).ready(function () {
+    // Make sure that slider is not on delete mode to begin with
+    $('#toggle').prop('checked', false);
 
-  /* BEGIN REGION: CALENDAR */
+    // Make the toggle a toggle and not a checkbox
+    $(function() {
+        $('#toggle').bootstrapToggle({
+            on: 'Delete',
+            off: 'Regular'
+        });
+    });
 
+    // Change color of elements when delete mode is active
+    $("#toggle").change(function () {
+        if($("#toggle").is(":checked")){
+            $(".fc-event").css("background-color", "red");
+        }
+        else{
+            $(".fc-event").css("background-color", "#3a87ad");
+        }
+    });
 
+    // When events are expanded, fix the bug where expanded events don't change color
+    $(".fc-more").click(function(){
+        if($("#toggle").is(":checked")) {
+            $(".fc-event").css("background-color", "red");
+        }
+    });
 
-  /* END REGION: CALENDAR */
-  /* BEGIN REGION: FORM*/
+    /* END REGION: CALENDAR */
+    /* BEGIN REGION: FORM*/
     // Code for the date picker
     $('#datepicker').datepicker({
         uiLibrary: 'bootstrap4'

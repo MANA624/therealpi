@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css">
     <link rel="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="{{ url_for('static', filename='js/formValidator.js') }}"></script>
     <script src="{{ url_for('static', filename='js/moment.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
@@ -20,6 +22,7 @@
     <h1>Manage My Schedule</h1>
     <div class="col-12 col-md-10 col-xl-10 content-div">
         <h2 class="div-header">Calendar</h2>
+        <input id="toggle" type="checkbox">
         <div id='calendar'></div>
     </div>
 
@@ -78,6 +81,15 @@
     $(document).ready(function(){
 
         $('#calendar').fullCalendar({
+            eventClick: function(event, element) {
+                  if($("#toggle").is(":checked")){
+                      deleteEvent(event.id);
+{#                      $('#calendar').fullCalendar('removeEvents', [event.id]);#}
+                      $(".fc-event").css("background-color", "red");
+                      // $(".fc-event-dot").css("background-color", "red");
+                  }
+
+              },
             header: {
                 left: 'prev,next today',
                 center: 'title',
@@ -85,11 +97,12 @@
             },
             navLinks: true,
             defaultDate: '{{ date }}',
-            editable: true,
+            editable: false,
             eventLimit: true, // allow "more" link when too many events
             events: [
                 {% for event in events %}
                 {
+                    id: '{{ event["id"] }}',
                     title: '{{ event["title"] }}',
                     start: '{{ event["start"] }}'
                 },

@@ -2,3 +2,27 @@
     max-width: 900px;
     margin: 0 auto;
 }
+
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default{
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.btn:active, .btn.active{
+    box-shadow: inset 0px 3px 5px rgba(0,0,0,0.125)
+}
+
+.btn-default{
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+/*.btn-primary{*/
+    /*background-color: #dc3545;*/
+    /*border-color: #dc3545;*/
+/*}*/
+
+/*.btn-primary:hover{*/
+    /*background-color: #c82333;*/
+    /*border-color: #bd2130;*/
+/*}*/
