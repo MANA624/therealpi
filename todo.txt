@@ -27,6 +27,9 @@ Create unique index on username Mongo
 Create backend template for job postings
 Create admin panel to manage job postings
 Add ability to delete event for calendar
+Finish contact page
+Ditch virtualenv
+Add event to calendar in real time upon creation
 
 
 Not done
@@ -41,20 +44,19 @@ Sort out 403 vs. 401
 Make 500 page
 Finish resume page
 Finish about page
-Finish contact page
 Add robots.txt and sitemap.xml
 Create SMTP server
 Enable loading for user for login
+Enable loading for user for sending emails
 Make navbar fixed at top
 Add proper error handling to site
 Add csrf security token
 Create REST API
-Use or ditch virtualenv
 Create README
 Bug: Textboxes don't turn red on calendar on phone
 Bug: Creating a user doesn't always work the first time
 Change padding inside content-div to percent for wider phone view
-Add event to calendar in real time upon creation
+
 
 Donate to
 ---------

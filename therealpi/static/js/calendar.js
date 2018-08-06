@@ -12,7 +12,7 @@ function deleteEvent(id){
         $('#calendar').fullCalendar('removeEvents', [id]);
         $(".fc-event").css("background-color", "red");
     }).fail(function(data){
-        createAlert("danger", "Oops!", data.responseText)
+        createAlert("danger", "Oops!", data.responseText);
     });
 }
 
@@ -84,8 +84,9 @@ $(document).ready(function () {
                 $('#add-event-form')[0].reset();
                 createAlert("success", "Success!", data.message);
                 var eventData = {
-                    'title': data.event["title"],
-                    'start': date.event["start"]
+                    id: data.event["_id"],
+                    title: data.event["title"],
+                    start: data.event["start"]
                 };
                 $('#calendar').fullCalendar('renderEvent', eventData, true);
             }).fail(function(data){

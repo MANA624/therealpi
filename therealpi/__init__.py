@@ -228,9 +228,12 @@ def add_event():
     except Exception as e:
         print(e)
         return Response("Could not create an event!", status=503)
-    # send_dict = {'title': event['']}
-    event.pop("_id")
-    return jsonify(message="You successfully created an event", event=event)
+    send_dict = {
+        'title': event['title'] + ':' + event["more_info"],
+        'start': event["datetime"].strftime("%Y-%m-%dT%H:%M:00"),
+        '_id': str(event["_id"])
+    }
+    return jsonify(message="You successfully created an event", event=send_dict)
 
 
 @app.route('/_delete_event', methods=["POST"])
