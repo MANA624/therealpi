@@ -19,7 +19,6 @@ jobs = db.jobs
 users = db.users
 schedule = db.events
 roommate = db.roommate
-server = smtplib.SMTP('smtp.gmail.com', 587)
 
 """
     BEGIN BLOCK: HELPER FUNCTIONS
@@ -45,6 +44,7 @@ def send_mail(name, sender_address, subject, body):
     body = body + "\n\n" + "Name: " + name + "\nSender address: " + sender_address
     msg.attach(MIMEText(body, 'plain'))
 
+    server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     server.login(fromaddr, config_data["email_password"])
     text = msg.as_string()
@@ -70,6 +70,8 @@ def log_error(e):
 # but just to be safe we'll take away all capabilities that can be found through
 # a NoSQL injection
 def sanitize(user_input):
+    if type(user_input) != str:
+        return user_input
     user_input = user_input.replace('$', '')
     user_input = user_input.replace('{', '')
     user_input = user_input.replace('}', '')

@@ -50,8 +50,8 @@ Finish resume page
 Create about page
 Add robots.txt and sitemap.xml
 Create SMTP server
-Enable loading for user for login
-Enable loading for user for sending emails
+Enable visual loading for user for login
+Enable visual loading for user for sending emails
 Make navbar fixed at top without messing up modal
 Create REST API
 Create README
