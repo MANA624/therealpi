@@ -28,6 +28,7 @@ Create backend template for job postings
 Create admin panel to manage job postings
 Add ability to delete event for calendar
 
+
 Not done
 ------------
 Secure local Mongo with password (rather than localhost exception)
@@ -53,6 +54,7 @@ Create README
 Bug: Textboxes don't turn red on calendar on phone
 Bug: Creating a user doesn't always work the first time
 Change padding inside content-div to percent for wider phone view
+Add event to calendar in real time upon creation
 
 Donate to
 ---------

@@ -3,3 +3,4 @@ therealpi/.idea
 therealpi/__pycache__
 .idea
 therealpi.py
+config.conf

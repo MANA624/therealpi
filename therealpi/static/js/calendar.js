@@ -54,13 +54,12 @@ $(document).ready(function () {
 
     $(document).on('submit', "#add-event-form", function(event){
         var form = document.getElementById('add-event-form');
-        console.log(form.checkValidity());
-
         if(form.checkValidity() == false){
-            return false
+            return false;
         }
-        if($("#datepicker").val() == ""){
+        else if($("#datepicker").val() == ""){
             $("#add-event-error-text").html("You must pick a date!");
+            return false;
         }
         else{
             var title = $("#title").val(),

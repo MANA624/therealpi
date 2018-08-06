@@ -1,12 +1,65 @@
 {% extends "base.html" %}
 
+
 {% block title %}Contact{% endblock %}
+
+
+{% block top_includes %}
+    <script src="{{ url_for('static', filename='js/formValidator.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+{% endblock %}
+
 
 {% block body %}
 
     <h1>Contact Me!</h1>
     <div class="col-12 col-md-10 col-xl-10 content-div">
-        Some content
+        <form class="needs-validation" id="send-email-form" novalidate>
+            <h2 class="div-header">Send An Email</h2>
+
+            <h5 class="text-danger form-error-message" id="send-email-error-text"></h5>
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="your-name">Your Name</label>
+                    <input type="text" class="form-control" id="your-name" placeholder="Your Name" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="your-email">Your Email</label>
+                    <input type="text" class="form-control" id="your-email" placeholder="Your Email" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="subject">Subject</label>
+                    <input type="text" class="form-control" id="subject" placeholder="Subject" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-8 mb-5">
+                    <label for="email-content">Questions, Comments, or Suggestions</label>
+                    <textarea rows="4" class="form-control" id="email-content" placeholder="Type message here" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary submit-button" type="submit">Send Email</button>
+        </form>
     </div>
 
 {% endblock %}

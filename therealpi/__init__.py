@@ -6,6 +6,10 @@ from datetime import datetime, timedelta
 from functools import wraps
 import os.path
 from bson.objectid import ObjectId
+import smtplib
+import configparser
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 app = Flask(__name__)
 client = MongoClient('localhost')
@@ -14,7 +18,7 @@ jobs = db.jobs
 users = db.users
 schedule = db.events
 roommate = db.roommate
-
+server = smtplib.SMTP('smtp.gmail.com', 587)
 
 """
     BEGIN BLOCK: HELPER FUNCTIONS
@@ -23,6 +27,35 @@ roommate = db.roommate
 
 def my_flash(msg_type, title, content):
     flash(msg_type + ':' + title + ':' + content)
+
+
+def send_mail(name, sender_address, subject, body):
+    config_data = get_config_section("EMAIL")
+    fromaddr = config_data["email_from"]
+    toaddr = config_data["email_to"]
+    msg = MIMEMultipart()
+    msg['From'] = fromaddr
+    msg['To'] = toaddr
+    msg['Subject'] = subject
+    msg.add_header('reply-to', sender_address)
+
+    body = body + "\n\n" + "Name: " + name + "\nSender address: " + sender_address
+    msg.attach(MIMEText(body, 'plain'))
+
+    server.starttls()
+    server.login(fromaddr, config_data["email_password"])
+    text = msg.as_string()
+    server.sendmail(sender_address, toaddr, text)
+    server.quit()
+
+
+def get_config_section(section_name):
+    config = configparser.ConfigParser()
+    config.read("config.conf")
+    return_dict = {}
+    for option in config[section_name]:
+        return_dict[option] = config.get(section_name, option)
+    return return_dict
 
 """
     END SECTION: HELPER FUNCTIONS
@@ -165,6 +198,17 @@ def check_login():
 def logout():
     session.clear()
     return redirect(url_for("main_page"))
+
+
+@app.route('/_send_email', methods=["POST"])
+def send_email():
+    try:
+        email = request.form.to_dict()
+        send_mail(email["name"], email["email"], email["subject"], email["message"])
+    except Exception as e:
+        print(e)
+        return Response("There was an error sending the email", status=503)
+    return Response("Email sent!")
 
 
 @app.route('/_update_roommate', methods=["POST"])
