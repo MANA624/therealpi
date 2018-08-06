@@ -1,5 +1,6 @@
 $(document).ready(function(){
     $("#create-user-form").submit(function(event){
+        $("#add-user-error-text").html("");
         var form = document.getElementById('create-user-form');
         if(form.checkValidity() == false){
             return false

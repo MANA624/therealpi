@@ -53,6 +53,7 @@ $(document).ready(function () {
     });
 
     $(document).on('submit', "#add-event-form", function(event){
+        $("#add-event-error-text").html("");
         var form = document.getElementById('add-event-form');
         if(form.checkValidity() == false){
             return false;

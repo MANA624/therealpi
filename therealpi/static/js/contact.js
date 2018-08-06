@@ -6,6 +6,7 @@ function validateEmail(email) {
 
 $(document).ready(function(){
     $("#send-email-form").submit(function(event){
+        $("#send-email-error-text").html("");
         var form = $('#send-email-form');
         if(form[0].checkValidity() == false){
             return false
