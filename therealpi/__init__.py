@@ -7,7 +7,6 @@ from functools import wraps
 import os.path
 from bson.objectid import ObjectId
 import smtplib
-import configparser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -30,7 +29,7 @@ def my_flash(msg_type, title, content):
 
 
 def send_mail(name, sender_address, subject, body):
-    config_data = get_config_section("EMAIL")
+    config_data = app.config["EMAIL"]
     fromaddr = config_data["email_from"]
     toaddr = config_data["email_to"]
     msg = MIMEMultipart()
@@ -48,14 +47,6 @@ def send_mail(name, sender_address, subject, body):
     server.sendmail(sender_address, toaddr, text)
     server.quit()
 
-
-def get_config_section(section_name):
-    config = configparser.ConfigParser()
-    config.read("config.conf")
-    return_dict = {}
-    for option in config[section_name]:
-        return_dict[option] = config.get(section_name, option)
-    return return_dict
 
 """
     END SECTION: HELPER FUNCTIONS
