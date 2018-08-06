@@ -204,10 +204,10 @@ def logout():
 def send_email():
     try:
         email = request.form.to_dict()
-        send_mail(email["name"], email["email"], email["subject"], email["message"])
     except Exception as e:
         print(e)
         return Response("There was an error sending the email", status=503)
+    send_mail(email["name"], email["email"], email["subject"], email["message"])
     return Response("Email sent!")
 
 
