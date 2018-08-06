@@ -1,8 +1,19 @@
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    return re.test(String(email).toLowerCase());
+}
+
+
 $(document).ready(function(){
     $("#send-email-form").submit(function(event){
         var form = $('#send-email-form');
         if(form[0].checkValidity() == false){
             return false
+        }
+        else if(!validateEmail($("#your-email").val())){
+            // console.log(validateEmail($("#your-email")));
+            $("#send-email-error-text").html("Not a valid email address!");
+            return false;
         }
         else{
             $.ajax({

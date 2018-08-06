@@ -9,8 +9,10 @@ from bson.objectid import ObjectId
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from flask_wtf.csrf import CsrfProtect
 
 app = Flask(__name__)
+CsrfProtect(app)
 client = MongoClient('localhost')
 db = client.schedule
 jobs = db.jobs
@@ -24,10 +26,12 @@ server = smtplib.SMTP('smtp.gmail.com', 587)
 """
 
 
+# Flashes a message to the user through Flask's flash system
 def my_flash(msg_type, title, content):
     flash(msg_type + ':' + title + ':' + content)
 
 
+# Sends an email to me, the administrator
 def send_mail(name, sender_address, subject, body):
     config_data = app.config["EMAIL"]
     fromaddr = config_data["email_from"]
@@ -48,8 +52,14 @@ def send_mail(name, sender_address, subject, body):
     server.quit()
 
 
-def prune_dict(old_dict, keys):
-    return {key: old_dict[key] for key in keys}
+# This is just a function to make sure that I'm not putting unexpected values from the AJAX request
+# into my database. Shouldn't be necessary under normal use
+def check_dict(old_dict, keys):
+    if all(key in old_dict for key in keys):
+        new_dict = {key: old_dict[key] for key in keys}
+        return new_dict
+    else:
+        return False
 
 
 def log_error(e):
@@ -145,6 +155,7 @@ def contact():
 @login_required
 def roommates():
     month = (datetime.now() - timedelta(days=2)).strftime("%B")
+    search = {}
     try:
         search = roommate.find_one({"month": month})
         if search is None:
@@ -254,6 +265,9 @@ def update_roommate():
     month = (datetime.now() - timedelta(days=1)).strftime("%B")
     try:
         update = request.form.to_dict(flat=False)
+        update = check_dict(update, ("rent", "ryan", "aaron", "matt", "austin"))
+        if not update:
+            return Response("Not all required fields were sent", status=400)
         update["month"] = month
         roommate.find_one_and_replace({"month": month}, update)
         return Response("Successfully updated info")
@@ -267,6 +281,9 @@ def update_roommate():
 def add_event():
     try:
         event = request.form.to_dict()
+        event = check_dict(event, ("title", "more_info", "date", "hour", "minute", "send_text"))
+        if not event:
+            return Response("Not all required fields were sent", status=400)
         date = [int(x) for x in event.pop("date").split('/')]
         event["datetime"] = datetime(year=date[2], month=date[0], day=date[1], hour=int(event.pop("hour")),
                                      minute=int(event.pop("minute")))
@@ -302,6 +319,9 @@ def delete_event():
 def create_user():
     try:
         user = dict(request.form)
+        user = check_dict(user, ("username", "password", "other"))
+        if not user:
+            return Response("Not all required fields were sent", status=400)
         user['password'] = pbkdf2_sha256.encrypt(user['password'][0])
         user['other'].remove('')
         user['username'] = user['username'][0]
@@ -317,6 +337,9 @@ def create_user():
 def create_job():
     try:
         job = request.form.to_dict()
+        job = check_dict(job, ("heading", "dates_worked", "job_title", "job_description"))
+        if not job:
+            return Response("Not all required fields were sent", status=400)
         if jobs.find().count() > 0:
             max_job = jobs.find_one(sort=[("order", -1)])["order"] + 5
         else:

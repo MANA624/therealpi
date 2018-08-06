@@ -31,6 +31,7 @@ Finish contact page
 Ditch virtualenv
 Add event to calendar in real time upon creation
 Sort out 403 vs. 401
+Add proper error handling to site
 
 
 Not done
@@ -40,6 +41,7 @@ Secure local Mongo with password (rather than localhost exception)
 Escape user input strings
 Add session variables to redirect to current page after login
 Switch from local files to CDNs
+Create support for repeating events on calendar
 Add school schedule to calendar page
 Enhance 404 page
 Make 500 page
@@ -50,7 +52,6 @@ Create SMTP server
 Enable loading for user for login
 Enable loading for user for sending emails
 Make navbar fixed at top
-Add proper error handling to site
 Add csrf security token
 Create REST API
 Create README
