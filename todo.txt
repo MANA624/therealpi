@@ -45,14 +45,14 @@ Switch from local files to CDNs
 Create support for repeating events on calendar
 Add school schedule to calendar page
 Enhance 404 page
-Make 500 page
+Enhance 500 page
 Finish resume page
 Create about page
 Add robots.txt and sitemap.xml
 Create SMTP server
 Enable loading for user for login
 Enable loading for user for sending emails
-Make navbar fixed at top
+Make navbar fixed at top without messing up modal
 Create REST API
 Create README
 Bug: Textboxes don't turn red on calendar on phone
