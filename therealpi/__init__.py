@@ -56,7 +56,7 @@ def send_mail(name, sender_address, subject, body):
 # into my database. Shouldn't be necessary under normal use
 def check_dict(old_dict, keys):
     if all(key in old_dict for key in keys):
-        new_dict = {key: old_dict[key] for key in keys}
+        new_dict = {key: sanitize(old_dict[key]) for key in keys}
         return new_dict
     else:
         return False
@@ -65,6 +65,15 @@ def check_dict(old_dict, keys):
 def log_error(e):
     print(e)
 
+
+# Sanitizing input in Python and MongoDB usually isn't that big of a deal,
+# but just to be safe we'll take away all capabilities that can be found through
+# a NoSQL injection
+def sanitize(user_input):
+    user_input = user_input.replace('$', '')
+    user_input = user_input.replace('{', '')
+    user_input = user_input.replace('}', '')
+    return user_input
 
 """
     END SECTION: HELPER FUNCTIONS
