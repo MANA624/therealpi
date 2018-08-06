@@ -59,30 +59,39 @@ def send_mail(name, sender_address, subject, body):
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if "logged_in" in session and session["logged_in"]:
-            return f(*args, **kwargs)
+        if "logged_in" in session:
+            if "admin" in session or "employer" in session:
+                return f(*args, **kwargs)
+            else:
+                abort(403)
         else:
-            abort(403)
+            abort(401)
     return wrap
 
 
 def roommate_required_post(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if "logged_in" in session and "roommate" in session:
-            return f(*args, **kwargs)
+        if "logged_in" in session:
+            if "roommate" in session:
+                return f(*args, **kwargs)
+            else:
+                return Response("You don't have the privileges to do that!", status=403)
         else:
-            return Response("You don't have the privileges to do that!", status=403)
+            return Response("You are not logged in", status=401)
     return wrap
 
 
 def admin_required_post(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if "logged_in" in session and "admin" in session:
-            return f(*args, **kwargs)
+        if "logged_in" in session:
+            if "admin" in session:
+                return f(*args, **kwargs)
+            else:
+                return Response("You don't have the privileges to do that!", status=403)
         else:
-            return Response("You don't have the privileges to do that!", status=403)
+            return Response("You are not logged in", status=401)
     return wrap
 
 """
@@ -101,8 +110,11 @@ def main_page():
 @app.route('/resume')
 def resume():
     listings = []
-    for listing in jobs.find().sort([("order", DESCENDING)]):
-        listings.append(listing)
+    try:
+        for listing in jobs.find().sort([("order", DESCENDING)]):
+            listings.append(listing)
+    except Exception as e:
+        print(e)
     return render_template("resume.html", default="res", listings=listings)
 
 
@@ -298,6 +310,11 @@ def not_found(e):
 @app.errorhandler(500)
 def server_error(e):
     return render_template('500.html'), 500
+
+
+@app.errorhandler(401)
+def unauthorized(e):
+    return render_template('401.html'), 401
 
 
 @app.errorhandler(403)

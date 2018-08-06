@@ -30,6 +30,7 @@ Add ability to delete event for calendar
 Finish contact page
 Ditch virtualenv
 Add event to calendar in real time upon creation
+Sort out 403 vs. 401
 
 
 Not done
@@ -40,10 +41,9 @@ Add session variables to redirect to current page after login
 Switch from local files to CDNs
 Add school schedule to calendar page
 Enhance 404 page
-Sort out 403 vs. 401
 Make 500 page
 Finish resume page
-Finish about page
+Create about page
 Add robots.txt and sitemap.xml
 Create SMTP server
 Enable loading for user for login
