@@ -9,10 +9,10 @@ from bson.objectid import ObjectId
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from flask_wtf.csrf import CsrfProtect
+from flask_wtf.csrf import CSRFProtect, CSRFError
 
 app = Flask(__name__)
-CsrfProtect(app)
+CSRFProtect(app)
 client = MongoClient('localhost')
 db = client.schedule
 jobs = db.jobs
@@ -378,6 +378,11 @@ def unauthorized(e):
 @app.errorhandler(403)
 def forbidden(e):
     return render_template('403.html'), 403
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return Response("Bad CSRF token!"), 400
 
 """
     END SECTION: ERROR HANDLING

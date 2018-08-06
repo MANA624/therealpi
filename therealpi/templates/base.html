@@ -28,6 +28,17 @@
     <!--JS below-->
     {% block top_includes %}
     {% endblock %}
+    <script type="text/javascript">
+        var csrf_token = "{{ csrf_token() }}";
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                }
+            }
+        });
+    </script>
 
 </head>
 <body>
@@ -52,91 +63,91 @@
                 <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
             </li>
             {% if session.roommate or session.employer %}
-            <li class="nav-item {% if default == 'roommates' %}active{% else %}{% endif %}">
-                <a class="nav-link" href="{{ url_for('roommates') }}">Roommates</a>
-            </li>
+                <li class="nav-item {% if default == 'roommates' %}active{% else %}{% endif %}">
+                    <a class="nav-link" href="{{ url_for('roommates') }}">Roommates</a>
+                </li>
             {% endif %}
             {% if session.admin or session.employer %}
-            <li class="nav-item {% if default == 'cal' %}active{% else %}{% endif %}">
-                <a class="nav-link" href="{{ url_for('calendar') }}">Calendar</a>
-            </li>
+                <li class="nav-item {% if default == 'cal' %}active{% else %}{% endif %}">
+                    <a class="nav-link" href="{{ url_for('calendar') }}">Calendar</a>
+                </li>
             {% endif %}
             {% if session.admin or session.employer %}
-            <li class="nav-item {% if default == 'admin' %}active{% else %}{% endif %}">
-                <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
-            </li>
+                <li class="nav-item {% if default == 'admin' %}active{% else %}{% endif %}">
+                    <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
+                </li>
             {% endif %}
         </ul>
 
         {% if not session.logged_in %}
-        <button type="button" class="btn" data-toggle="modal" data-target="#popUpWindow">
-            <i class="fa fa-user corner-icon fa-lg"></i>
-        </button>
+            <button type="button" class="btn" data-toggle="modal" data-target="#popUpWindow">
+                <i class="fa fa-user corner-icon fa-lg"></i>
+            </button>
 
-        <div class="modal fade" id="popUpWindow" aria-labelledby="popUpWindow">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
+            <div class="modal fade" id="popUpWindow" aria-labelledby="popUpWindow">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
 
-                    <!-- Header-->
-                    <div class="modal-header">
-                        <h5 class="modal-title">Log In</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <!-- Header-->
+                        <div class="modal-header">
+                            <h5 class="modal-title">Log In</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <!-- Body (form) -->
+                        <h5 class="text-danger form-error-message" id="login-error-message"></h5>
+                        <div class="modal-body">
+                            <form role="form" id="login-form">
+                                <div class="form-group">
+                                    <input type="email" class="form-control modal-form" id="login-username" placeholder="Username">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control modal-form" id="login-pass" placeholder="Password">
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Button-->
+                        <div class="modal-footer">
+                            <button type="button" id="submit-login" class="btn btn-primary">Log In</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+
                     </div>
-
-                    <!-- Body (form) -->
-                    <h5 class="text-danger form-error-message" id="login-error-message"></h5>
-                    <div class="modal-body">
-                        <form role="form" id="login-form">
-                            <div class="form-group">
-                                <input type="email" class="form-control modal-form" id="login-username" placeholder="Username">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control modal-form" id="login-pass" placeholder="Password">
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Button-->
-                    <div class="modal-footer">
-                        <button type="button" id="submit-login" class="btn btn-primary">Log In</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-
                 </div>
             </div>
-        </div>
         {% else %}
-{#        <div class="nav navbar-nav pull-md-right">#}
-{#            <div class="nav nav-item">#}
-{#                <p class="navbar-text">Signed in as User#1234</p>#}
-{#            </div>#}
-{#            <ul class="nav navbar-nav">#}
-{#                <li class="nav-item">#}
-{#                    <a class="nav-link" href="#">Sign In</a>#}
-{#                </li>#}
-{#            </ul>#}
-{#        </div>#}
-        <a href="{{ url_for("logout") }}" >
-            <button type="button" class="btn" >
-                <i class="fa fa-sign-out corner-icon fa-lg"></i>
-            </button>
-        </a>
+            {#        <div class="nav navbar-nav pull-md-right">#}
+            {#            <div class="nav nav-item">#}
+            {#                <p class="navbar-text">Signed in as User#1234</p>#}
+            {#            </div>#}
+            {#            <ul class="nav navbar-nav">#}
+            {#                <li class="nav-item">#}
+            {#                    <a class="nav-link" href="#">Sign In</a>#}
+            {#                </li>#}
+            {#            </ul>#}
+            {#        </div>#}
+            <a href="{{ url_for("logout") }}" >
+                <button type="button" class="btn" >
+                    <i class="fa fa-sign-out corner-icon fa-lg"></i>
+                </button>
+            </a>
         {% endif %}
     </div>
 </nav>
 
 <div id="alert-box">
-{% for message in get_flashed_messages() %}
-    {% set working = message.split(':') %}
-    <script type="text/javascript">
-{#        $(document).ready(function(){#}
+    {% for message in get_flashed_messages() %}
+        {% set working = message.split(':') %}
+        <script type="text/javascript">
+            {#        $(document).ready(function(){#}
             createAlert("{{ working[0] }}", "{{ working[1] }}", "{{ working[2] }}");
-{#            createAlert("success", "Yay", "This worked! It really worked");#}
-{#        });#}
-    </script>
-{% endfor %}
+            {#            createAlert("success", "Yay", "This worked! It really worked");#}
+            {#        });#}
+        </script>
+    {% endfor %}
 </div>
 
 
