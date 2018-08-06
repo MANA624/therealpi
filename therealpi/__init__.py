@@ -48,6 +48,14 @@ def send_mail(name, sender_address, subject, body):
     server.quit()
 
 
+def prune_dict(old_dict, keys):
+    return {key: old_dict[key] for key in keys}
+
+
+def log_error(e):
+    print(e)
+
+
 """
     END SECTION: HELPER FUNCTIONS
 """
@@ -56,7 +64,7 @@ def send_mail(name, sender_address, subject, body):
 """
 
 
-def login_required(f):
+def admin_login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         if "logged_in" in session:
@@ -64,6 +72,16 @@ def login_required(f):
                 return f(*args, **kwargs)
             else:
                 abort(403)
+        else:
+            abort(401)
+    return wrap
+
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "logged_in" in session:
+            return f(*args, **kwargs)
         else:
             abort(401)
     return wrap
@@ -114,7 +132,7 @@ def resume():
         for listing in jobs.find().sort([("order", DESCENDING)]):
             listings.append(listing)
     except Exception as e:
-        print(e)
+        log_error(e)
     return render_template("resume.html", default="res", listings=listings)
 
 
@@ -127,34 +145,41 @@ def contact():
 @login_required
 def roommates():
     month = (datetime.now() - timedelta(days=2)).strftime("%B")
-    search = roommate.find_one({"month": month})
-    if search is None:
-        new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
-        search = {"month": new_month, "rent": [2090, 0, 0, 0], "aaron": ["1", ""],
-                  "austin": ["0", ""], "matt": ["5", ""], "ryan": ["100", ""]}
-        roommate.insert_one(search)
-    my_flash("info", "Notice!", "Please save any changes so others can see!")
+    try:
+        search = roommate.find_one({"month": month})
+        if search is None:
+            new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
+            search = {"month": new_month, "rent": [2175, 0, 0, 0], "aaron": ["", ""],
+                      "austin": ["", ""], "matt": ["", ""], "ryan": ["", ""]}
+            roommate.insert_one(search)
+        my_flash("info", "Notice!", "Please save any changes so others can see!")
+    except Exception as e:
+        log_error(e)
+        abort(500)
     return render_template("roommates.html", default="roommates", info=search)
 
 
 @app.route('/calendar')
-@login_required
+@admin_login_required
 def calendar():
     date_today = datetime.today().strftime("%Y-%m-%d")
-    events_raw = schedule.find()
     events = []
-    for doc in events_raw:
-        new_doc = {
-            "title": doc["title"] + ': ' + doc["more_info"],
-            "start": doc["datetime"].strftime("%Y-%m-%dT%H:%M:00"),
-            "id": doc["_id"]
-        }
-        events.append(new_doc)
+    try:
+        events_raw = schedule.find()
+        for doc in events_raw:
+            new_doc = {
+                "title": doc["title"] + ': ' + doc["more_info"],
+                "start": doc["datetime"].strftime("%Y-%m-%dT%H:%M:00"),
+                "id": doc["_id"]
+            }
+            events.append(new_doc)
+    except Exception as e:
+        log_error(e)
     return render_template("calendar.html", default="cal", date=date_today, events=events)
 
 
 @app.route('/admin')
-@login_required
+@admin_login_required
 def admin():
     return render_template("admin.html", default="admin")
 
@@ -184,17 +209,26 @@ def return_file(filename):
 
 @app.route('/_check_login', methods=["POST"])
 def check_login():
-    username = request.form["username"]
-    password = request.form["password"]
-    user = users.find_one({"username": username})
-    if user and pbkdf2_sha256.verify(password, user["password"]):
-        session["logged_in"] = True
-        for privilege in user["other"]:
-            session[privilege] = True
-        my_flash("success", "Login Success!", "Welcome " + username + '!')
-        return Response()
-    else:
-        return Response("Bad credentials. Please try again", status=401)
+    try:
+        username = request.form["username"]
+        password = request.form["password"]
+    except Exception as e:
+        log_error(e)
+        return Response("Could not get username or password", status=500)
+
+    try:
+        user = users.find_one({"username": username})
+        if user and pbkdf2_sha256.verify(password, user["password"]):
+            session["logged_in"] = True
+            for privilege in user["other"]:
+                session[privilege] = True
+            my_flash("success", "Login Success!", "Welcome " + username + '!')
+            return Response()
+        else:
+            return Response("Bad credentials. Please try again", status=401)
+    except Exception as e:
+        log_error(e)
+        return Response("Credentials generated an error.", status=500)
 
 
 @app.route('/_logout', methods=["GET", "POST"])
@@ -209,8 +243,8 @@ def send_email():
         email = request.form.to_dict()
         send_mail(email["name"], email["email"], email["subject"], email["message"])
     except Exception as e:
-        print(e)
-        return Response("There was an error sending the email", status=503)
+        log_error(e)
+        return Response("There was an error sending the email", status=500)
     return Response("Email sent!")
 
 
@@ -218,13 +252,14 @@ def send_email():
 @roommate_required_post
 def update_roommate():
     month = (datetime.now() - timedelta(days=1)).strftime("%B")
-    update = request.form.to_dict(flat=False)
-    update["month"] = month
     try:
+        update = request.form.to_dict(flat=False)
+        update["month"] = month
         roommate.find_one_and_replace({"month": month}, update)
         return Response("Successfully updated info")
-    except:
-        return Response("Couldn't update information in database", status=503)
+    except Exception as e:
+        log_error(e)
+        return Response("Couldn't update information in database", status=500)
 
 
 @app.route('/_add_event', methods=["POST"])
@@ -238,14 +273,14 @@ def add_event():
         event["send_text"] = event["send_text"] == "true"
         schedule.insert_one(event)
     except Exception as e:
-        print(e)
-        return Response("Could not create an event!", status=503)
+        log_error(e)
+        return Response("Could not create an event!", status=500)
     send_dict = {
         'title': event['title'] + ':' + event["more_info"],
         'start': event["datetime"].strftime("%Y-%m-%dT%H:%M:00"),
         '_id': str(event["_id"])
     }
-    return jsonify(message="You successfully created an event", event=send_dict)
+    return jsonify(message="You successfully created an event", event=send_dict), 201
 
 
 @app.route('/_delete_event', methods=["POST"])
@@ -257,8 +292,8 @@ def delete_event():
         if not result.deleted_count:
             raise NameError("No object with that id found!")
     except Exception as e:
-        print(e)
-        return Response("Could not delete that event!", status=503)
+        log_error(e)
+        return Response("Could not delete that event!", status=500)
     return Response("You successfully deleted that event")
 
 
@@ -272,9 +307,9 @@ def create_user():
         user['username'] = user['username'][0]
         users.insert_one(user)
     except Exception as e:
-        print(e)
-        return Response("There was an error accessing the database", status=503)
-    return Response("User successfully created!")
+        log_error(e)
+        return Response("There was an error accessing the database", status=500)
+    return Response("User successfully created!"), 201
 
 
 @app.route('/_create_job', methods=["POST"])
@@ -289,9 +324,9 @@ def create_job():
         job["order"] = max_job
         jobs.insert_one(job)
     except Exception as e:
-        print(e)
-        return Response("There was an error accessing the database", status=503)
-    return Response("Job successfully created!")
+        log_error(e)
+        return Response("There was an error accessing the database", status=500)
+    return Response("Job successfully created!"), 201
 
 """
     END SECTION: AJAX REQUESTS

@@ -35,6 +35,7 @@ Sort out 403 vs. 401
 
 Not done
 ------------
+Document code
 Secure local Mongo with password (rather than localhost exception)
 Escape user input strings
 Add session variables to redirect to current page after login

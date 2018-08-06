@@ -24,6 +24,7 @@
 
     <div class="col-12 col-md-10 col-xl-10 content-div">
         <h2 class="div-header">Extended Work Experience</h2>
+        {% if listings %}
         <br/>
         <div class="container">
             <div class="accordion-option">
@@ -54,6 +55,11 @@
             {% endfor %}
             </div>
         </div>
+        {% else %}
+            <p class="info-text">
+                There don't appear to be any jobs in the database. Must have been an error. Sorry about that.
+            </p>
+        {% endif %}
     </div>
 
 {% endblock %}
