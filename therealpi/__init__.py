@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, a
 from pymongo import MongoClient, DESCENDING
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from functools import wraps
 import os.path
 from bson.objectid import ObjectId
@@ -76,6 +77,10 @@ def sanitize(user_input):
     user_input = user_input.replace('{', '')
     user_input = user_input.replace('}', '')
     return user_input
+
+
+def get_datetime(date, hour, minute):
+    return datetime(year=date[2], month=date[0], day=date[1], hour=int(hour), minute=int(minute))
 
 """
     END SECTION: HELPER FUNCTIONS
@@ -292,14 +297,40 @@ def update_roommate():
 def add_event():
     try:
         event = request.form.to_dict()
-        event = check_dict(event, ("title", "more_info", "date", "hour", "minute", "send_text"))
+        print(event["freq"])
+
+        event = check_dict(event, ("title", "more_info", "date", "hour", "minute", "send_text", "freq", "end_date"))
         if not event:
             return Response("Not all required fields were sent", status=400)
-        date = [int(x) for x in event.pop("date").split('/')]
-        event["datetime"] = datetime(year=date[2], month=date[0], day=date[1], hour=int(event.pop("hour")),
-                                     minute=int(event.pop("minute")))
+        date = [int(x) for x in event["date"].split('/')]
+        current_date = get_datetime(date, event["hour"], event["minute"])
         event["send_text"] = event["send_text"] == "true"
-        schedule.insert_one(event)
+        frequency = event["freq"]
+
+        if frequency == "once":
+            end_datetime = current_date
+        else:
+            end_date = [int(x) for x in event["end_date"].split('/')]
+            end_datetime = get_datetime(end_date, event["hour"], event["minute"])
+
+        for key in ["date", "hour", "minute", "freq", "end_date"]:
+            event.pop(key)
+
+        while current_date <= end_datetime:
+            if "_id" in event:
+                event.pop("_id")
+            event["datetime"] = current_date
+            schedule.insert_one(event)
+            if frequency == "weekly":
+                delta = timedelta(days=7)
+            elif frequency == "bi-week":
+                delta = timedelta(days=7)
+            elif frequency == "monthly":
+                delta = relativedelta(months=1)
+            else:
+                break
+            current_date += delta
+
     except Exception as e:
         log_error(e)
         return Response("Could not create an event!", status=500)

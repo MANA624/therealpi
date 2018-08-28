@@ -51,6 +51,21 @@ $(document).ready(function () {
     $('#datepicker').datepicker({
         uiLibrary: 'bootstrap4'
     });
+    $('#datepicker2').datepicker({
+        uiLibrary: 'bootstrap4'
+    });
+
+    if($("input[name='freq']:checked").val() === "once") {
+        $("#second-date").hide();
+    }
+    $("input[name='freq']").change(function(e){
+        if($(this).val() === "once"){
+            $("#second-date").hide();
+        }
+        else{
+            $("#second-date").show();
+        }
+    });
 
     $(document).on('submit', "#add-event-form", function(event){
         $("#add-event-error-text").html("");
@@ -62,13 +77,19 @@ $(document).ready(function () {
             $("#add-event-error-text").html("You must pick a date!");
             return false;
         }
+        else if($("input[name='freq']:checked").val() !== "once" && $("#datepicker2").val() == ""){
+            $("#add-event-error-text").html("The end date is empty!");
+            return false;
+        }
         else{
             var title = $("#title").val(),
                 special = $("#special").val(),
                 date = $("#datepicker").val(),
                 hour = $("#hour").val(),
                 minute = $("#minute").val(),
-                send_text = $("#send-text").is(":checked");
+                send_text = $("#send-text").is(":checked"),
+                freq = $("input[name='freq']:checked").val(),
+                end_date = $("#datepicker2").val();
             $.ajax({
                 data: {
                     "title": title,
@@ -76,7 +97,9 @@ $(document).ready(function () {
                     "date": date,
                     "hour": hour,
                     "minute": minute,
-                    "send_text": send_text
+                    "send_text": send_text,
+                    "freq": freq,
+                    "end_date": end_date
                 },
                 dataType: 'json',
                 type: "POST",

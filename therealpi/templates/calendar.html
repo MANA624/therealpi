@@ -30,8 +30,28 @@
         <form class="needs-validation" id="add-event-form" novalidate>
             <h2 class="div-header">Add an Event to Calendar</h2>
             <h5 class="text-danger form-error-message" id="add-event-error-text"></h5>
-            <label for="datepicker">Date</label>
-            <input id="datepicker" width="276" class="form-control" disabled/>
+
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label for="datepicker">Date</label>
+                    <input id="datepicker" width="276" class="form-control" disabled/>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <input type="radio" name="freq" value="once" checked="checked">One Time<br>
+                    <input type="radio" name="freq" value="weekly">Weekly<br>
+                    <input type="radio" name="freq" value="bi-week">Bi Weekly<br>
+                    <input type="radio" name="freq" value="monthly">Monthly
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div id="second-date">
+                        <label for="datepicker2">End Date</label>
+                        <input id="datepicker2" width="276" class="form-control" disabled/>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-row">
                 <div class="col-md-4 mb-3">
                     <label for="title">Event Title</label>
