@@ -179,7 +179,7 @@ def roommates():
             search = {"month": new_month, "rent": [2175, 0, 0, 0], "aaron": ["", ""],
                       "austin": ["", ""], "matt": ["", ""], "ryan": ["", ""]}
             roommate.insert_one(search)
-        my_flash("info", "Notice!", "You rock!")
+        my_flash("success", "Notice!", "You rock!")
     except Exception as e:
         log_error(e)
         abort(500)
