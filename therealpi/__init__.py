@@ -143,8 +143,7 @@ def sharon_login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         if "logged_in" in session:
-            now = datetime.now()
-            if "sharon" in session and approve_start():
+            if ("sharon" in session and approve_start()) or "admin" in session:
                 return f(*args, **kwargs)
             else:
                 abort(403)
