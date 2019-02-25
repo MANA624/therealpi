@@ -13,7 +13,7 @@
 
     <h1>The Admin Page</h1>
     <div class="col-12 col-md-10 col-xl-10 p-section content-div">
-        <form class="needs-validation" id="create-user-form" novalidate>
+        <form class="needs-validation" id="create-user-form" >
             <h2 class="div-header">Add New User</h2>
 
             <h5 class="text-danger form-error-message" id="add-user-error-text"></h5>
@@ -75,7 +75,6 @@
         <form class="needs-validation" id="create-job-form" novalidate>
             <h2 class="div-header">Add Another Job</h2>
 
-            <h5 class="text-danger form-error-message" id="add-user-error-text"></h5>
             <div class="form-row">
                 <div class="col-md-6 mb-5">
                     <label for="heading">Heading</label>
@@ -120,6 +119,80 @@
         </form>
     </div>
 
+    {% if session.admin %}
+    <!--  Add a new challenge  -->
+
+    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
+        <form class="needs-validation" id="create-challenge-form" novalidate>
+            <h2 class="div-header">Add Another Challenge</h2>
+
+            <h5 class="text-danger form-error-message" id="add-challenge-error-text"></h5>
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="day">Day</label>
+                    <input type="text" class="form-control" id="day" placeholder="Day" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="passcode">Passcode</label>
+                    <input type="text" class="form-control" id="passcode" placeholder="4-digit passcode" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-8 mb-5">
+                    <label for="challenge-description">Challenge Description</label>
+                    <textarea rows="4" class="form-control" id="challenge-description" placeholder="Challenge Description" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary submit-button" type="submit">Create Challenge</button>
+            <button class="btn btn-primary submit-button" type="button" onclick="reset_challenges()">Reset Challenges</button>
+        </form>
+    </div>
+
+    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
+        <form class="needs-validation" id="create-prize-form" novalidate>
+            <h2 class="div-header">Add Another Prize</h2>
+
+            <h5 class="text-danger form-error-message" id="add-prize-error-text"></h5>
+            <div class="form-row">
+                <div class="col-md-6 mb-5">
+                    <label for="tokens">Required Tokens</label>
+                    <input type="text" class="form-control" id="tokens" placeholder="Required Tokens" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-8 mb-5">
+                    <label for="prize-description">Prize Description</label>
+                    <textarea rows="4" class="form-control" id="prize-description" placeholder="Prize Description" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary submit-button" type="submit">Create Prize</button>
+        </form>
+    </div>
+
+
+    {% endif %}
 
 {% endblock %}
 
