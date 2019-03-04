@@ -71,8 +71,9 @@
                 <li class="nav-item {% if default == 'cal' %}active{% else %}{% endif %}">
                     <a class="nav-link" href="{{ url_for('calendar') }}">Calendar</a>
                 </li>
-            {% endif %}
-            {% if session.admin or session.employer %}
+                <li class="nav-item {% if default == 'text' %}active{% else %}{% endif %}">
+                    <a class="nav-link" href="{{ url_for('texting') }}">Texting</a>
+                </li>
                 <li class="nav-item {% if default == 'admin' %}active{% else %}{% endif %}">
                     <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
                 </li>

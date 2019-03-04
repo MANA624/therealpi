@@ -11,6 +11,11 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from flask_wtf.csrf import CSRFProtect, CSRFError
+import sendgrid
+from sendgrid.helpers.mail import Email, Content, Mail
+import ssl
+from twilio.rest import Client
+
 
 app = Flask(__name__)
 CSRFProtect(app)
@@ -38,21 +43,28 @@ def send_mail(name, sender_address, subject, body):
     config_data = app.config["EMAIL"]
     fromaddr = config_data["email_from"]
     toaddr = config_data["email_to"]
-    msg = MIMEMultipart()
-    msg['From'] = fromaddr
-    msg['To'] = toaddr
-    msg['Subject'] = subject
-    msg.add_header('reply-to', sender_address)
+    # msg = MIMEMultipart()
+    # msg['From'] = fromaddr
+    # msg['To'] = toaddr
+    # msg['Subject'] = subject
+    # msg.add_header('reply-to', sender_address)
 
     body = body + "\n\n" + "Name: " + name + "\nSender address: " + sender_address
-    msg.attach(MIMEText(body, 'plain'))
+    # msg.attach(MIMEText(body, 'plain'))
 
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(fromaddr, config_data["email_password"])
-    text = msg.as_string()
-    server.sendmail(sender_address, toaddr, text)
-    server.quit()
+    # server = smtplib.SMTP('smtp.gmail.com', 587)
+    # server.starttls()
+    # server.login(fromaddr, config_data["email_password"])
+    # text = msg.as_string()
+    # server.sendmail(sender_address, toaddr, text)
+    # server.quit()
+
+    sg = sendgrid.SendGridAPIClient(apikey='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')
+    from_email = Email("matt@therealpi.net")
+    to_email = Email("pivotman624@gmail.com")
+    content = Content("text/html", body)
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
 
 
 # This is just a function to make sure that I'm not putting unexpected values from the AJAX request
@@ -258,6 +270,12 @@ def calendar():
     return render_template("calendar.html", default="cal", date=date_today, events=events)
 
 
+@app.route('/texting')
+@admin_login_required
+def texting():
+    return render_template("texting.html", default="text")
+
+
 @app.route('/admin')
 @admin_login_required
 def admin():
@@ -444,6 +462,53 @@ def delete_event():
         log_error(e)
         return Response("Could not delete that event!", status=500)
     return Response("You successfully deleted that event")
+
+
+@app.route('/_send_text', methods=["POST"])
+@admin_required_post
+def send_text():
+    try:
+        text_config = app.config["TEXT"]
+        info = request.form
+        event = check_dict(info, ("msg", "recipient"))
+        msg = event["msg"]
+        recipient = event["recipient"]
+        if recipient == "matt":
+            num = text_config["my_num"]
+        elif recipient == "sharon":
+            num = text_config["sharon_num"]
+        else:
+            return Response("No such recipient found!", status=500)
+
+        twilio_cli = Client(text_config["SID"], text_config["auth_token"])
+
+        # body = "Don't bother. I can't help you with your homework"
+        message = twilio_cli.messages.create(body=msg,
+                                             from_=text_config["twilio_num"],
+                                             to=num)
+
+    except Exception as e:
+        log_error(e)
+        return Response("There was an error!", status=500)
+    return Response("The text was sent successfully!")
+
+
+@app.route('/_call_self', methods=["POST"])
+@admin_required_post
+def call_self():
+    try:
+        text_config = app.config["TEXT"]
+        client = Client(text_config["SID"], text_config["auth_token"])
+
+        call = client.calls.create(
+            to=text_config["my_num"],
+            from_=text_config["twilio_num"],
+            url="http://demo.twilio.com/docs/voice.xml"
+        )
+    except Exception as e:
+        log_error(e)
+        return Response("Could not call yourself!", status=500)
+    return Response("Call going through now!")
 
 
 @app.route('/_create_user', methods=["POST"])
