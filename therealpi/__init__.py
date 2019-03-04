@@ -43,28 +43,28 @@ def send_mail(name, sender_address, subject, body):
     config_data = app.config["EMAIL"]
     fromaddr = config_data["email_from"]
     toaddr = config_data["email_to"]
-    msg = MIMEMultipart()
-    msg['From'] = fromaddr
-    msg['To'] = toaddr
-    msg['Subject'] = subject
-    msg.add_header('reply-to', sender_address)
+    # msg = MIMEMultipart()
+    # msg['From'] = fromaddr
+    # msg['To'] = toaddr
+    # msg['Subject'] = subject
+    # msg.add_header('reply-to', sender_address)
 
     body = body + "\n\n" + "Name: " + name + "\nSender address: " + sender_address
-    msg.attach(MIMEText(body, 'plain'))
+    # msg.attach(MIMEText(body, 'plain'))
 
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(fromaddr, config_data["email_password"])
-    text = msg.as_string()
-    server.sendmail(sender_address, toaddr, text)
-    server.quit()
+    # server = smtplib.SMTP('smtp.gmail.com', 587)
+    # server.starttls()
+    # server.login(fromaddr, config_data["email_password"])
+    # text = msg.as_string()
+    # server.sendmail(sender_address, toaddr, text)
+    # server.quit()
 
-    # sg = sendgrid.SendGridAPIClient(apikey=config_data["sendgrid_key"])
-    # from_email = Email("matt@therealpi.net")
-    # to_email = Email("pivotman624@gmail.com")
-    # content = Content("text/html", body)
-    # mail = Mail(from_email, subject, to_email, content)
-    # response = sg.client.mail.send.post(request_body=mail.get())
+    sg = sendgrid.SendGridAPIClient(apikey=config_data["sendgrid_key"])
+    from_email = Email("matt@therealpi.net")
+    to_email = Email("pivotman624@gmail.com")
+    content = Content("text/html", body)
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
 
 
 # This is just a function to make sure that I'm not putting unexpected values from the AJAX request
