@@ -15,6 +15,8 @@ import sendgrid
 from sendgrid.helpers.mail import Email, Content, Mail
 import ssl
 from twilio.rest import Client
+from Crypto.Cipher import AES
+from time import sleep
 
 
 app = Flask(__name__)
@@ -27,6 +29,7 @@ schedule = db.events
 roommate = db.roommate
 challenges = db.challenges
 prizes = db.prizes
+iv = "G4XO4L\X<J;MPPLD"
 
 """
     BEGIN BLOCK: HELPER FUNCTIONS
@@ -120,6 +123,16 @@ def check_prize():
     found = prizes.count({"tokens": completed})
     return bool(found)
 
+
+def pad_message(message):
+    return message + " "*((16-len(message))%16)
+
+
+# Decrypts the message using AES. Same as server function
+def decrypt_message(message, session_key):
+    cipher = AES.new(session_key, AES.MODE_CBC, iv)
+    return cipher.decrypt(message).decode().strip()
+
 """
     END SECTION: HELPER FUNCTIONS
 """
@@ -155,7 +168,7 @@ def sharon_login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
         if "logged_in" in session:
-            if ("sharon" in session and approve_start()) or "admin" in session:
+            if ("sharon" in session) or "admin" in session:
                 return f(*args, **kwargs)
             else:
                 abort(403)
@@ -293,6 +306,10 @@ def sharon():
     completed = 0
     freebies = 0
     prize_dict = {}
+    if not approve_start() and "admin" not in session:
+        approved = False
+    else:
+        approved = True
     try:
         completed = challenges.count({"completed": True})
         doc = challenges.find_one({"day": day})
@@ -315,7 +332,8 @@ def sharon():
                            tries=tries,
                            completed=completed,
                            freebies=freebies,
-                           prizes=prize_dict
+                           prizes=prize_dict,
+                           approved=approved
                            )
 
 """
@@ -650,6 +668,22 @@ def submit_freebie():
     except Exception as e:
         log_error(e)
         return Response("Couldn't update information in database", status=500)
+
+
+@app.route('/_show_pass', methods=["POST"])
+@sharon_required_post
+def show_pass():
+    sleep(1)
+    try:
+        sent = request.form.to_dict()
+        sent = check_dict(sent, ("pass",))
+        if not sent:
+            return Response("Not all required fields were sent", status=400)
+        original = decrypt_message(b"5\xf6B$\xc0\x8aD\xd8\x9d'\xf9\x8d|&\x16\x87", pad_message(sent["pass"]))
+        return Response(original)
+    except Exception as e:
+        log_error(e)
+        return Response("Wrong password. Sorry :/", status=500)
 
 """
     END SECTION: AJAX REQUESTS

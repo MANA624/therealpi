@@ -12,6 +12,7 @@
 
 {% block body %}
 
+    {% if approved %}
     <h1>Sharon's Challenge</h1>
 
     <div class="col-12 col-md-10 col-xl-10 content-div">
@@ -159,6 +160,29 @@
             </p>
         {% endif %}
     </div>
+
+    {% endif %}
+
+    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
+        <form class="needs-validation" id="show-pass-form" novalidate>
+            <h2 class="div-header">Get Password</h2>
+
+            <div class="form-row">
+                <div class="col-md-4 mb-4">
+                    <label for="sharon_pass">Message Body</label>
+                    <input type="text" class="form-control" id="sharon_pass" placeholder="Your password" required />
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary submit-button" type="submit">Show Password</button>
+
+            <p id="reveal_pass"></p>
+        </form>
+    </div>
+
 {% endblock %}
 
 

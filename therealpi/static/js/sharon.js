@@ -51,6 +51,29 @@ $(document).ready(function(){
         }
     });
 
+    $("#show-pass-form").submit(function(event){
+        var form = document.getElementById('show-pass-form');
+        if(form.checkValidity() == false){
+            return false
+        }
+        else{
+            $.ajax({
+                data: {
+                    "pass": $("#sharon_pass").val(),
+                },
+                type: "POST",
+                url: "_show_pass"
+            }).done(function(data){
+                // window.location = "/admin";
+                $("#reveal_pass").text("My password is: " + data);
+            }).fail(function(data){
+                createAlert("danger", "Oops!", data.responseText)
+            });
+            event.preventDefault();
+
+        }
+    });
+
     $(".toggle-accordion").on("click", function() {
         var accordionId = $(this).attr("accordion-id"),
         numPanelOpen = $(accordionId + ' .collapse.in').length;
