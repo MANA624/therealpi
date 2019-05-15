@@ -124,7 +124,7 @@
             You've completed <span id="completed">{{ completed }}</span> out of 45 challenges! <br>
         </p>
 
-        {% if prizes.count() %}
+        {% if prizes is defined and prizes|length > 0 %}
         <br/>
         <div class="container">
             <div class="accordion-option">
