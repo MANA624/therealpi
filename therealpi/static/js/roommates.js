@@ -11,24 +11,24 @@ $(document).ready(function() {
 
         $("#price").html(total);
 
-        var ryanTotal = total / 4,
-            aaronTotal = total / 4,
-            mattTotal = total / 4,
-            austinTotal = total / 4,
+        var ryanTotal = total / 3,
+            aaronTotal = total / 3,
+            mattTotal = total / 3,
+            // austinTotal = total / 4,
             ryanLess = Number($("#ryan-amount").val()),
             aaronLess = Number($("#aaron-amount").val()),
-            mattLess = Number($("#matt-amount").val()),
-            austinLess = Number($("#austin-amount").val());
+            mattLess = Number($("#matt-amount").val());
+            // austinLess = Number($("#austin-amount").val());
 
-        ryanTotal += -ryanLess*3/4 + aaronLess/4 + mattLess/4 + austinLess/4;
-        aaronTotal += ryanLess/4 - aaronLess*3/4 + mattLess/4 + austinLess/4;
-        mattTotal += ryanLess/4 + aaronLess/4 - mattLess*3/4 + austinLess/4;
-        austinTotal += ryanLess/4 + aaronLess/4 + mattLess/4 - austinLess*3/4;
+        ryanTotal += -ryanLess*2/3 + aaronLess/3 + mattLess/3;
+        aaronTotal += ryanLess/3 - aaronLess*2/3 + mattLess/3;
+        mattTotal += ryanLess/3 + aaronLess/3 - mattLess*2/3;
+        // austinTotal += ryanLess/4 + aaronLess/4 + mattLess/4 - austinLess*3/4;
 
         $("#ryan-price").html(toDollars(ryanTotal));
         $("#aaron-price").html(toDollars(aaronTotal));
         $("#matt-price").html(toDollars(mattTotal));
-        $("#austin-price").html(toDollars(austinTotal));
+        // $("#austin-price").html(toDollars(austinTotal));
         event.preventDefault();
     });
 
@@ -42,9 +42,9 @@ $(document).ready(function() {
             aaron1 = $("#aaron-amount").val(),
             aaron2 = $("#aaron-reason").val(),
             matt1 = $("#matt-amount").val(),
-            matt2 = $("#matt-reason").val(),
-            austin1 = $("#austin-amount").val(),
-            austin2 = $("#austin-reason").val();
+            matt2 = $("#matt-reason").val();
+            // austin1 = $("#austin-amount").val(),
+            // austin2 = $("#austin-reason").val();
         $.ajax({
             traditional: true,
             data: {
@@ -52,7 +52,7 @@ $(document).ready(function() {
                 "ryan": [ryan1, ryan2],
                 "aaron": [aaron1, aaron2],
                 "matt": [matt1, matt2],
-                "austin": [austin1, austin2]
+                "austin": ["0", "0"]
             },
             type: "POST",
             url: "_update_roommate"

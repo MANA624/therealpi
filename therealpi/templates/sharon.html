@@ -27,7 +27,8 @@
             hacked my dad's dental web site, so you can't say you didn't have it coming (yes, when you read this that
             will have been a long time ago). ANYWAYS... every day I've prepared a little message for you! I won't tell
             you what it is, but I will say that it is three words long, and it's a true statement. If you can find it,
-            then you can submit the token number with it, and as you collect more, you'll get prizes!
+            then you can submit the token number with it, you'll complete the day. And as you complete more days, you'll
+            get prizes!
         </p>
 
         <h2 class="div-header">
@@ -47,6 +48,8 @@
             some of these may not go according to plan, so I gave you five free days, or "freebies" to be used whenever
             you'd like throughout the summer! For these, there's no need to enter anything in the fields, just
             click the "Use Freebie" button. Careful! There's no warning or prompt, so once you click it, it's final!
+            Also know that, since you'll be here over the summer, many of the challenges require your physical presence
+            in Boulder. I tried to frontload these more since I know your parents will be coming later on.
         </p>
 
         <h2 class="div-header">
@@ -122,7 +125,7 @@
             Rewards Section
         </h2>
         <p class="info-text">
-            You've completed <span id="completed">{{ completed }}</span> out of 45 challenges! <br>
+            You've completed <span id="completed">{{ completed }}</span> out of 48 challenges! <br>
         </p>
 
         {% if prizes is defined and prizes|length > 0 %}
@@ -169,7 +172,7 @@
 
             <div class="form-row">
                 <div class="col-md-4 mb-4">
-                    <label for="sharon_pass">Message Body</label>
+                    <label for="sharon_pass">Please enter the same password that you used to log in to this very site</label>
                     <input type="text" class="form-control" id="sharon_pass" placeholder="Your password" required />
                     <div class="valid-feedback">
                         Looks good!
