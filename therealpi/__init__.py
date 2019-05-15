@@ -20,7 +20,7 @@ from time import sleep
 
 
 app = Flask(__name__)
-CSRFProtect(app)
+# CSRFProtect(app)
 client = MongoClient('localhost')
 db = client.schedule
 jobs = db.jobs
