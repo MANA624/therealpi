@@ -20,7 +20,8 @@ from time import sleep
 
 
 app = Flask(__name__)
-# CSRFProtect(app)
+CSRFProtect(app)
+csrf = CSRFProtect()
 client = MongoClient('localhost')
 db = client.schedule
 jobs = db.jobs
@@ -344,6 +345,7 @@ def sharon():
 """
 
 
+@csrf.exempt
 @app.route("/return_file/<filename>", methods=["GET", "POST"])
 def return_file(filename):
     path = safe_join(app.root_path, url_for('static', filename="downloads/"+filename)[1:])
