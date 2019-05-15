@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-{#    <Play>https://therealpi.net/return_file/Test.mp3</Play>#}
     <Say voice="alice">Thanks for trying our documentation. Enjoy!</Say>
     <Play>http://demo.twilio.com/docs/classic.mp3</Play>
 </Response>

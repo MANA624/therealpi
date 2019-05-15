@@ -344,7 +344,7 @@ def sharon():
 """
 
 
-@app.route("/return_file/<filename>")
+@app.route("/return_file/<filename>", methods=["GET", "POST"])
 def return_file(filename):
     path = safe_join(app.root_path, url_for('static', filename="downloads/"+filename)[1:])
     if os.path.isfile(path):
