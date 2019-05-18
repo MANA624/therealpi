@@ -103,12 +103,10 @@ def get_datetime(date, hour, minute):
 
 # Finds the number of days since the start of the challenge
 def get_day():
-    # TODO: Uncomment everything. Delete stupid return
-    # start_time = datetime(2019, 5, 27, 0, 0)
-    # current_time = datetime.now()
-    # diff = (current_time - start_time).days
-    # return diff + 1
-    return 1
+    start_time = datetime(2019, 5, 27, 0, 0)
+    current_time = datetime.now()
+    diff = (current_time - start_time).days
+    return diff + 1
 
 
 # Finds out if authorized to start challenge or not
