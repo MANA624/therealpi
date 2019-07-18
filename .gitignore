@@ -4,3 +4,4 @@ therealpi/__pycache__
 .idea
 therealpi.py
 config.conf
+*.DS_Store
