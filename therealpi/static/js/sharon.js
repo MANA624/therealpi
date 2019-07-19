@@ -1,5 +1,8 @@
 function useFreebie(){
     $.ajax({
+        data: {
+            "day": $("#day-select").val()
+        },
         type: "POST",
         url: "_submit_freebie",
         traditional: true
@@ -13,15 +16,14 @@ function useFreebie(){
 }
 
 function completed(){
-        $("#description").html("You've successfully completed the challenge for the day!");
-        $("#submit-form-div").hide();
-        $("#submit-button").hide();
-        $("#submit-freebie").hide();
-        $("#title").html("Congrats!");
-        $("#completed").html(Number($("#completed").html())+1);
+        $("#not-completed").addClass("hidden");
+        $("#has-completed").removeClass("hidden");
+        $("#num-completed").html(Number($("#num-completed").html())+1);
     }
 
 $(document).ready(function(){
+    $("#day-select").val("1");
+
     $("#submit-challenge-form").submit(function(event){
         var form = $('#submit-challenge-form');
         if(form[0].checkValidity() == false){
@@ -31,7 +33,8 @@ $(document).ready(function(){
             $.ajax({
                 data: {
                     "phrase": $("#phrase").val(),
-                    "token": $("#token").val()
+                    "token": $("#token").val(),
+                    "day": $("#day-select").val()
                 },
                 type: "POST",
                 url: "_submit_challenge",
@@ -86,6 +89,33 @@ $(document).ready(function(){
         } else {
             closeAllPanels(accordionId);
         }
+    });
+
+    $("#day-select").change(function(){
+        // console.log($("#day-select").val());
+
+        $.ajax({
+            data: {
+                "day": $("#day-select").val()
+            },
+            type: "POST",
+            url: "_get_challenge",
+            traditional: true
+        }).done(function(data){
+            $("#top-description").html(data.description);
+            if(data.completed){
+                $("#not-completed").addClass("hidden");
+                $("#has-completed").removeClass("hidden");
+            }
+            else{
+                $("#not-completed").removeClass("hidden");
+                $("#has-completed").addClass("hidden");
+            }
+            $("#tries").html(data.tries);
+        }).fail(function(data){
+            createAlert("danger", "Oops!", data.responseText)
+        });
+        event.preventDefault();
     });
 
 

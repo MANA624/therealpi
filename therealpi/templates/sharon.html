@@ -12,7 +12,6 @@
 
 {% block body %}
 
-    {% if approved %}
     <h1>Sharon's Challenge</h1>
 
     <div class="col-12 col-md-10 col-xl-10 content-div">
@@ -76,46 +75,55 @@
         <h2 class="div-header">
             Daily Hint (<span id="freebies">{{ freebies }}</span>/5 Freebies Remaining)
         </h2>
+        <select id="day-select">
+            {% for i in range(1, 49) %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
     {% if not error %}
-        <p class="info-text">
+        <p class="info-text" id="top-description">
             {{ description|safe }}
 
         </p>
-        {% if not solved %}
-        <form class="needs-validation" id="submit-challenge-form" novalidate>
-            <h2 class="div-header" id="title">Submit Daily Token (<span id="tries">{{ tries }}</span>/10 tries remaining)</h2>
+{#        {% if not solved %}#}
+        <div id="not-completed" class="{{ solved[0] }}">
+            <form class="needs-validation" id="submit-challenge-form" novalidate>
+                <h2 class="div-header" id="title">Submit Daily Token (<span id="tries">{{ tries }}</span>/10 tries remaining)</h2>
+                <p class="info-text" id="description">
+
+                </p>
+
+                <div class="form-row" id="submit-form-div">
+                    <div class="col-md-3 mb-5">
+                        <label for="user">Phrase</label>
+                        <input type="text" class="form-control" id="phrase" placeholder="Phrase" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-5">
+                        <label for="user">Token</label>
+                        <input type="text" class="form-control" id="token" placeholder="4 Digit Token" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary submit-button" type="submit" id="submit-button">Submit</button>
+                <button class="btn btn-primary submit-button" type="button" onclick="useFreebie()" id="submit-freebie">Use Freebie</button>
+            </form>
+        </div>
+{#        {% else %}#}
+        <div id="has-completed" class="{{ solved[1] }}">
+            <h2 class="div-header" id="title">
+                Congrats!
+            </h2>
             <p class="info-text" id="description">
-
+                You've successfully completed the challenge for the day!
             </p>
-
-            <div class="form-row" id="submit-form-div">
-                <div class="col-md-3 mb-5">
-                    <label for="user">Phrase</label>
-                    <input type="text" class="form-control" id="phrase" placeholder="Phrase" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-                <div class="col-md-3 mb-5">
-                    <label for="user">Token</label>
-                    <input type="text" class="form-control" id="token" placeholder="4 Digit Token" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn btn-primary submit-button" type="submit" id="submit-button">Submit</button>
-            <button class="btn btn-primary submit-button" type="button" onclick="useFreebie()" id="submit-freebie">Use Freebie</button>
-        </form>
-    {% else %}
-        <h2 class="div-header" id="title">
-            Congrats!
-        </h2>
-        <p class="info-text" id="description">
-            You've successfully completed the challenge for the day!
-        </p>
-    {% endif %}
+        </div>
+{#        {% endif %}#}
     {% else %}
         Well... either there was an error, or there's no more challenges, which means I'm home!<br>
         Let's hope it's the latter!
@@ -127,7 +135,7 @@
             Rewards Section
         </h2>
         <p class="info-text">
-            You've completed <span id="completed">{{ completed }}</span> out of 48 challenges! <br>
+            You've completed <span id="num-completed">{{ completed }}</span> out of 48 challenges! <br>
         </p>
 
         {% if prizes is defined and prizes|length > 0 %}
@@ -151,7 +159,7 @@
                     <div id="collapse{{ loop.index }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading{{ loop.index }}">
                         <div class="panel-body">
                             <p class="job-text"><span class="job-span">Prize description: </span>
-                                {{ prize["description"] }}
+                                {{ prize["description"]|safe }}
                             </p>
                         </div>
                     </div>
@@ -165,8 +173,6 @@
             </p>
         {% endif %}
     </div>
-
-    {% endif %}
 
     <div class="col-12 col-md-10 col-xl-10 p-section content-div">
         <form class="needs-validation" id="show-pass-form" novalidate>

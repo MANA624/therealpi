@@ -101,22 +101,6 @@ def get_datetime(date, hour, minute):
     return datetime(year=date[2], month=date[0], day=date[1], hour=int(hour), minute=int(minute))
 
 
-# Finds the number of days since the start of the challenge
-def get_day():
-    start_time = datetime(2019, 5, 27, 0, 0)
-    current_time = datetime.now()
-    diff = (current_time - start_time).days
-    return diff + 1
-
-
-# Finds out if authorized to start challenge or not
-# Open letter on May 26th
-def approve_start():
-    start = datetime(2019, 5, 27)
-    now = datetime.now()
-    return now > start or "admin" in session
-
-
 def check_prize():
     completed = challenges.count({"completed": True})
     found = prizes.count({"tokens": completed})
@@ -298,23 +282,23 @@ def admin():
 @sharon_login_required
 def sharon():
     error = False
-    day = get_day()
     description = ""
     solved = ""
     tries = 0
     completed = 0
     freebies = 0
     prize_dict = {}
-    if not approve_start() and "admin" not in session:
-        approved = False
-    else:
-        approved = True
+
     try:
         completed = challenges.count({"completed": True})
-        doc = challenges.find_one({"day": day})
+        doc = challenges.find_one({"day": 1})
         if doc is not None:
             description = doc["description"]
             solved = doc["completed"]
+            if solved:
+                solved = ["hidden", ""]
+            else:
+                solved = ["", "hidden"]
             tries = doc["tries"]
         freebies = users.find_one({"username": "sharon"})["tries"]
         prize_dict = list(prizes.find({"tokens": {"$lte": completed}}))
@@ -332,7 +316,6 @@ def sharon():
                            completed=completed,
                            freebies=freebies,
                            prizes=prize_dict,
-                           approved=approved
                            )
 
 """
@@ -623,23 +606,23 @@ def create_prize():
 @app.route('/_submit_challenge', methods=["POST"])
 @sharon_required_post
 def submit_challenge():
-    day = get_day()
     try:
         sent = request.form.to_dict()
-        sent = check_dict(sent, ("phrase", "token"))
+        sent = check_dict(sent, ("phrase", "token", "day"))
+        sent["day"] = int(sent["day"])
         if not sent:
             return Response("Not all required fields were sent", status=400)
-        existing = challenges.find_one({"day": day})
+        existing = challenges.find_one({"day": sent["day"]})
         if not existing["tries"]:
             return Response("No more tries!", status=400)
         if sent["phrase"] != "I like you":
             return Response("Passphrase incorrect!", status=400)
         if existing["passcode"] != sent["token"]:
             existing["tries"] -= 1
-            challenges.find_one_and_replace({"day": day}, existing)
+            challenges.find_one_and_replace({"day": sent["day"]}, existing)
             return Response("Incorrect passcode!", status=418)
         existing["completed"] = True
-        challenges.find_one_and_replace({"day": day}, existing)
+        challenges.find_one_and_replace({"day": sent["day"]}, existing)
         if check_prize():
             return Response("HEY! You unlocked a new prize! Refresh the page to see it!")
         return Response("You completed today's challenge!")
@@ -648,10 +631,36 @@ def submit_challenge():
         return Response("Couldn't update information in database", status=500)
 
 
+@app.route('/_get_challenge', methods=["POST"])
+@sharon_required_post
+def get_challenge():
+    try:
+        sent = request.form.to_dict()
+        sent = check_dict(sent, ("day",))
+        sent["day"] = int(sent["day"])
+
+        if not sent:
+            return Response("Not all required fields were sent", status=400)
+        challenge = challenges.find_one({"day": sent["day"]})
+        if challenge["completed"]:
+            starter = "Y"
+        else:
+            starter = "N"
+        # return Response(starter + challenge["description"])
+        return jsonify(description=challenge["description"],
+                       completed=challenge["completed"],
+                       tries=challenge["tries"]), 201
+    except Exception as e:
+        log_error(e)
+        return Response("Couldn't retrieve information from database", status=500)
+
 @app.route('/_submit_freebie', methods=["POST"])
 @sharon_required_post
 def submit_freebie():
-    day = get_day()
+    sent = request.form.to_dict()
+    sent = check_dict(sent, ("day",))
+    day = int(sent["day"])
+
     try:
         sharon = users.find_one({"username": "sharon"})
         num_freebies = sharon["tries"]
