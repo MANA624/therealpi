@@ -301,7 +301,7 @@ def sharon():
                 solved = ["", "hidden"]
             tries = doc["tries"]
         freebies = users.find_one({"username": "sharon"})["tries"]
-        prize_dict = list(prizes.find({"tokens": {"$lte": completed}}))
+        prize_dict = list(prizes.find({"tokens": {"$lte": completed}}).sort([("tokens", 1)]))
         print(prize_dict)
     except Exception as e:
         log_error(e)
