@@ -238,7 +238,7 @@ def roommates():
         if search is None:
             new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
             search = {"month": new_month, "rent": [2175, 0, 0, 0], "aaron": ["", ""],
-                      "austin": ["", ""], "matt": ["", ""], "ryan": ["", ""]}
+                      "michael": ["", ""], "matt": ["", ""], "ryan": ["", ""]}
             roommate.insert_one(search)
         my_flash("success", "Notice!", "You rock!")
     except Exception as e:
@@ -390,7 +390,7 @@ def update_roommate():
     month = (datetime.now() - timedelta(days=1)).strftime("%B")
     try:
         update = request.form.to_dict(flat=False)
-        update = check_dict(update, ("rent", "ryan", "aaron", "matt", "austin"))
+        update = check_dict(update, ("rent", "ryan", "aaron", "matt", "michael"))
         if not update:
             return Response("Not all required fields were sent", status=400)
         update["month"] = month
