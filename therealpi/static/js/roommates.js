@@ -17,7 +17,7 @@ $(document).ready(function() {
             michaelTotal = total / 4,
             ryanLess = Number($("#ryan-amount").val()),
             aaronLess = Number($("#aaron-amount").val()),
-            mattLess = Number($("#matt-amount").val());
+            mattLess = Number($("#matt-amount").val()),
             michaelLess = Number($("#michael-amount").val());
 
         ryanTotal += -ryanLess*3/4 + aaronLess/4 + mattLess/4 + michaelLess/4;
@@ -42,7 +42,7 @@ $(document).ready(function() {
             aaron1 = $("#aaron-amount").val(),
             aaron2 = $("#aaron-reason").val(),
             matt1 = $("#matt-amount").val(),
-            matt2 = $("#matt-reason").val();
+            matt2 = $("#matt-reason").val(),
             michael1 = $("#michael-amount").val(),
             michael2 = $("#michael-reason").val();
         $.ajax({
