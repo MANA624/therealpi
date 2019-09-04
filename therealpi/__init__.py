@@ -550,13 +550,13 @@ def create_user():
 @admin_required_post
 def proxy_switch():
     manager_file = "proxyManager.sh"
-    try:
-        user = dict(request.form)
-        user = check_dict(user, ("dir",))
-        call([proxy_path+manager_file, user["dir"]])
-    except Exception as e:
-        log_error(e)
-        return Response("There was an error changing the proxy", status=500)
+    # try:
+    user = dict(request.form)
+    user = check_dict(user, ("dir",))
+    call([proxy_path+manager_file, user["dir"]])
+    # except Exception as e:
+    #     log_error(e)
+    #     return Response("There was an error changing the proxy", status=500)
     return Response("Success!"), 201
 
 
