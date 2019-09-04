@@ -17,6 +17,7 @@ import ssl
 from twilio.rest import Client
 from Crypto.Cipher import AES
 from time import sleep
+from subprocess import call
 
 
 app = Flask(__name__)
@@ -31,6 +32,7 @@ roommate = db.roommate
 challenges = db.challenges
 prizes = db.prizes
 iv = "G4XO4L\X<J;MPPLD"
+proxy_path = "/home/pi/minerva/proxy/"
 
 """
     BEGIN BLOCK: HELPER FUNCTIONS
@@ -99,6 +101,7 @@ def sanitize(user_input):
 
 def get_datetime(date, hour, minute):
     return datetime(year=date[2], month=date[0], day=date[1], hour=int(hour), minute=int(minute))
+
 
 
 def check_prize():
@@ -237,7 +240,7 @@ def roommates():
         search = roommate.find_one({"month": month})
         if search is None:
             new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
-            search = {"month": new_month, "rent": [2175, 0, 0, 0], "aaron": ["", ""],
+            search = {"month": new_month, "rent": [2300, 0, 0, 0], "aaron": ["", ""],
                       "michael": ["", ""], "matt": ["", ""], "ryan": ["", ""]}
             roommate.insert_one(search)
         my_flash("success", "Notice!", "You rock!")
@@ -275,7 +278,20 @@ def texting():
 @app.route('/admin')
 @admin_login_required
 def admin():
-    return render_template("admin.html", default="admin")
+    try:
+        status_file = proxy_path + "status"
+        with open(status_file) as reader:
+            status = reader.read()
+            status = int(status)
+        if not status:
+            status_text = "off"
+        elif status == 1:
+            status_text = "on"
+        else:
+            status_text = "unknown"
+    except Exception as e:
+        status_text = "unknown"
+    return render_template("admin.html", default="admin", status=status_text)
 
 
 @app.route('/sharon')
@@ -528,6 +544,20 @@ def create_user():
         log_error(e)
         return Response("There was an error accessing the database", status=500)
     return Response("User successfully created!"), 201
+
+
+@app.route('/_proxy_switch', methods=["POST"])
+@admin_required_post
+def proxy_switch():
+    manager_file = "proxyManager.sh"
+    try:
+        user = dict(request.form)
+        user = check_dict(user, ("dir",))
+        call([proxy_path+manager_file, user["dir"]])
+    except Exception as e:
+        log_error(e)
+        return Response("There was an error changing the proxy", status=500)
+    return Response("Success!"), 201
 
 
 @app.route('/_create_job', methods=["POST"])

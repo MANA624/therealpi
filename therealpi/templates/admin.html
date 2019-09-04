@@ -69,6 +69,18 @@
         </form>
     </div>
 
+    <!-- Manage the proxy! -->
+    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
+        <h2 class="div-header">Proxy Manager</h2>
+
+        <br/>
+        The proxy is currently {{ status }}
+        <br/><br/>
+
+        <button class="btn btn-primary submit-button" type="submit" id="enable_prox" onclick="switch_proxy('on')">Enable Proxy</button>
+        <button class="btn btn-danger submit-button" type="submit" id="disable_prox" onclick="switch_proxy('off')">Disable Proxy</button>
+    </div>
+
     <!--  Add a new job!  -->
 
     <div class="col-12 col-md-10 col-xl-10 p-section content-div">

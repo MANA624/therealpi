@@ -10,6 +10,21 @@ function reset_challenges(){
     });
 }
 
+function switch_proxy(direction){
+    $.ajax({
+        data: {
+            "dir": direction
+        },
+        type: "POST",
+        url: "_proxy_switch",
+        traditional: true
+    }).done(function(data){
+        createAlert("success", "Success!", data)
+    }).fail(function(data){
+        createAlert("danger", "Oops!", data.responseText)
+    });
+}
+
 $(document).ready(function(){
 
     $("#create-user-form").submit(function(event){
@@ -53,7 +68,6 @@ $(document).ready(function(){
 
         }
     });
-
 
     $("#create-job-form").submit(function(event){
         var form = $('#create-job-form');
