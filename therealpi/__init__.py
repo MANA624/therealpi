@@ -32,7 +32,7 @@ roommate = db.roommate
 challenges = db.challenges
 prizes = db.prizes
 iv = "G4XO4L\X<J;MPPLD"
-proxy_path = "/home/pi/minerva/proxy/"
+proxy_path = "/var/www/therealpi/therealpi/proxy/"
 
 """
     BEGIN BLOCK: HELPER FUNCTIONS
