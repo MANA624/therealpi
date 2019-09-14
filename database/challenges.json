@@ -1,2 +1,0 @@
-{ "completed" : true, "day" : 1, "_id" : { "$oid" : "5c4e7c269bf00d58fda0ddea" }, "description" : "            Day one you get for free! <br>\n            Phrase: I like you <br>\n            Token: 1234", "tries" : 10, "passcode" : "1234" }
-{ "completed" : false, "description" : "Check out\n            <a href=\"/return_file/text.txt\" target=\"_blank\">this</a>\n            text file!", "day" : 2, "tries" : 10, "passcode" : "8683", "_id" : { "$oid" : "5c4f8e219bf00d7cfe1b0e8f" } }
