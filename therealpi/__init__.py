@@ -212,7 +212,14 @@ def sharon_required_post(f):
 
 @app.route('/')
 def main_page():
+    if session and "just_logged_in" in session:
+        my_flash("success", "Login Success!", "Welcome " + session["username"] + '!')
     return render_template("home.html", default="home")
+
+
+@app.route('/employer')
+def employer():
+    return redirect(url_for('check_login', username="employer", password="hireme123"))
 
 
 @app.route('/resume')
@@ -318,7 +325,6 @@ def sharon():
             tries = doc["tries"]
         freebies = users.find_one({"username": "sharon"})["tries"]
         prize_dict = list(prizes.find({"tokens": {"$lte": completed}}).sort([("tokens", 1)]))
-        print(prize_dict)
     except Exception as e:
         log_error(e)
     if not description:
@@ -359,23 +365,27 @@ def return_file(filename):
 """
 
 
-@app.route('/_check_login', methods=["POST"])
+@app.route('/_check_login', methods=["GET", "POST"])
 def check_login():
     try:
-        username = request.form["username"]
-        password = request.form["password"]
+        if request.method == "POST":
+            username = request.form["username"]
+            password = request.form["password"]
+        elif request.method == "GET":
+            username = request.args.get("username")
+            password = request.args.get("password")
     except Exception as e:
         log_error(e)
         return Response("Could not get username or password", status=500)
-
     try:
         user = users.find_one({"username": username})
         if user and pbkdf2_sha256.verify(password, user["password"]):
             session["logged_in"] = True
+            session["just_logged_in"] = True
+            session["username"] = username
             for privilege in user["other"]:
                 session[privilege] = True
-            my_flash("success", "Login Success!", "Welcome " + username + '!')
-            return Response()
+            return redirect(url_for("main_page"))
         else:
             return Response("Bad credentials. Please try again", status=401)
     except Exception as e:
@@ -422,7 +432,6 @@ def update_roommate():
 def add_event():
     try:
         event = request.form.to_dict()
-        print(event["freq"])
 
         event = check_dict(event, ("title", "more_info", "date", "hour", "minute", "send_text", "freq", "end_date"))
         if not event:
@@ -589,7 +598,6 @@ def create_challenge():
         if not chal_dict:
             return Response("Not all required fields were sent", status=400)
         if len(chal_dict["passcode"]) != 4:
-            print(chal_dict)
             return Response("Passcode not 4 digits", status=400)
         chal_dict["completed"] = False
         chal_dict["tries"] = 10
@@ -624,7 +632,6 @@ def create_prize():
         if not chal_dict:
             return Response("Not all required fields were sent", status=400)
         chal_dict["tokens"] = int(chal_dict["tokens"])
-        print(chal_dict)
         prizes.insert_one(chal_dict)
     except Exception as e:
         log_error(e)
