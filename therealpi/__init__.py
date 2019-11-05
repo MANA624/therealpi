@@ -212,7 +212,8 @@ def sharon_required_post(f):
 
 @app.route('/')
 def main_page():
-    if session and "just_logged_in" in session:
+    if session and "just_logged_in" in session and session["just_logged_in"]:
+        session["just_logged_in"] = False
         my_flash("success", "Login Success!", "Welcome " + session["username"] + '!')
     return render_template("home.html", default="home")
 
