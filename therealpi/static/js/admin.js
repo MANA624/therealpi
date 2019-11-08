@@ -83,7 +83,7 @@ $(document).ready(function(){
                     "job_description": $("#description").val()
                 },
                 type: "POST",
-                url: "_create_challenge"
+                url: "_create_job"
             }).done(function(data){
                 // window.location = "/admin";
                 $("#create-job-form")[0].reset();
@@ -92,14 +92,41 @@ $(document).ready(function(){
                 createAlert("danger", "Oops!", data.responseText)
             });
             event.preventDefault();
+        }
+    });
 
+    $("#edit-job-form").submit(function(event){
+        var form = $('#edit-job-form');
+        console.log("Here");
+        if(form[0].checkValidity() == false){
+            return false;
+        }
+        else{
+            $.ajax({
+                data: {
+                    "old_title": $("#old-job-title").val(),
+                    "job_title": $("#new-job-title").val(),
+                    "dates_worked": $("#new-dates").val(),
+                    "heading": $("#new-heading").val(),
+                    "order": $("#new-order").val(),
+                    "job_description": $("#new-description").val()
+                },
+                type: "POST",
+                url: "_edit_job"
+            }).done(function(data){
+                form[0].reset();
+                createAlert("success", "Success!", data)
+            }).fail(function(data){
+                createAlert("danger", "Oops!", data.responseText)
+            });
+            event.preventDefault();
         }
     });
 
     $("#create-challenge-form").submit(function(event){
         var form = $('#create-challenge-form');
         if(form[0].checkValidity() == false){
-            return false
+            return false;
         }
         else{
             $.ajax({

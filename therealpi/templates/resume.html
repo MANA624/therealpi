@@ -37,7 +37,7 @@
                     <div class="panel-heading" role="tab" id="heading{{ loop.index }}">
                         <h4 class="panel-title">
                             <a class="collapsed panel-anchor" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
-                                {{ listing["heading"] }}
+                                {{ listing["heading"] }} {% if session.admin %} ({{ listing["order"] }}) {% endif %}
                             </a>
                         </h4>
                     </div>

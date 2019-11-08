@@ -590,6 +590,30 @@ def create_job():
     return Response("Job successfully created!"), 201
 
 
+@app.route('/_edit_job', methods=["POST"])
+@admin_required_post
+def edit_job():
+    try:
+        job = request.form.to_dict()
+        job = check_dict(job, ("old_title", "job_title", "dates_worked", "heading", "order", "job_description"))
+        if not job:
+            return Response("Not all required fields were sent", status=400)
+        if jobs.find({"job_title": job["old_title"]}).count() == 0:
+            return Response("No job with that title", status=400)
+        final_dict = {}
+        for key in job:
+            if key != "old_title" and job[key]:
+                final_dict[key] = job[key]
+        if "order" in final_dict:
+            final_dict["order"] = int(final_dict["order"])
+        print(final_dict)
+        jobs.update({"job_title": job["old_title"]}, {"$set": final_dict})
+    except Exception as e:
+        log_error(e)
+        return Response("There was an error accessing the database", status=500)
+    return Response("Job successfully edited!"), 201
+
+
 @app.route('/_create_challenge', methods=["POST"])
 @admin_required_post
 def create_challenge():
