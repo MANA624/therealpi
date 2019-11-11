@@ -3,7 +3,7 @@
 # Ensure that we have enough command line arguments
 if [ "$#" -lt 1 ]
 then
-	echo "Not enough arguments"
+	echo "Usage: ./proxyManager <start|stop>"
 	exit 1
 fi
 
