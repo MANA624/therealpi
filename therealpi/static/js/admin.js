@@ -97,7 +97,6 @@ $(document).ready(function(){
 
     $("#edit-job-form").submit(function(event){
         var form = $('#edit-job-form');
-        console.log("Here");
         if(form[0].checkValidity() == false){
             return false;
         }

@@ -4,264 +4,297 @@
 
 
 {% block top_includes %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/admin.css') }}" >
     <script src="{{ url_for('static', filename='js/formValidator.js') }}"></script>
     <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
 
 
 {% block body %}
+<div class="container col-12 col-md-10 col-xl-10">
 
     <h1>The Admin Page</h1>
-    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
-        <form class="needs-validation" id="create-user-form" >
-            <h2 class="div-header">Add New User</h2>
 
-            <h5 class="text-danger form-error-message" id="add-user-error-text"></h5>
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="user">Username</label>
-                    <input type="text" class="form-control" id="user" placeholder="Username" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="pass">Password</label>
-                    <input type="password" class="form-control" id="pass" placeholder="Password" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-                <div class="col-md-6 mb-5">
-                    <label for="confirm-pass">Confirm Password</label>
-                    <input type="password" class="form-control" id="confirm-pass" placeholder="Confirm Pass" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="roommate-checkbox">
-                <label for="roommate-checkbox">
-                    Roommate
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="employer-checkbox">
-                <label for="employer-checkbox">
-                    Employer
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="admin-checkbox">
-                <label for="admin-checkbox">
-                    Admin
-                </label>
-            </div>
-            <br/>
-            <br/>
-
-            <button class="btn btn-primary" type="submit" class="submit-button">Create User</button>
-        </form>
+    <div class="tab-bar">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#home">Users</a>
+            </li>
+                <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#menu1">Proxy</a>
+            </li>
+                <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#menu2">Jobs</a>
+            </li>
+            {% if session.admin %}
+            </li>
+                <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#menu3">Sharon</a>
+            </li>
+            {% endif %}
+        </ul>
     </div>
 
-    <!-- Manage the proxy! -->
-    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
-        <h2 class="div-header">Proxy Manager</h2>
+    <div class="tab-content">
 
-        <br/>
-        The proxy is currently {{ status }}
-        <br/><br/>
+        <div id="home" class="tab-pane active">
+            <div class="p-section content-div">
+                <form class="needs-validation" id="create-user-form" >
+                    <h2 class="div-header">Add New User</h2>
 
-        <button class="btn btn-primary submit-button" type="submit" id="enable_prox" onclick="switch_proxy('start')">Enable Proxy</button>
-        <button class="btn btn-danger submit-button" type="submit" id="disable_prox" onclick="switch_proxy('stop')">Disable Proxy</button>
+                    <h5 class="text-danger form-error-message" id="add-user-error-text"></h5>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="user">Username</label>
+                            <input type="text" class="form-control" id="user" placeholder="Username" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="pass">Password</label>
+                            <input type="password" class="form-control" id="pass" placeholder="Password" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-5">
+                            <label for="confirm-pass">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm-pass" placeholder="Confirm Pass" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="roommate-checkbox">
+                        <label for="roommate-checkbox">
+                            Roommate
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="employer-checkbox">
+                        <label for="employer-checkbox">
+                            Employer
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="admin-checkbox">
+                        <label for="admin-checkbox">
+                            Admin
+                        </label>
+                    </div>
+                    <br/>
+                    <br/>
+
+                    <button class="btn btn-primary" type="submit" class="submit-button">Create User</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="menu1" class="tab-pane fade">
+            <!-- Manage the proxy! -->
+            <div class="p-section content-div">
+                <h2 class="div-header">Proxy Manager</h2>
+
+                <br/>
+                The proxy is currently {{ status }}
+                <br/><br/>
+
+                <button class="btn btn-primary submit-button" type="submit" id="enable_prox" onclick="switch_proxy('start')">Enable Proxy</button>
+                <button class="btn btn-danger submit-button" type="submit" id="disable_prox" onclick="switch_proxy('stop')">Disable Proxy</button>
+            </div>
+        </div>
+
+        <div id="menu2" class="tab-pane fade">
+            <!--  Add a new job!  -->
+            <div class="p-section content-div">
+                <form class="needs-validation" id="create-job-form" novalidate>
+                    <h2 class="div-header">Add Another Job</h2>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="heading">Heading</label>
+                            <input type="text" class="form-control" id="heading" placeholder="Heading" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="dates">Dates Worked</label>
+                            <input type="text" class="form-control" id="dates" placeholder="Dates Worked" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="title">Job Title</label>
+                            <input type="text" class="form-control" id="title" placeholder="Job Title" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-8 mb-5">
+                            <label for="description">Job Description</label>
+                            <textarea rows="4" class="form-control" id="description" placeholder="Job Description" required></textarea>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary submit-button" type="submit">Create Job</button>
+                </form>
+            </div>
+
+            <!--  Edit an existing job  -->
+
+            <div class="p-section content-div">
+                <form class="needs-validation" id="edit-job-form" novalidate>
+                    <h2 class="div-header">Edit An Existing Job</h2>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="old-job-title">Old Job Title</label>
+                            <input type="text" class="form-control" id="old-job-title" placeholder="Old Job Title" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="new-job-title">New Job Title</label>
+                            <input type="text" class="form-control" id="new-job-title" placeholder="New Job Title">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="new-dates">New Dates Worked</label>
+                            <input type="text" class="form-control" id="new-dates" placeholder="Dates Worked">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="new-heading">New Heading</label>
+                            <input type="text" class="form-control" id="new-heading" placeholder="New Heading">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <!-- Establishing a new order to overthrow the Empire -->
+                            <label for="new-order">New Order</label>
+                            <input type="text" class="form-control" id="new-order" placeholder="New Order">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-8 mb-5">
+                            <label for="new-description">New Job Description</label>
+                            <textarea rows="4" class="form-control" id="new-description" placeholder="Job Description"></textarea>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary submit-button" type="submit">Edit Job</button>
+                </form>
+            </div>
+        </div>
+
+        {% if session.admin %}
+        <!--  Add a new challenge  -->
+        <div id="menu3" class="tab-pane fade">
+
+            <div class="p-section content-div">
+                <form class="needs-validation" id="create-challenge-form" novalidate>
+                    <h2 class="div-header">Add Another Challenge</h2>
+
+                    <h5 class="text-danger form-error-message" id="add-challenge-error-text"></h5>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="day">Day</label>
+                            <input type="text" class="form-control" id="day" placeholder="Day" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="passcode">Passcode</label>
+                            <input type="text" class="form-control" id="passcode" placeholder="4-digit passcode" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-8 mb-5">
+                            <label for="challenge-description">Challenge Description</label>
+                            <textarea rows="4" class="form-control" id="challenge-description" placeholder="Challenge Description" required></textarea>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary submit-button" type="submit">Create Challenge</button>
+                    <button class="btn btn-primary submit-button" type="button" onclick="reset_challenges()">Reset Challenges</button>
+                </form>
+            </div>
+
+            <div class="p-section content-div">
+                <form class="needs-validation" id="create-prize-form" novalidate>
+                    <h2 class="div-header">Add Another Prize</h2>
+
+                    <h5 class="text-danger form-error-message" id="add-prize-error-text"></h5>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="tokens">Required Tokens</label>
+                            <input type="text" class="form-control" id="tokens" placeholder="Required Tokens" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-8 mb-5">
+                            <label for="prize-description">Prize Description</label>
+                            <textarea rows="4" class="form-control" id="prize-description" placeholder="Prize Description" required></textarea>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary submit-button" type="submit">Create Prize</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
     </div>
 
-    <!--  Add a new job!  -->
-
-    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
-        <form class="needs-validation" id="create-job-form" novalidate>
-            <h2 class="div-header">Add Another Job</h2>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="heading">Heading</label>
-                    <input type="text" class="form-control" id="heading" placeholder="Heading" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="dates">Dates Worked</label>
-                    <input type="text" class="form-control" id="dates" placeholder="Dates Worked" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="title">Job Title</label>
-                    <input type="text" class="form-control" id="title" placeholder="Job Title" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-8 mb-5">
-                    <label for="description">Job Description</label>
-                    <textarea rows="4" class="form-control" id="description" placeholder="Job Description" required></textarea>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn btn-primary submit-button" type="submit">Create Job</button>
-        </form>
-    </div>
-
-    <!--  Edit an existing job  -->
-
-    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
-        <form class="needs-validation" id="edit-job-form" novalidate>
-            <h2 class="div-header">Edit An Existing Job</h2>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="old-job-title">Old Job Title</label>
-                    <input type="text" class="form-control" id="old-job-title" placeholder="Old Job Title" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="new-job-title">New Job Title</label>
-                    <input type="text" class="form-control" id="new-job-title" placeholder="New Job Title">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="new-dates">New Dates Worked</label>
-                    <input type="text" class="form-control" id="new-dates" placeholder="Dates Worked">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="new-heading">New Heading</label>
-                    <input type="text" class="form-control" id="new-heading" placeholder="New Heading">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <!-- Establishing a new order to overthrow the Empire -->
-                    <label for="new-order">New Order</label>
-                    <input type="text" class="form-control" id="new-order" placeholder="New Order">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-8 mb-5">
-                    <label for="new-description">New Job Description</label>
-                    <textarea rows="4" class="form-control" id="new-description" placeholder="Job Description"></textarea>
-                </div>
-            </div>
-
-            <button class="btn btn-primary submit-button" type="submit">Edit Job</button>
-        </form>
-    </div>
-
-    {% if session.admin %}
-    <!--  Add a new challenge  -->
-
-    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
-        <form class="needs-validation" id="create-challenge-form" novalidate>
-            <h2 class="div-header">Add Another Challenge</h2>
-
-            <h5 class="text-danger form-error-message" id="add-challenge-error-text"></h5>
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="day">Day</label>
-                    <input type="text" class="form-control" id="day" placeholder="Day" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="passcode">Passcode</label>
-                    <input type="text" class="form-control" id="passcode" placeholder="4-digit passcode" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-8 mb-5">
-                    <label for="challenge-description">Challenge Description</label>
-                    <textarea rows="4" class="form-control" id="challenge-description" placeholder="Challenge Description" required></textarea>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn btn-primary submit-button" type="submit">Create Challenge</button>
-            <button class="btn btn-primary submit-button" type="button" onclick="reset_challenges()">Reset Challenges</button>
-        </form>
-    </div>
-
-    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
-        <form class="needs-validation" id="create-prize-form" novalidate>
-            <h2 class="div-header">Add Another Prize</h2>
-
-            <h5 class="text-danger form-error-message" id="add-prize-error-text"></h5>
-            <div class="form-row">
-                <div class="col-md-6 mb-5">
-                    <label for="tokens">Required Tokens</label>
-                    <input type="text" class="form-control" id="tokens" placeholder="Required Tokens" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="col-md-8 mb-5">
-                    <label for="prize-description">Prize Description</label>
-                    <textarea rows="4" class="form-control" id="prize-description" placeholder="Prize Description" required></textarea>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn btn-primary submit-button" type="submit">Create Prize</button>
-        </form>
-    </div>
-
-
-    {% endif %}
-
+</div>
 {% endblock %}
 
 
