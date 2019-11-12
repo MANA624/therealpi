@@ -15,21 +15,21 @@
 
     <h1>The Admin Page</h1>
 
+    <!-- The tab at the top of the content to switch -->
     <div class="tab-bar">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#home">Users</a>
+                <a class="nav-link active" data-toggle="tab" href="#users">Users</a>
             </li>
                 <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#menu1">Proxy</a>
+                <a class="nav-link" data-toggle="tab" href="#proxy">Proxy</a>
             </li>
                 <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#menu2">Jobs</a>
+                <a class="nav-link" data-toggle="tab" href="#jobs">Jobs</a>
             </li>
             {% if session.admin %}
-            </li>
-                <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#menu3">Sharon</a>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#sharon">Sharon</a>
             </li>
             {% endif %}
         </ul>
@@ -37,7 +37,12 @@
 
     <div class="tab-content">
 
-        <div id="home" class="tab-pane active">
+        <!-- The Users tab -->
+
+        <div id="users" class="tab-pane active">
+
+            <!-- Add a new user -->
+
             <div class="p-section content-div">
                 <form class="needs-validation" id="create-user-form" >
                     <h2 class="div-header">Add New User</h2>
@@ -96,22 +101,30 @@
             </div>
         </div>
 
-        <div id="menu1" class="tab-pane fade">
+        <!-- The Proxy tab -->
+
+        <div id="proxy" class="tab-pane fade">
+
             <!-- Manage the proxy! -->
+
             <div class="p-section content-div">
                 <h2 class="div-header">Proxy Manager</h2>
 
                 <br/>
-                The proxy is currently {{ status }}
+                The proxy is currently <span id="proxy-status">{{ status }}</span>
                 <br/><br/>
 
-                <button class="btn btn-primary submit-button" type="submit" id="enable_prox" onclick="switch_proxy('start')">Enable Proxy</button>
-                <button class="btn btn-danger submit-button" type="submit" id="disable_prox" onclick="switch_proxy('stop')">Disable Proxy</button>
+                <button class="btn btn-primary submit-button" type="submit" id="enable_prox" onclick="switch_proxy(true)">Enable Proxy</button>
+                <button class="btn btn-danger submit-button" type="submit" id="disable_prox" onclick="switch_proxy(false)">Disable Proxy</button>
             </div>
         </div>
 
-        <div id="menu2" class="tab-pane fade">
+        <!-- The Jobs tab-->
+
+        <div id="jobs" class="tab-pane fade">
+
             <!--  Add a new job!  -->
+
             <div class="p-section content-div">
                 <form class="needs-validation" id="create-job-form" novalidate>
                     <h2 class="div-header">Add Another Job</h2>
@@ -218,8 +231,11 @@
         </div>
 
         {% if session.admin %}
-        <!--  Add a new challenge  -->
-        <div id="menu3" class="tab-pane fade">
+        <!-- Sharon's tab -->
+
+        <div id="sharon" class="tab-pane fade">
+
+            <!--  Add a new challenge  -->
 
             <div class="p-section content-div">
                 <form class="needs-validation" id="create-challenge-form" novalidate>

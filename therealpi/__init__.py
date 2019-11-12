@@ -561,13 +561,25 @@ def create_user():
 def proxy_switch():
     manager_file = "proxyManager.sh"
     try:
-        user = dict(request.form)
-        user = check_dict(user, ("dir",))
-        call([proxy_path+manager_file, user["dir"][0]])
+        action_dict = dict(request.form)
+        action_dict = check_dict(action_dict, ("is_enable",))
+        action_dict["is_enable"] = action_dict["is_enable"][0]
+        if action_dict["is_enable"] == 'true':
+            action = "start"
+        else:
+            action = "stop"
+        retcode = call([proxy_path+manager_file, action])
+        if retcode == 0:
+            if action == "start":
+                status = "on"
+            else:
+                status = "off"
+        else:
+            status = "unknown"
     except Exception as e:
         log_error(e)
         return Response("There was an error changing the proxy", status=500)
-    return Response("Success!"), 201
+    return jsonify(message="Proxy switched!", status=status), 201
 
 
 @app.route('/_create_job', methods=["POST"])
@@ -715,6 +727,7 @@ def get_challenge():
     except Exception as e:
         log_error(e)
         return Response("Couldn't retrieve information from database", status=500)
+
 
 @app.route('/_submit_freebie', methods=["POST"])
 @sharon_required_post

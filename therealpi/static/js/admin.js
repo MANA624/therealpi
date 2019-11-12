@@ -10,16 +10,17 @@ function reset_challenges(){
     });
 }
 
-function switch_proxy(direction){
+function switch_proxy(enabling){
     $.ajax({
         data: {
-            "dir": direction
+            "is_enable": enabling
         },
         type: "POST",
+        dataType: 'json',
         url: "_proxy_switch",
-        traditional: true
     }).done(function(data){
-        createAlert("success", "Success!", data)
+        $("#proxy-status").html(data.status);
+        createAlert("success", "Success!", data.message)
     }).fail(function(data){
         createAlert("danger", "Oops!", data.responseText)
     });
