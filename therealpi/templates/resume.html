@@ -37,15 +37,15 @@
                     <div class="panel-heading" role="tab" id="heading{{ loop.index }}">
                         <h4 class="panel-title">
                             <a class="collapsed panel-anchor" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
-                                {{ listing["heading"] }} {% if session.admin %} ({{ listing["order"] }}) {% endif %}
+                                {{ listing["job_title"] }} {% if session.admin %} ({{ listing["order"] }}) {% endif %}
                             </a>
                         </h4>
                     </div>
 
                     <div id="collapse{{ loop.index }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading{{ loop.index }}">
                         <div class="panel-body">
+                            <p class="job-text"><span class="job-span">Employer: </span>{{ listing["heading"] }}</p>
                             <p class="job-text"><span class="job-span">Dates worked: </span>{{ listing["dates_worked"] }}</p>
-                            <p class="job-text"><span class="job-span">Job Title: </span>{{ listing["job_title"] }}</p>
                             <p class="job-text"><span class="job-span">Job description: </span>
                                 {{ listing["job_description"] }}
                             </p>
