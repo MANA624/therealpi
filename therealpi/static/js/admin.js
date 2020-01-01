@@ -1,15 +1,3 @@
-function reset_challenges(){
-    $.ajax({
-        type: "POST",
-        url: "_reset_challenges",
-        traditional: true
-    }).done(function(data){
-        createAlert("success", "Success!", data)
-    }).fail(function(data){
-        createAlert("danger", "Oops!", data.responseText)
-    });
-}
-
 function switch_proxy(enabling){
     $.ajax({
         data: {
@@ -120,57 +108,6 @@ $(document).ready(function(){
                 createAlert("danger", "Oops!", data.responseText)
             });
             event.preventDefault();
-        }
-    });
-
-    $("#create-challenge-form").submit(function(event){
-        var form = $('#create-challenge-form');
-        if(form[0].checkValidity() == false){
-            return false;
-        }
-        else{
-            $.ajax({
-                data: {
-                    "day": $("#day").val(),
-                    "passcode": $("#passcode").val(),
-                    "description": $("#challenge-description").val()
-                },
-                type: "POST",
-                url: "_create_challenge"
-            }).done(function(data){
-                // window.location = "/admin";
-                $("#create-challenge-form")[0].reset();
-                createAlert("success", "Success!", data)
-            }).fail(function(data){
-                createAlert("danger", "Oops!", data.responseText)
-            });
-            event.preventDefault();
-
-        }
-    });
-
-    $("#create-prize-form").submit(function(event){
-        var form = $('#create-prize-form');
-        if(form[0].checkValidity() == false){
-            return false
-        }
-        else{
-            $.ajax({
-                data: {
-                    "tokens": $("#tokens").val(),
-                    "description": $("#prize-description").val()
-                },
-                type: "POST",
-                url: "_create_prize"
-            }).done(function(data){
-                // window.location = "/admin";
-                $("#create-challenge-form")[0].reset();
-                createAlert("success", "Success!", data)
-            }).fail(function(data){
-                createAlert("danger", "Oops!", data.responseText)
-            });
-            event.preventDefault();
-
         }
     });
 });

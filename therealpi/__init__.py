@@ -29,8 +29,6 @@ jobs = db.jobs
 users = db.users
 schedule = db.events
 roommate = db.roommate
-challenges = db.challenges
-prizes = db.prizes
 iv = "G4XO4L\X<J;MPPLD"
 proxy_path = "/var/www/therealpi/therealpi/proxy/"
 
@@ -103,13 +101,6 @@ def get_datetime(date, hour, minute):
     return datetime(year=date[2], month=date[0], day=date[1], hour=int(hour), minute=int(minute))
 
 
-
-def check_prize():
-    completed = challenges.count({"completed": True})
-    found = prizes.count({"tokens": completed})
-    return bool(found)
-
-
 def pad_message(message):
     return message + " "*((16-len(message))%16)
 
@@ -150,19 +141,6 @@ def login_required(f):
     return wrap
 
 
-def sharon_login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if "logged_in" in session:
-            if ("sharon" in session) or "admin" in session:
-                return f(*args, **kwargs)
-            else:
-                abort(403)
-        else:
-            abort(401)
-    return wrap
-
-
 def roommate_required_post(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -181,19 +159,6 @@ def admin_required_post(f):
     def wrap(*args, **kwargs):
         if "logged_in" in session:
             if "admin" in session:
-                return f(*args, **kwargs)
-            else:
-                return Response("You don't have the privileges to do that!", status=403)
-        else:
-            return Response("You are not logged in", status=401)
-    return wrap
-
-
-def sharon_required_post(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if "logged_in" in session:
-            if "sharon" in session:
                 return f(*args, **kwargs)
             else:
                 return Response("You don't have the privileges to do that!", status=403)
@@ -301,45 +266,6 @@ def admin():
         status_text = "unknown"
     return render_template("admin.html", default="admin", status=status_text)
 
-
-@app.route('/sharon')
-@sharon_login_required
-def sharon():
-    error = False
-    description = ""
-    solved = ""
-    tries = 0
-    completed = 0
-    freebies = 0
-    prize_dict = {}
-
-    try:
-        completed = challenges.count({"completed": True})
-        doc = challenges.find_one({"day": 1})
-        if doc is not None:
-            description = doc["description"]
-            solved = doc["completed"]
-            if solved:
-                solved = ["hidden", ""]
-            else:
-                solved = ["", "hidden"]
-            tries = doc["tries"]
-        freebies = users.find_one({"username": "sharon"})["tries"]
-        prize_dict = list(prizes.find({"tokens": {"$lte": completed}}).sort([("tokens", 1)]))
-    except Exception as e:
-        log_error(e)
-    if not description:
-        error = True
-    return render_template("sharon.html",
-                           error=error,
-                           default="sharon",
-                           solved=solved,
-                           description=description,
-                           tries=tries,
-                           completed=completed,
-                           freebies=freebies,
-                           prizes=prize_dict,
-                           )
 
 """
     END SECTION: TEMPLATE RENDERING
@@ -625,149 +551,6 @@ def edit_job():
         return Response("There was an error accessing the database", status=500)
     return Response("Job successfully edited!"), 201
 
-
-@app.route('/_create_challenge', methods=["POST"])
-@admin_required_post
-def create_challenge():
-    try:
-        chal_dict = request.form.to_dict()
-        chal_dict = check_dict(chal_dict, ("day", "passcode", "description"))
-        if not chal_dict:
-            return Response("Not all required fields were sent", status=400)
-        if len(chal_dict["passcode"]) != 4:
-            return Response("Passcode not 4 digits", status=400)
-        chal_dict["completed"] = False
-        chal_dict["tries"] = 10
-        chal_dict["day"] = int(chal_dict["day"])
-        challenges.insert_one(chal_dict)
-    except Exception as e:
-        log_error(e)
-        return Response("There was an error accessing the database", status=500)
-
-    return Response("Challenge successfully created!"), 201
-
-
-@app.route('/_reset_challenges', methods=["POST"])
-@admin_required_post
-def reset_challenges():
-    try:
-        challenges.update_many({}, {"$set": {"completed": False, "tries": 10}})
-        users.update({"username": "sharon"}, {"$set": {"tries": 5}})
-    except Exception as e:
-        log_error(e)
-        return Response("There was an error accessing the database", status=500)
-
-    return Response("Challenges reset to incomplete"), 201
-
-
-@app.route('/_create_prize', methods=["POST"])
-@admin_required_post
-def create_prize():
-    try:
-        chal_dict = request.form.to_dict()
-        chal_dict = check_dict(chal_dict, ("tokens", "description"))
-        if not chal_dict:
-            return Response("Not all required fields were sent", status=400)
-        chal_dict["tokens"] = int(chal_dict["tokens"])
-        prizes.insert_one(chal_dict)
-    except Exception as e:
-        log_error(e)
-        return Response("There was an error accessing the database", status=500)
-
-    return Response("Challenge successfully created!"), 201
-
-
-@app.route('/_submit_challenge', methods=["POST"])
-@sharon_required_post
-def submit_challenge():
-    try:
-        sent = request.form.to_dict()
-        sent = check_dict(sent, ("phrase", "token", "day"))
-        sent["day"] = int(sent["day"])
-        if not sent:
-            return Response("Not all required fields were sent", status=400)
-        existing = challenges.find_one({"day": sent["day"]})
-        if not existing["tries"]:
-            return Response("No more tries!", status=400)
-        if sent["phrase"] != "I like you":
-            return Response("Passphrase incorrect!", status=400)
-        if existing["passcode"] != sent["token"]:
-            existing["tries"] -= 1
-            challenges.find_one_and_replace({"day": sent["day"]}, existing)
-            return Response("Incorrect passcode!", status=418)
-        existing["completed"] = True
-        challenges.find_one_and_replace({"day": sent["day"]}, existing)
-        if check_prize():
-            return Response("HEY! You unlocked a new prize! Refresh the page to see it!")
-        return Response("You completed today's challenge!")
-    except Exception as e:
-        log_error(e)
-        return Response("Couldn't update information in database", status=500)
-
-
-@app.route('/_get_challenge', methods=["POST"])
-@sharon_required_post
-def get_challenge():
-    try:
-        sent = request.form.to_dict()
-        sent = check_dict(sent, ("day",))
-        sent["day"] = int(sent["day"])
-
-        if not sent:
-            return Response("Not all required fields were sent", status=400)
-        challenge = challenges.find_one({"day": sent["day"]})
-        if challenge["completed"]:
-            starter = "Y"
-        else:
-            starter = "N"
-        # return Response(starter + challenge["description"])
-        return jsonify(description=challenge["description"],
-                       completed=challenge["completed"],
-                       tries=challenge["tries"]), 201
-    except Exception as e:
-        log_error(e)
-        return Response("Couldn't retrieve information from database", status=500)
-
-
-@app.route('/_submit_freebie', methods=["POST"])
-@sharon_required_post
-def submit_freebie():
-    sent = request.form.to_dict()
-    sent = check_dict(sent, ("day",))
-    day = int(sent["day"])
-
-    try:
-        sharon = users.find_one({"username": "sharon"})
-        num_freebies = sharon["tries"]
-        if not num_freebies:
-            return Response("You have no more freebies!", status=400)
-        existing = challenges.find_one({"day": day})
-        existing["completed"] = True
-        challenges.find_one_and_replace({"day": day}, existing)
-        sharon["tries"] -= 1
-        users.find_one_and_replace({"username": "sharon"}, sharon)
-        if check_prize():
-            return Response("HEY! You unlocked a new prize! Refresh the page to see it!")
-        return Response("You used one of your Freebies!")
-    except Exception as e:
-        log_error(e)
-        return Response("Couldn't update information in database", status=500)
-
-
-@app.route('/_show_pass', methods=["POST"])
-@sharon_required_post
-def show_pass():
-    sleep(1)
-    try:
-        sent = request.form.to_dict()
-        sent = check_dict(sent, ("pass",))
-        if not sent:
-            return Response("Not all required fields were sent", status=400)
-        original = decrypt_message(b"5\xf6B$\xc0\x8aD\xd8\x9d'\xf9\x8d|&\x16\x87", pad_message(sent["pass"]))
-        return Response(original)
-    except Exception as e:
-        log_error(e)
-        return Response("Wrong password. Sorry :/", status=500)
 
 """
     END SECTION: AJAX REQUESTS
