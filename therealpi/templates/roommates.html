@@ -10,6 +10,9 @@
 
 <h1>Roomate Rent Calculator</h1>
 <div class="col-12 col-md-10 col-xl-10 content-div">
+    {% if session.roommate %}<p>Click
+<a href="https://boulderpropertymanagement-reslisting.securecafe.com/residentservices/apartmentsforrent/userlogin.aspx" target="_blank">
+    here</a> to access the payment site</p> {% endif %}
     <form class="form-horizontal" id="cost-form">
         <h2 class="div-header">Cost of rent for {{ info["month"] }}</h2>
         <div class="form-group">
