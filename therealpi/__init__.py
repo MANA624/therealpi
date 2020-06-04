@@ -23,6 +23,7 @@ from subprocess import call
 app = Flask(__name__)
 csrf = CSRFProtect()
 csrf.init_app(app)
+WTF_CSRF_TIME_LIMIT = None
 client = MongoClient('localhost')
 db = client.schedule
 jobs = db.jobs
@@ -177,6 +178,9 @@ def admin_required_post(f):
 
 @app.route('/')
 def main_page():
+    my_flash("warning", "Notice!", "Therealpi.net is undergoing summer improvements, \\"
+                                   "and I don't have a lot of time to work on it, so some "
+                                   "things may be broken for a while. Sorry!")
     if session and "just_logged_in" in session and session["just_logged_in"]:
         session["just_logged_in"] = False
         my_flash("success", "Login Success!", "Welcome " + session["username"] + '!')
