@@ -233,7 +233,7 @@ def calendar():
     date_today = datetime.today().strftime("%Y-%m-%d")
     events = []
     try:
-        events_raw = schedule.find()
+        events_raw = schedule.find({"owner": session["username"]})
         for doc in events_raw:
             new_doc = {
                 "title": doc["title"] + ': ' + doc["more_info"],
@@ -315,7 +315,7 @@ def check_login():
             session["just_logged_in"] = True
             session["username"] = username
             for privilege in user["other"]:
-                session[privilege] = True
+               session[privilege] = True
             return redirect(url_for("main_page"))
         else:
             return Response("Bad credentials. Please try again", status=401)
@@ -476,9 +476,9 @@ def create_user():
         user = check_dict(user, ("username", "password", "other"))
         if not user:
             return Response("Not all required fields were sent", status=400)
-        user['password'] = pbkdf2_sha256.encrypt(user['password'][0])
-        user['other'].remove('')
-        user['username'] = user['username'][0]
+        user['password'] = pbkdf2_sha256.encrypt(user['password'])
+        # user['other'].remove('')
+        user['username'] = user['username']
         users.insert_one(user)
     except Exception as e:
         log_error(e)
