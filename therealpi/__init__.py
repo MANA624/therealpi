@@ -234,6 +234,7 @@ def calendar():
     events = []
     try:
         events_raw = schedule.find({"owner": session["username"]})
+        # events_raw = schedule.find()
         for doc in events_raw:
             new_doc = {
                 "title": doc["title"] + ': ' + doc["more_info"],
@@ -370,6 +371,7 @@ def add_event():
         date = [int(x) for x in event["date"].split('/')]
         current_date = get_datetime(date, event["hour"], event["minute"])
         event["send_text"] = event["send_text"] == "true"
+        event["owner"] = session["username"]
         frequency = event["freq"]
 
         if frequency == "once":
@@ -389,7 +391,7 @@ def add_event():
             if frequency == "weekly":
                 delta = timedelta(days=7)
             elif frequency == "bi-week":
-                delta = timedelta(days=7)
+                delta = timedelta(days=14)
             elif frequency == "monthly":
                 delta = relativedelta(months=1)
             else:
