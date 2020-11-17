@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for, abort, send_file, safe_join, \
     flash, Response, jsonify
+from werkzeug.utils import secure_filename
 from pymongo import MongoClient, DESCENDING
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
@@ -15,9 +16,11 @@ import sendgrid
 from sendgrid.helpers.mail import Email, Content, Mail
 import ssl
 from twilio.rest import Client
-from Crypto.Cipher import AES
+# from Crypto.Cipher import AES
 from time import sleep
 from subprocess import call
+from random import choice
+import imghdr
 
 
 app = Flask(__name__)
@@ -30,6 +33,7 @@ jobs = db.jobs
 users = db.users
 schedule = db.events
 roommate = db.roommate
+sharon = db.sharon
 iv = "G4XO4L\X<J;MPPLD"
 proxy_path = "/var/www/therealpi/therealpi/proxy/"
 
@@ -107,9 +111,9 @@ def pad_message(message):
 
 
 # Decrypts the message using AES. Same as server function
-def decrypt_message(message, session_key):
-    cipher = AES.new(session_key, AES.MODE_CBC, iv)
-    return cipher.decrypt(message).decode().strip()
+# def decrypt_message(message, session_key):
+#     cipher = AES.new(session_key, AES.MODE_CBC, iv)
+#     return cipher.decrypt(message).decode().strip()
 
 """
     END SECTION: HELPER FUNCTIONS
@@ -124,6 +128,19 @@ def admin_login_required(f):
     def wrap(*args, **kwargs):
         if "logged_in" in session:
             if "admin" in session or "employer" in session:
+                return f(*args, **kwargs)
+            else:
+                abort(403)
+        else:
+            abort(401)
+    return wrap
+
+
+def sharon_login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "logged_in" in session:
+            if "admin" in session or "sharon" in session:
                 return f(*args, **kwargs)
             else:
                 abort(403)
@@ -168,6 +185,7 @@ def admin_required_post(f):
     return wrap
 
 
+
 """
     END SECTION: REQUIRED LOGINS
 """
@@ -178,9 +196,9 @@ def admin_required_post(f):
 
 @app.route('/')
 def main_page():
-    my_flash("warning", "Notice!", "Therealpi.net is undergoing summer improvements, \\"
-                                   "and I don't have a lot of time to work on it, so some "
-                                   "things may be broken for a while. Sorry!")
+    # my_flash("warning", "Notice!", "Therealpi.net is undergoing summer improvements, \\"
+    #                                "and I don't have a lot of time to work on it, so some "
+    #                                "things may be broken for a while. Sorry!")
     if session and "just_logged_in" in session and session["just_logged_in"]:
         session["just_logged_in"] = False
         my_flash("success", "Login Success!", "Welcome " + session["username"] + '!')
@@ -269,7 +287,214 @@ def admin():
             status_text = "unknown"
     except Exception as e:
         status_text = "unknown"
-    return render_template("admin.html", default="admin", status=status_text)
+
+    # Sharon stuff
+    pics = os.listdir(safe_join(app.root_path, 'static/uploads'))
+    # print(url_for('static', filename="uploads/Sharon.JPG"))
+    # End Sharon stuff
+
+    return render_template("admin.html", default="admin", status=status_text, pics=pics)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.route('/sharon2')
+@sharon_login_required
+def sharon_page():
+    # form = PostForm()
+    phase, next_day = get_phase()
+    additional_info = {}
+    if phase == '10':
+        sequences = [
+            "2 3 9 7 4 1 16 8 15 5 6 21 22 18 10 11 19 17 14 12 23 25 24 13 20",
+            "1 17 14 25 3 2 16 4 11 5 7 13 9 8 15 6 12 19 20 10 21 22 18 23 24",
+            "2 7 9 4 8 21 12 3 13 10 6 1 24 14 5 11 15 16 20 23 17 22 18 19 25",
+            "1 7 2 3 4 6 8 13 10 5 12 22 9 17 20 11 18 25 24 15 21 14 16 23 19",
+            "1 2 5 10 15 6 7 9 3 18 8 11 14 24 19 17 22 20 4 25 16 12 21 13 23",
+            "7 17 2 3 4 11 6 19 9 5 1 23 14 13 15 16 18 12 10 8 21 22 24 25 20",
+            "3 4 9 6 10 25 1 21 14 20 11 12 7 13 5 17 22 2 15 24 16 23 18 8 19"
+        ]
+        additional_info["sequence"] = choice(sequences)
+        # additional_info["sequence"] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 25 24"  # Test
+
+    return render_template("sharon.html", phase=phase, additional_info=additional_info, next_day=next_day)
+
+
+@app.route("/_submit_challenge", methods=["POST"])
+@sharon_login_required
+def submit_challenge():
+    details = request.form.to_dict()
+    database_json = sharon.find_one({"metadata": True})
+    # Structure: {'$challenge': [$day, '$cipher', $ideal_count]
+    ciphers = {'2': [1, "tqXQkB4D", 1], '4': [2, "8fBRCpgp", 1], '6': [3, "Fox44R9Jt", 1]}
+    # Structure: {'$challenge': [$day, $idealProgress]}
+    trivials = {'1': [1, 0], '5': [3, 0], '7': [3, 2]}
+
+    # Trivial challenges: the sliding puppy and getting dressed
+    if details["challenge"] in trivials:
+        day = trivials[details["challenge"]][0]
+        ideal_progress = trivials[details["challenge"]][1]
+        if database_json["phase"][day] == ideal_progress:
+            increment_phase(day)
+        else:
+            return Response("It appears you already completed the challenge!", status=500)
+    # Handles all of the cipher challenges
+    elif details["challenge"] in ciphers:
+        challenge = details["challenge"]
+        submitted_cipher = details["cipher"]
+        day = ciphers[challenge][0]
+        actual_cipher = ciphers[challenge][1]
+        ideal_progress = ciphers[challenge][2]
+        if database_json["phase"][day] == ideal_progress:
+            if submitted_cipher == actual_cipher:
+                increment_phase(day)
+            else:
+                return Response("Incorrect cipher!!!", status=500)
+        else:
+            return Response("It appears you already completed the challenge!", status=500)
+    # The quiz about you challenge
+    elif details["challenge"] == '3':
+        if database_json["phase"][2] != 0:
+            return Response("It appears you already completed the challenge!", status=500)
+        score = 0
+        answers = {
+            "color1": "black",
+            'color2': "purple",
+            "date": "01/12/2019",
+            "twenty_op": "11/19/2018",
+            "pearl": "12/13/2018",
+            "aisle": "aisle",
+            "isle": "isle",
+            "buttons": "buttons",
+        }
+        for answer in answers:
+            if answers[answer] == details[answer].lower():
+                score += 1
+        total = len(answers)
+        # Didn't get a perfect score
+        if score != total:
+            return Response("You scored {0} out of {1}. Keep trying!".format(score, total), status=500)
+        # Did get a perfect score
+        increment_phase(2)
+    else:
+        return Response("I'm... you... what? How did you get here?", status=500)
+    return Response("Challenge complete! Refresh the page for next steps!")
+
+
+def get_phase():
+    # TODO: Convert to EST
+    day_begins = []
+
+    # day_begins.append(datetime.now() + timedelta(days=0, hours=1))  # Nov 18
+    day_begins.append(datetime(year=2020, month=11, day=18, hour=15, minute=30))  # Nov 18 @ 5:30EST
+    day_begins.append(day_begins[0] + timedelta(days=1))  # Nov 19 @ 5:30 EST
+    day_begins.append(day_begins[1] + timedelta(hours=21, minutes=45))  # Nov 20 @ 3:15PM EST
+    day_begins.append(day_begins[2] + timedelta(days=9999))
+
+    curr_time = datetime.now()
+    day = 0
+    while curr_time > day_begins[day]:
+        day += 1
+
+    # increment_phase(amount=1)
+    # reset_phase()
+    data = sharon.find_one({"metadata": True})
+    phase = data['phase'][day]
+
+    max_challenges = [0, 2, 2, 2]
+    if phase < max_challenges[day]:
+        next_time = None
+    else:
+        # if day_begins[day+1].day == datetime.now().day:
+        #     print("same")
+        if day_begins[day].strftime("%d") == datetime.now().strftime("%d"):
+            today_tomorrow = "today"
+        else:
+            today_tomorrow = "tomorrow"
+
+        # Convert to EST
+        day_begins[day] += timedelta(hours=2)
+        next_time = today_tomorrow + ', ' + day_begins[day].strftime("%x at %I:%M %p") + " EST"
+        # Convert back to MST
+        day_begins[day] -= timedelta(hours=2)
+
+    return str(day) + str(phase), next_time
+
+
+def increment_phase(day, amount=1):
+    data = sharon.find_one({"metadata": True})
+    data["phase"][day] += amount
+    sharon.find_one_and_replace({"metadata": True}, data)
+
+
+@app.route("/_reset_challenges", methods=["POST"])
+@admin_required_post
+def reset_phase():
+    data = sharon.find_one({"metadata": True})
+    data["phase"] = [0, 0, 0, 0]
+    sharon.find_one_and_replace({"metadata": True}, data)
+    return Response("All challenges were reset")
+
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = ['jpg', 'png']
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def validate_image(stream):
+    header = stream.read(512)
+    stream.seek(0)
+    format = imghdr.what(None, header)
+    format = format.lower()
+    if not format:
+        return None
+    return '.' + (format if format != 'jpeg' else 'jpg')
+
+
+@app.route('/_submit_photo', methods=['POST'])
+def upload_files():
+    uploaded_file = request.files['file']
+    filename = secure_filename(uploaded_file.filename)
+    filename = filename.lower()
+    if filename != '':
+        file_ext = os.path.splitext(filename)[1]
+        # Generate new sharon.xxx file
+        i = 1
+        filename = "sharon" + str(i) + file_ext
+        while os.path.exists(safe_join(app.root_path, url_for('static', filename="uploads/" + filename)[1:])):
+            i += 1
+            filename = "sharon" + str(i) + file_ext
+        print(filename)
+        if not allowed_file(filename):
+            return Response("Not an allowed file extension!", status=500)
+        # if file_ext != validate_image(uploaded_file.stream):
+        #     return Response("Couldn't validate the file!", status=500)
+        path = safe_join(app.root_path, url_for('static', filename="uploads/" + filename)[1:])
+        uploaded_file.save(path)
+    my_flash("success", "Upload Successful!", "Refresh often to check for approval!")
+    return redirect(url_for('sharon_page'))
+
+
+
+
+
+
+
+
+
 
 
 """

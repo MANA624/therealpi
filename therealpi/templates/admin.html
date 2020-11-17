@@ -7,6 +7,9 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/admin.css') }}" >
     <script src="{{ url_for('static', filename='js/formValidator.js') }}"></script>
     <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    {% if session.admin %}
+    <script src="{{ url_for('static', filename='js/sharon.js') }}"></script>
+    {% endif %}
 {% endblock %}
 
 
@@ -21,12 +24,17 @@
             <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" href="#users">Users</a>
             </li>
-                <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#proxy">Proxy</a>
             </li>
-                <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#jobs">Jobs</a>
             </li>
+            {% if session.admin %}
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#sharon">Sharon</a>
+            </li>
+            {% endif %}
         </ul>
     </div>
 
@@ -225,9 +233,36 @@
             </div>
         </div>
 
+    {% if session.admin %}
+        <!-- The Sharon tab-->
 
+        <div id="sharon" class="tab-pane fade">
 
+            <!--  On the fly edits  -->
 
+            <div class="p-section content-div">
+                <h2 class="div-header">Controls</h2>
+
+                <label for="5">Once Sharon has uploaded a photo, press this button to move her to the next stage</label>
+                <br>
+                <button class="btn btn-primary cipher-submit-btn" type="button" id="5">Approve Photo</button>
+                <br><br>
+                <label for="reset-challenges">Press this to reset all the challenges back to the beginning</label>
+                <br>
+                <button class="btn btn-danger" type="button" id="reset-challenges">Reset Challenges</button>
+            </div>
+
+            <!--  On the fly edits  -->
+            <div class="p-section content-div">
+                <h2 class="div-header">Day of Pictures</h2>
+                {% for pic in pics %}
+                    <img src="{{ url_for('static', filename="uploads/"+pic) }}"  width="250px"/>
+                    <br><br>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% endif %}
     </div>
 
 </div>

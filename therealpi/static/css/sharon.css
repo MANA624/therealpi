@@ -1,0 +1,31 @@
+/*
+Everything NOT related directly to the sliding puzzle
+ */
+
+.cipher-input-div{
+    width: 240px;
+    border: 2px solid white;
+}
+
+.cipher-input{
+    margin: 0;
+    /*display: inline-block;*/
+}
+
+.cipher-submit-btn{
+    float: right;
+    display: inline-block;
+}
+
+.title-waiting-text{
+    font-family: 'Dancing Script', cursive;
+    font-size: 110px;
+    text-align: center;
+    color: #8bb6c4;
+    /*-webkit-text-stroke-width: 1px;*/
+    /*-webkit-text-stroke-color: black;*/
+}
+
+.waiting-text{
+    text-align: center;
+}

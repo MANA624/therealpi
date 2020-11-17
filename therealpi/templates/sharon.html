@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}Sharon's Page II{% endblock %}
+
+{% block top_includes %}
+    <script src="{{ url_for('static', filename='js/sharon_slide.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sharon.js') }}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sharon_slide.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sharon.css') }}">
+{% endblock %}
+
+
+{% block navbar %}
+    {% if next_day %}
+    {% else %}
+        {{ super() }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+
+    {% if not next_day %}
+    <h1>Complete Your Challenge!</h1>
+{#    <div class="col-12 col-md-10 col-xl-10 content-div">#}
+{#        <h2 class="div-header">#}
+{#            What is this?#}
+{#        </h2>#}
+{#        <p class="info-text">#}
+{#            Hello this page, my old friend... I've come to talk with you again...#}
+{#            Anyways, since I won't see you for another week at least, and that is simply too#}
+{#            long to see such an amazing girl, I decided to make this for you! You have another set of challenges! This#}
+{#            time it's a little different, though... mwahahahaha!!!!#}
+{#        </p>#}
+{#        <h2 class="div-header">#}
+{#            Instructions#}
+{#        </h2>#}
+{#        <p class="info-text">#}
+{#            Read carefully, because it would be a shame to mess up all this! This page will be good for three days. Each#}
+{#            day you will be presented with two challenges - you will crack a puzzle, then you to a physical#}
+{#            location, where you will find a cipher (and maybe another surprise!) After you pass each challenge, simply#}
+{#            refresh the page in order to move onto the next part. This is important, because depending on the#}
+{#            programming, the page may or may not automatically take you to the next part.#}
+{#        </p>#}
+{#        <h2 class="div-header">#}
+{#            But Y Tho#}
+{#        </h2>#}
+{#        <p class="info-text">#}
+{#            Well, I'm glad you asked! Because, as much as I love inconveniencing you for inconvenience's sake (yawning,#}
+{#            anyone?), if you#}
+{#            complete all three challenges, you will receive a very special prize if you complete all three days! So#}
+{#            please, be a good sport. It won't be easy, so you may need to take some time out of your evenings! Let the#}
+{#            games begin!#}
+{#        </p>#}
+{#    </div>#}
+    {% endif %}
+
+    {% if phase == '00' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+
+            <h2 class="div-header">
+                Hang Tight!
+            </h2>
+            <p class="info-text">
+                It appears as though your start time hasn't yet begun. Please check back {{ next_day }}
+            </p>
+        </div>
+    {% elif phase == '10' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+
+            <h2 class="div-header">
+                Fluffer Buddies Mixed Up!
+            </h2>
+            <p class="info-text">
+                Oh, no! These goodest boys have gotten themselves all scrambled! Click on a tile to slide it into the
+                empty spot, rearranging until all of them are back into their cute order! If you give up on an ordering,
+                just refresh the page for a new puzzle! As an extra challenge, you don't get the original picture!
+                Woof! <3
+            </p>
+
+
+            <!-- Sliding Puzzle by 101Computing - www.101computing.net/sliding-puzzle/-->
+            <center><div id="table" style="display: table;">
+                <div id="row1" style="display: table-row;">
+                    <div id="cell11" class="tile1" onClick="clickTile(1,1);"></div>
+                    <div id="cell12" class="tile2" onClick="clickTile(1,2);"></div>
+                    <div id="cell13" class="tile3" onClick="clickTile(1,3);"></div>
+                    <div id="cell14" class="tile4" onClick="clickTile(1,4);"></div>
+                    <div id="cell15" class="tile5" onClick="clickTile(1,5);"></div>
+                </div>
+                <div id="row2" style="display: table-row;">
+                    <div id="cell21" class="tile6" onClick="clickTile(2,1);"></div>
+                    <div id="cell22" class="tile7" onClick="clickTile(2,2);"></div>
+                    <div id="cell23" class="tile8" onClick="clickTile(2,3);"></div>
+                    <div id="cell24" class="tile9" onClick="clickTile(2,4);"></div>
+                    <div id="cell25" class="tile10" onClick="clickTile(2,5);"></div>
+                </div>
+                <div id="row3" style="display: table-row;">
+                    <div id="cell31" class="tile11" onClick="clickTile(3,1);"></div>
+                    <div id="cell32" class="tile12" onClick="clickTile(3,2);"></div>
+                    <div id="cell33" class="tile13" onClick="clickTile(3,3);"></div>
+                    <div id="cell34" class="tile14" onClick="clickTile(3,4);"></div>
+                    <div id="cell35" class="tile15" onClick="clickTile(3,5);"></div>
+                </div>
+                <div id="row4" style="display: table-row;">
+                    <div id="cell41" class="tile16" onClick="clickTile(4,1);"></div>
+                    <div id="cell42" class="tile17" onClick="clickTile(4,2);"></div>
+                    <div id="cell43" class="tile18" onClick="clickTile(4,3);"></div>
+                    <div id="cell44" class="tile19" onClick="clickTile(4,4);"></div>
+                    <div id="cell45" class="tile20" onClick="clickTile(4,5);"></div>
+                </div>
+                <div id="row5" style="display: table-row;">
+                    <div id="cell51" class="tile21" onClick="clickTile(5,1);"></div>
+                    <div id="cell52" class="tile22" onClick="clickTile(5,2);"></div>
+                    <div id="cell53" class="tile23" onClick="clickTile(5,3);"></div>
+                    <div id="cell54" class="tile24" onClick="clickTile(5,4);"></div>
+                    <div id="cell55" class="tile25" onClick="clickTile(5,5);"></div>
+                </div>
+                <br><br>
+            </div>
+                <button onClick="location.reload();">New Puzzle</button>
+            </center>
+            <script type="application/javascript">
+                var sequence = "{{ additional_info["sequence"] }}"
+            </script>
+        </div>
+
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+        <h2 class="div-header">
+            Hints?
+        </h2>
+        <p class="info-text">
+            You could make an honest effort before attempting to look at the hints... or not... I don't judge!
+        </p>
+
+        <br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br>
+
+
+            <p class="info-text">
+                Hint: Breath... take a second to identify your corners and edges. Put those into place, and the rest
+                will be MUCH easier!<br>
+            </p>
+
+            <br><br><br><br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br><br><br><br>
+
+            <p class="info-text">
+            Hint: When solving an edge, the first three squares are cake! But, before you slide that fourth one
+            into place, put it in the spot of the fifth... or else you're going to be unable to slide the last one
+            into its spot.<br>
+        </p>
+
+        <br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br>
+
+        <p class="info-text">
+            Hint: A 5x5 sliding puzzle isn't harder than a 3x3... just solve 2 edges to make it a 4x4 first, then again
+            to get a 3x3 - don't just go top to bottom! (I recommend solving the left and top edges first) <br>
+        </p>
+
+        <br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br>
+
+        <p class="info-text">
+            Hint: You have a solid 1/3 chance of getting the last row to fall into place. If it doesn't work out, you
+            can just request a new puzzle :)<br>
+        </p>
+
+        <br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br>
+
+        <p class="info-text">
+            Hint: Seriously, you're still looking at hints?! Go solve the puzzle already!<br>
+        </p>
+
+    </div>
+
+
+    {% elif phase == '11' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+        In order to get your cipher for today, go to the address 1071 Centerville Rd., Warwick, RI and look for "Eardrum".
+            Then use the passphrase 003532. Good luck!
+
+            <br><br><br>
+            <label class="control-label col-sm-2">Enter Cipher</label>
+            <div class="cipher-input-div">
+                <input type="text" id="text2" class="form-control cipher-input" placeholder="Cipher">
+
+                <button type="button" id="2" class="btn btn-primary cipher-submit-btn">Submit</button>
+            </div>
+        </div>
+{#    Cipher: tqXQkB4D    #}
+
+
+    {% elif phase == '12' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+            <h1 class="title-waiting-text"><b>I like you</b></h1>
+            <h2 class="waiting-text">Wait until {{ next_day }} for your next challenge to appear</h2>
+        </div>
+    {% elif phase == '20' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+            <form id="sharon-quiz-form">
+                <h2 class="div-header">Pop Quiz!</h2>
+                <h5 class="text-danger form-error-message" id="add-event-error-text"></h5>
+
+                <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                        <label for="datepicker">What date did you begin dating Matt?</label>
+                        <input id="start-dating" width="276" class="form-control datepicker" disabled/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                        <label for="twenty-op">What date did you go to a Twenty-One Pilots concert (Hint: the date should look familiar!)</label>
+                        <input id="twenty-op" width="276" class="form-control datepicker" disabled/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                        <label for="pearl">On what date did you first take a romantic stroll up and down Pearl Street?</label>
+                        <input id="pearl" width="276" class="form-control datepicker" disabled/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4 mb-4">
+                        <label for="title">What are your two favorite colors? (alphabetically first first)</label>
+                        <input type="text" class="form-control" id="color1" placeholder="Color 1" >
+                    </div>
+{#                    and#}
+                    <div class="col-md-4 mb-3">
+                        <label for="title">Color 2<br><text style="opacity:.01">.</text></label>
+                        <input type="text" class="form-control" id="color2" placeholder="Color 2" >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                        <label for="hour">What's the name of the row that you go down in the grocery store? (1 word)</label>
+                        <input type="text" class="form-control" id="aisle" >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                        <label for="hour">What is another name for an island?</label>
+                        <input type="text" class="form-control" id="isle" >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                        <label for="buttons">What small, round items did you used to enjoy collecting?</label>
+                        <input type="text" class="form-control" id="buttons" >
+                    </div>
+                </div>
+                <br/>
+                <button class="btn btn-primary" type="submit">Submit quiz</button>
+            </form>
+        </div>
+    {% elif phase == '21' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+        In order to retrieve the cipher for today, go to the address 157 Congress Ave., Providence, RI.
+            Walk up to the front porch, and there will be a package there for Nyx Knight on it. Retrieve it without
+            being caught, and your mission is complete!
+
+            <br><br><br>
+            <label class="control-label col-sm-2">Enter Cipher</label>
+            <div class="cipher-input-div">
+                <input type="text" id="text4" class="form-control cipher-input" placeholder="Cipher">
+
+                <button type="button" id="4" class="btn btn-primary cipher-submit-btn">Submit</button>
+            </div>
+{#   Ciper: 8fBRCpgp     #}
+        </div>
+    {% elif phase == '22' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+            <h1 class="title-waiting-text"><b>I love you</b></h1>
+            <h2 class="waiting-text">
+                Wait until {{ next_day }} for your next challenge to appear.
+                Please be ready once the challenge begins!
+            </h2>
+        </div>
+    {% elif phase == '30' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+            Your next challenge is a picture upload! Put on your NEW dress, do you hair, and do whatever else you need!
+            Upload the best picture of yourself that you can!
+            Your picture must be approved by the mainframe before going to the next phase, so make it count!
+            <br>
+            Notes: You may submit more than one picture. All uploaded pictures will be recorded and considered.
+            You should also receive a text message when your photo is approved. You will be approved no earlier than 4:30.
+
+            <br><br>
+
+            <form id="photo-form" method="POST" action="/_submit_photo" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <p><input type="file" name="file"></p>
+                <p><input type="submit" value="Submit"></p>
+            </form>
+
+        </div>
+    {% elif phase == '31' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+        Take a Lyft/Uber to the following address: 199 Narragansett Ave, Newport, RI. You should have been sent
+            money to complete the mission. Once you arrive and exit the car, please tap the button below to notify the
+            mainframe of your arrival, and await more instructions
+
+            <br><br>
+        <button class="btn btn-primary" type="button" id="arrived-in-newport-btn">I Arrived!</button>
+
+        <br><br><br>
+            <label class="control-label col-sm-2">Enter Cipher</label>
+            <div class="cipher-input-div">
+                <input type="text" id="text6" class="form-control cipher-input" placeholder="Cipher">
+
+                <button type="button" id="6" class="btn btn-primary cipher-submit-btn">Submit</button>
+            </div>
+        </div>
+{#    cipher: Fox44R9Jt    #}
+    {% elif phase == '32' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+            <video id="final-video" width="320" height="240" controls>
+                <source src="{{ url_for("static", filename="downloads/sharonvid.mov") }}" type="video/mp4">
+            </video>
+
+        <div id="Example"></div>
+        </div>
+    {% elif phase == '33' %}
+        <div class="col-12 col-md-10 col-xl-10 content-div">
+            <h1 class="title-waiting-text" style="margin-top: -40px;"><b>Will you marry me?</b></h1>
+        </div>
+    {% endif %}
+
+{% endblock %}

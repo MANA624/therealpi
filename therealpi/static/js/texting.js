@@ -14,7 +14,6 @@ $(document).ready(function(){
 
     $("#self-text-form").submit(function(event){
         var form = document.getElementById('self-text-form');
-        console.log("Here");
         if(form.checkValidity() == false){
             return false
         }
@@ -53,7 +52,6 @@ $(document).ready(function(){
                 type: "POST",
                 url: "_send_text"
             }).done(function(data){
-                // window.location = "/admin";
                 $("#her-text-form")[0].reset();
                 createAlert("success", "Success!", data)
             }).fail(function(data){

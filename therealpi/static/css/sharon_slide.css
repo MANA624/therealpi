@@ -1,0 +1,41 @@
+/*
+Everything related to the sliding puzzle
+ */
+BODY {
+background: #AAAAAA;
+}
+
+.tile1, .tile2, .tile3, .tile4, .tile5, .tile6, .tile7, .tile8, .tile9, .tile10, .tile11, .tile12, .tile13, .tile14, .tile15, .tile16, .tile17, .tile18, .tile19, .tile20, .tile21, .tile22, .tile23, .tile24, .tile25 {
+  display: table-cell;
+  width: 100px;
+  height: 100px;
+  border: 1px solid white;
+  background: url("../img/doggo.jpg");
+  cursor: pointer;
+}
+
+.tile1 {background-position: 0% 0%;}
+.tile2 {background-position: 25% 0%;}
+.tile3 {background-position: 50% 0%;}
+.tile4 {background-position: 75% 0%;}
+.tile5 {background-position: 100% 0%;}
+.tile6 {background-position: 0% 25%;}
+.tile7 {background-position: 25% 25%;}
+.tile8 {background-position: 50% 25%;}
+.tile9 {background-position: 75% 25%;}
+.tile10 {background-position: 100% 25%;}
+.tile11 {background-position: 0% 50%;}
+.tile12 {background-position: 25% 50%;}
+.tile13 {background-position: 50% 50%;}
+.tile14 {background-position: 75% 50%;}
+.tile15 {background-position: 100% 50%;}
+.tile16 {background-position: 0% 75%;}
+.tile17 {background-position: 25% 75%;}
+.tile18 {background-position: 50% 75%;}
+.tile19 {background-position: 75% 75%;}
+.tile20 {background-position: 100% 75%;}
+.tile21 {background-position: 0% 100%;}
+.tile22 {background-position: 25% 100%;}
+.tile23 {background-position: 50% 100%;}
+.tile24 {background-position: 75% 100%;}
+.tile25 {background: white; cursor: default;}
