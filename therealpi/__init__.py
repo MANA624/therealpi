@@ -410,8 +410,8 @@ def get_phase():
     # TODO: Convert to EST
     day_begins = []
 
-    day_begins.append(datetime.now() - timedelta(days=0, hours=1))  # Nov 18
-    # day_begins.append(datetime(year=2020, month=11, day=18, hour=15, minute=30))  # Nov 18 @ 5:30EST
+    # day_begins.append(datetime.now() - timedelta(days=0, hours=1))  # Nov 18
+    day_begins.append(datetime(year=2020, month=11, day=18, hour=15, minute=30))  # Nov 18 @ 5:30EST
     day_begins.append(day_begins[0] + timedelta(days=1))  # Nov 19 @ 5:30 EST
     day_begins.append(day_begins[1] + timedelta(hours=21, minutes=45))  # Nov 20 @ 3:15PM EST
     day_begins.append(day_begins[2] + timedelta(days=9999))
