@@ -43,7 +43,6 @@ $(document).ready(function() {
             type: "POST",
             url: "_send_text"
         }).done(function (data) {
-            // $("#her-text-form")[0].reset();
             createAlert("success", "Hang tight!", "You will be contacted shortly")
         }).fail(function (data) {
             createAlert("danger", "Oops!", "Something went wrong. Please notify somebody ASAP")

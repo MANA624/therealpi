@@ -172,6 +172,19 @@ def roommate_required_post(f):
     return wrap
 
 
+def sharon_required_post(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if "logged_in" in session:
+            if "sharon" in session:
+                return f(*args, **kwargs)
+            else:
+                return Response("You don't have the privileges to do that!", status=403)
+        else:
+            return Response("You are not logged in", status=401)
+    return wrap
+
+
 def admin_required_post(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -397,8 +410,8 @@ def get_phase():
     # TODO: Convert to EST
     day_begins = []
 
-    # day_begins.append(datetime.now() + timedelta(days=0, hours=1))  # Nov 18
-    day_begins.append(datetime(year=2020, month=11, day=18, hour=15, minute=30))  # Nov 18 @ 5:30EST
+    day_begins.append(datetime.now() - timedelta(days=0, hours=1))  # Nov 18
+    # day_begins.append(datetime(year=2020, month=11, day=18, hour=15, minute=30))  # Nov 18 @ 5:30EST
     day_begins.append(day_begins[0] + timedelta(days=1))  # Nov 19 @ 5:30 EST
     day_begins.append(day_begins[1] + timedelta(hours=21, minutes=45))  # Nov 20 @ 3:15PM EST
     day_begins.append(day_begins[2] + timedelta(days=9999))
@@ -464,6 +477,7 @@ def validate_image(stream):
     return '.' + (format if format != 'jpeg' else 'jpg')
 
 
+@sharon_required_post
 @app.route('/_submit_photo', methods=['POST'])
 def upload_files():
     uploaded_file = request.files['file']
@@ -649,7 +663,7 @@ def delete_event():
 
 
 @app.route('/_send_text', methods=["POST"])
-@admin_required_post
+@sharon_required_post
 def send_text():
     try:
         text_config = app.config["TEXT"]
