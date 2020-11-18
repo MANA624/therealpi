@@ -417,6 +417,8 @@ def get_phase():
     if phase < max_challenges[day]:
         next_time = None
     else:
+        # Convert to EST
+        day_begins[day] += timedelta(hours=2)
         # if day_begins[day+1].day == datetime.now().day:
         #     print("same")
         if day_begins[day].strftime("%d") == datetime.now().strftime("%d"):
@@ -424,8 +426,6 @@ def get_phase():
         else:
             today_tomorrow = "tomorrow"
 
-        # Convert to EST
-        day_begins[day] += timedelta(hours=2)
         next_time = today_tomorrow + ', ' + day_begins[day].strftime("%x at %I:%M %p") + " EST"
         # Convert back to MST
         day_begins[day] -= timedelta(hours=2)
