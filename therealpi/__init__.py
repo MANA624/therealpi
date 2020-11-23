@@ -481,6 +481,9 @@ def validate_image(stream):
 @sharon_required_post
 @app.route('/_submit_photo', methods=['POST'])
 def upload_files():
+    if "file" not in request.files or request.files['file'].filename == '':
+        my_flash("danger", "Upload Not Successful", "File was not included")
+        return redirect(url_for('sharon_page'))
     uploaded_file = request.files['file']
     filename = secure_filename(uploaded_file.filename)
     filename = filename.lower()
