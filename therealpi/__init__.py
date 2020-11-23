@@ -477,6 +477,7 @@ def validate_image(stream):
     return '.' + (format if format != 'jpeg' else 'jpg')
 
 
+@csrf.exempt
 @sharon_required_post
 @app.route('/_submit_photo', methods=['POST'])
 def upload_files():
