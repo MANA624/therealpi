@@ -18,6 +18,6 @@ requests==2.23.0
 sendgrid==6.2.1
 six==1.14.0
 twilio==6.38.0
-urllib3==1.25.8
+urllib3==1.26.5
 Werkzeug==1.0.1
 WTForms==2.2.1
