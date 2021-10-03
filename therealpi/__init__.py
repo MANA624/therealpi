@@ -282,7 +282,8 @@ def calendar():
 @app.route('/texting')
 @admin_login_required
 def texting():
-    return render_template("texting.html", default="text")
+    messages = texts.find()
+    return render_template("texting.html", messages=messages, default="text")
 
 
 @app.route('/admin')

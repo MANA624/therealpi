@@ -14,6 +14,22 @@
     <h1>Manage Phone Texts</h1>
 
 
+    <!-- See existing messages -->
+
+    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
+        <h2 class="div-header">Stored Responses</h2>
+
+        {% if session.admin %}
+            {% for message in messages %}
+                <p> <b>{{message["sender"]}} ({{message["date"]}}):</b> {{message["body"]}}</p>
+            {% endfor %}
+
+        {% else %}
+        <p> SORRY! You can't see these!!</p>
+        {% endif %}
+
+    </div>
+
     <!--  Add a new challenge  -->
 
     <div class="col-12 col-md-10 col-xl-10 p-section content-div">
@@ -54,7 +70,6 @@
             <button class="btn btn-primary submit-button" type="submit">Send Text</button>
         </form>
     </div>
-
 
     {% endif %}
 
