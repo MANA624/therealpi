@@ -34,6 +34,7 @@ users = db.users
 schedule = db.events
 roommate = db.roommate
 sharon = db.sharon
+texts = db.texts
 iv = "G4XO4L\X<J;MPPLD"
 proxy_path = "/var/www/therealpi/therealpi/proxy/"
 
@@ -410,7 +411,7 @@ def get_phase():
     # TODO: Convert to EST
     day_begins = []
 
-    # day_begins.append(datetime.now() - timedelta(days=0, hours=1))  # Nov 18
+    # day_begins.append(datetime.now() - timedelta(days=2, hours=1))  # Nov 18
     day_begins.append(datetime(year=2020, month=11, day=18, hour=15, minute=30))  # Nov 18 @ 5:30EST
     day_begins.append(day_begins[0] + timedelta(days=1))  # Nov 19 @ 5:30 EST
     day_begins.append(day_begins[1] + timedelta(hours=21, minutes=45))  # Nov 20 @ 3:15PM EST
@@ -495,7 +496,6 @@ def upload_files():
         while os.path.exists(safe_join(app.root_path, url_for('static', filename="uploads/" + filename)[1:])):
             i += 1
             filename = "sharon" + str(i) + file_ext
-        print(filename)
         if not allowed_file(filename):
             return Response("Not an allowed file extension!", status=500)
         # if file_ext != validate_image(uploaded_file.stream):
@@ -694,6 +694,41 @@ def send_text():
         return Response("There was an error!", status=500)
     return Response("The text was sent successfully!")
 
+
+###
+### TODO: Implement
+###
+@app.route('/_recv_text', methods=["POST", "GET"])  # TODO: Change to POST only
+def recv_text():
+    try:
+        # TODO: Authenticate
+        text_config = app.config["TEXT"]
+        info = request.args
+
+        if info["From"] == text_config["my_num"]:
+            sender = "Matt"
+        elif info["From"] == text_config["sharon_num"]:
+            sender = "Sharon"
+        else:
+            sender = info["From"]
+
+        texts.insert({"sender": sender, "body": info["Body"], "date": datetime.now()})
+
+        twilio_cli = Client(text_config["SID"], text_config["auth_token"])
+
+        body = "Your message has been received!"
+        message = twilio_cli.messages.create(body=body,
+                                             from_=text_config["twilio_num"],
+                                             to=info["From"])
+
+    except Exception as e:
+        log_error(e)
+        return Response("There was an error in receiving the text!", status=500)
+    return Response("The text was sent successfully!")
+
+###
+### End: Implement
+###
 
 @app.route('/_call_self', methods=["POST"])
 @admin_required_post
