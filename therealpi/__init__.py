@@ -720,20 +720,14 @@ def recv_text():
             info[key] = info[key][0]
         headers = dict(request.headers)
 
-        # db.debug.insert(headers)
         if "X-Twilio-Signature" not in headers:
             raise KeyError("No X-Twilio-Signature key found in request %s", str(headers))
         twilio_sig = headers["X-Twilio-Signature"]
 
-        # db.debug.insert({"Now":"here"})
-
         validator = RequestValidator(text_config["auth_token"])
         url = request.url
-        # db.debug.insert({"Now": str(type(url)), "And": str(type(info)), "Final": str(type(twilio_sig))})
-        if not validator.validate(url, info, twilio_sig):
+        if not validator.validate(url, None, twilio_sig):  # GET needs no POST params...
             raise KeyError("Incorrect X-Twilio-Signature used!!")
-
-        # db.debug.insert({"Now": "and here"})
 
         if info["From"] == text_config["my_num"]:
             sender = "Matt"
