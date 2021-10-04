@@ -716,6 +716,7 @@ def recv_text():
         text_config = app.config["TEXT"]
         info = dict(request.args)
 
+        db.debug.insert(dict(request.headers))
         if "X-Twilio-Signature" not in dict(request.headers):
             raise KeyError("No X-Twilio-Signature key found in request")
         twilio_sig = dict(request.headers)["X-Twilio-Signature"]
