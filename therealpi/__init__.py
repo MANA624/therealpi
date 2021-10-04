@@ -716,7 +716,8 @@ def recv_text():
         text_config = app.config["TEXT"]
         info = dict(request.args)
 
-        db.debug.insert(dict(request.headers))
+        if "X-Twilio-Signature" not in dict(request.headers):
+            raise KeyError("No X-Twilio-Signature key found in request")
         twilio_sig = dict(request.headers)["X-Twilio-Signature"]
 
         validator = RequestValidator(text_config["auth_token"])
@@ -742,7 +743,7 @@ def recv_text():
 
     except Exception as e:
         log_error(e)
-        return redirect(url_for(not_found))
+        return abort(404)
     return Response("The text was sent successfully!")
 
 
