@@ -283,7 +283,18 @@ def calendar():
 @admin_login_required
 def texting():
     messages = texts.find()
-    return render_template("texting.html", messages=messages, default="text")
+
+    # Properly format the date
+    def stringify(message):
+        message["date"] = message["date"].strftime("%m/%d/%Y, %H:%M")
+        return message
+    messages = list(map(stringify, messages))
+
+    # Split into two groups
+    num_msgs_on_top = 10
+    messages1 = messages[:num_msgs_on_top]
+    messages2 = messages[num_msgs_on_top:]
+    return render_template("texting.html", messages1=messages1, messages2=messages2, default="text")
 
 
 @app.route('/admin')
@@ -689,6 +700,7 @@ def send_text():
         message = twilio_cli.messages.create(body=msg,
                                              from_=text_config["twilio_num"],
                                              to=num)
+        texts.insert({"sender": "Matt", "body": msg, "date": datetime.now()})
 
     except Exception as e:
         log_error(e)
@@ -705,6 +717,11 @@ def recv_text():
         # TODO: Authenticate
         text_config = app.config["TEXT"]
         info = request.args
+
+        ## TODO: REMOVE
+        db.debug.insert(dict(info))
+        db.debug.insert(dict(request.form))
+        # End remove
 
         if info["From"] == text_config["my_num"]:
             sender = "Matt"

@@ -20,7 +20,7 @@
         <h2 class="div-header">Stored Responses</h2>
 
         {% if session.admin %}
-            {% for message in messages %}
+            {% for message in messages1 %}
                 <p> <b>{{message["sender"]}} ({{message["date"]}}):</b> {{message["body"]}}</p>
             {% endfor %}
 
@@ -69,6 +69,19 @@
 
             <button class="btn btn-primary submit-button" type="submit">Send Text</button>
         </form>
+    </div>
+
+
+    <!-- See message history -->
+
+    <div class="col-12 col-md-10 col-xl-10 p-section content-div">
+        <h2 class="div-header">Message History</h2>
+
+        {% for message in messages2 %}
+            <p> <b>{{message["sender"]}} ({{message["date"]}}):</b> {{message["body"]}}</p>
+        {% endfor %}
+
+
     </div>
 
     {% endif %}
