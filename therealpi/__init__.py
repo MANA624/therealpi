@@ -725,8 +725,8 @@ def recv_text():
         db.debug.insert({"Now":"here"})
 
         validator = RequestValidator(text_config["auth_token"])
-        db.debug.insert({"Now": "mid"})
         url = request.url
+        db.debug.insert({"Now": str(type(url)), "And": str(type(info)), "Final": str(type(twilio_sig))})
         if not validator.validate(url, info, twilio_sig):
             raise KeyError("Incorrect X-Twilio-Signature used!!")
 
