@@ -716,7 +716,7 @@ def recv_text():
         text_config = app.config["TEXT"]
         info = dict(request.args)
 
-        twilio_sig = dict(request.form)["X-Twilio-Signature"]
+        twilio_sig = dict(request.headers)["X-Twilio-Signature"]
 
         validator = RequestValidator(text_config["auth_token"])
         url = request.url
