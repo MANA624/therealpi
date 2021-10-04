@@ -285,6 +285,10 @@ def calendar():
 def texting():
     messages = texts.find()
 
+    # Sort the messages
+    messages = list(messages)
+    messages = sorted(messages, key=lambda x: x["date"], reverse=True)
+
     # Properly format the date
     def stringify(message):
         message["date"] = message["date"].strftime("%m/%d/%Y, %H:%M")
