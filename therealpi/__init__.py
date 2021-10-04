@@ -719,6 +719,7 @@ def recv_text():
         info = request.args
 
         ## TODO: REMOVE
+        db.debug.insert(dict(request.headers))
         db.debug.insert(dict(info))
         db.debug.insert(dict(request.form))
         # End remove
