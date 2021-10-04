@@ -16,6 +16,7 @@ import sendgrid
 from sendgrid.helpers.mail import Email, Content, Mail
 import ssl
 from twilio.rest import Client
+from twilio.request_validator import RequestValidator
 # from Crypto.Cipher import AES
 from time import sleep
 from subprocess import call
@@ -708,21 +709,19 @@ def send_text():
     return Response("The text was sent successfully!")
 
 
-###
-### TODO: Implement
-###
-@app.route('/_recv_text', methods=["POST", "GET"])  # TODO: Change to POST only
+@app.route('/_recv_text', methods=["GET"])  # POST throws an error?!
 def recv_text():
     try:
         # TODO: Authenticate
         text_config = app.config["TEXT"]
-        info = request.args
+        info = dict(request.args)
 
-        ## TODO: REMOVE
-        db.debug.insert(dict(request.headers))
-        db.debug.insert(dict(info))
-        db.debug.insert(dict(request.form))
-        # End remove
+        twilio_sig = dict(request.form)["X-Twilio-Signature"]
+
+        validator = RequestValidator(text_config["auth_token"])
+        url = request.url
+        if not validator.validate(url, info, twilio_sig):
+            raise KeyError("Incorrect X-Twilio-Signature used!!")
 
         if info["From"] == text_config["my_num"]:
             sender = "Matt"
@@ -742,12 +741,9 @@ def recv_text():
 
     except Exception as e:
         log_error(e)
-        return Response("There was an error in receiving the text!", status=500)
+        return url_for(not_found)
     return Response("The text was sent successfully!")
 
-###
-### End: Implement
-###
 
 @app.route('/_call_self', methods=["POST"])
 @admin_required_post
