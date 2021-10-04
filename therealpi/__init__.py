@@ -715,16 +715,22 @@ def recv_text():
         # TODO: Authenticate
         text_config = app.config["TEXT"]
         info = dict(request.args)
+        headers = dict(request.headers)
 
-        db.debug.insert(dict(request.headers))
-        if "X-Twilio-Signature" not in dict(request.headers):
-            raise KeyError("No X-Twilio-Signature key found in request")
-        twilio_sig = dict(request.headers)["X-Twilio-Signature"]
+        db.debug.insert(headers)
+        if "X-Twilio-Signature" not in headers:
+            raise KeyError("No X-Twilio-Signature key found in request %s", str(headers))
+        twilio_sig = headers["X-Twilio-Signature"]
+
+        db.debug.insert({"Now":"here"})
 
         validator = RequestValidator(text_config["auth_token"])
+        db.debug.insert({"Now": "mid"})
         url = request.url
         if not validator.validate(url, info, twilio_sig):
             raise KeyError("Incorrect X-Twilio-Signature used!!")
+
+        db.debug.insert({"Now": "and here"})
 
         if info["From"] == text_config["my_num"]:
             sender = "Matt"
