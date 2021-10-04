@@ -741,7 +741,7 @@ def recv_text():
 
     except Exception as e:
         log_error(e)
-        return url_for(not_found)
+        return redirect(url_for(not_found))
     return Response("The text was sent successfully!")
 
 
