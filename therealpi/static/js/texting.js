@@ -39,7 +39,6 @@ $(document).ready(function(){
 
     $("#her-text-form").submit(function(event){
         var form = document.getElementById('her-text-form');
-        console.log("Here");
         if(form.checkValidity() == false){
             return false
         }

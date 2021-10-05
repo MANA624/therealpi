@@ -25,7 +25,7 @@
                 <a class="nav-link active" data-toggle="tab" href="#users">Users</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#proxy">Proxy</a>
+                <a class="nav-link" data-toggle="tab" href="#texting">Texting</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#jobs">Jobs</a>
@@ -106,19 +106,15 @@
 
         <!-- The Texting tab -->
 
-        <div id="proxy" class="tab-pane fade">
+        <div id="texting" class="tab-pane fade">
 
             <!-- Manage the proxy! -->
 
             <div class="p-section content-div">
-                <h2 class="div-header">Proxy Manager</h2>
+                <h2 class="div-header">Texting</h2>
 
-                <br/>
-                The proxy is currently <span id="proxy-status">{{ status }}</span>
-                <br/><br/>
-
-                <button class="btn btn-primary submit-button" type="submit" id="enable_prox" onclick="switch_proxy(true)">Enable Proxy</button>
-                <button class="btn btn-danger submit-button" type="submit" id="disable_prox" onclick="switch_proxy(false)">Disable Proxy</button>
+                <button class="btn btn-primary submit-button" type="submit" id="clear-all">Clear All Logs</button>
+                <button class="btn btn-primary submit-button" type="submit" id="clear-extended" onclick="clear_logs(false)">Clear Extended</button>
             </div>
         </div>
 

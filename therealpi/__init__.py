@@ -774,6 +774,33 @@ def create_user():
     return Response("User successfully created!"), 201
 
 
+@app.route('/_clear_texting_logs', methods=["POST"])
+@admin_required_post
+def clear_texting_logs():
+    try:
+        form = dict(request.form)
+        form = check_dict(form, ("clear_all",))
+        if not form:
+            return Response("Not all required fields were sent", status=400)
+
+        clear_all = form["clear_all"]
+        if clear_all not in ["true", "false"]:
+            return Response("Improper formatting", status=400)
+        clear_all = True if (clear_all == "true") else False
+
+        all_texts = list(texts.find())
+
+        texts.remove({})
+        if not clear_all:
+            all_texts = sorted(all_texts, key=lambda x: x["date"], reverse=True)
+            all_texts = all_texts[:10]
+            texts.insert(all_texts)
+    except Exception as e:
+        log_error(e)
+        return Response("There was an error accessing the database", status=500)
+    return Response("Logs cleared successfully!"), 201
+
+
 @app.route('/_create_job', methods=["POST"])
 @admin_required_post
 def create_job():

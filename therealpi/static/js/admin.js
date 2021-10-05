@@ -1,20 +1,28 @@
-function switch_proxy(enabling){
-    $.ajax({
-        data: {
-            "is_enable": enabling
-        },
-        type: "POST",
-        dataType: 'json',
-        url: "_proxy_switch",
-    }).done(function(data){
-        $("#proxy-status").html(data.status);
-        createAlert("success", "Success!", data.message)
-    }).fail(function(data){
-        createAlert("danger", "Oops!", data.responseText)
-    });
-}
+
 
 $(document).ready(function(){
+
+    function clear_logs(clear_all){
+        $.ajax({
+            data: {
+                "clear_all": clear_all
+            },
+            type: "POST",
+            dataType: 'json',
+            url: "_clear_texting_logs",
+        }).done(function(data){
+            console.log(data.response)
+            createAlert("success", "Success!", data)
+        }).fail(function(data){
+            createAlert("danger", "Oops!", data.responseText)
+        });
+    }
+    $("#clear-all").click(function(event){
+        clear_logs(true);
+    });
+    $("#clear-extended").click(function(event){
+        clear_logs(false);
+    });
 
     $("#create-user-form").submit(function(event){
         $("#add-user-error-text").html("");
