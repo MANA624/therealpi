@@ -8,7 +8,6 @@ $(document).ready(function(){
                 "clear_all": clear_all
             },
             type: "POST",
-            dataType: 'json',
             url: "_clear_texting_logs",
         }).done(function(data){
             console.log(data.response)
@@ -16,6 +15,7 @@ $(document).ready(function(){
         }).fail(function(data){
             createAlert("danger", "Oops!", data.responseText)
         });
+        event.preventDefault();
     }
     $("#clear-all").click(function(event){
         clear_logs(true);

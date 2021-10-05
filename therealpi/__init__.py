@@ -791,7 +791,7 @@ def clear_texting_logs():
         all_texts = list(texts.find())
 
         texts.remove({})
-        if not clear_all:
+        if not clear_all and all_texts:
             all_texts = sorted(all_texts, key=lambda x: x["date"], reverse=True)
             all_texts = all_texts[:10]
             texts.insert(all_texts)
