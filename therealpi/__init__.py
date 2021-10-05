@@ -17,6 +17,7 @@ from sendgrid.helpers.mail import Email, Content, Mail
 import ssl
 from twilio.rest import Client
 from twilio.request_validator import RequestValidator
+from twilio.twiml.messaging_response import MessagingResponse
 # from Crypto.Cipher import AES
 from time import sleep
 from subprocess import call
@@ -37,7 +38,6 @@ roommate = db.roommate
 sharon = db.sharon
 texts = db.texts
 iv = "G4XO4L\X<J;MPPLD"
-proxy_path = "/var/www/therealpi/therealpi/proxy/"
 
 """
     BEGIN BLOCK: HELPER FUNCTIONS
@@ -305,26 +305,12 @@ def texting():
 @app.route('/admin')
 @admin_login_required
 def admin():
-    try:
-        status_file = proxy_path + "status"
-        with open(status_file) as reader:
-            status = reader.read()
-            status = int(status)
-        if not status:
-            status_text = "off"
-        elif status == 1:
-            status_text = "on"
-        else:
-            status_text = "unknown"
-    except Exception as e:
-        status_text = "unknown"
-
     # Sharon stuff
     pics = os.listdir(safe_join(app.root_path, 'static/uploads'))
     # print(url_for('static', filename="uploads/Sharon.JPG"))
     # End Sharon stuff
 
-    return render_template("admin.html", default="admin", status=status_text, pics=pics)
+    return render_template("admin.html", default="admin", pics=pics)
 
 
 
@@ -731,6 +717,7 @@ def recv_text():
         validator = RequestValidator(text_config["auth_token"])
         url = request.url
         if not validator.validate(url, None, twilio_sig):  # GET needs no POST params...
+            # db.debug.insert({"url": url, "twilio_sig": twilio_sig})
             raise KeyError("Incorrect X-Twilio-Signature used!!")
 
         if info["From"] == text_config["my_num"]:
@@ -742,17 +729,13 @@ def recv_text():
 
         texts.insert({"sender": sender, "body": info["Body"], "date": datetime.now()})
 
-        twilio_cli = Client(text_config["SID"], text_config["auth_token"])
-
-        body = "Your message has been received!"
-        message = twilio_cli.messages.create(body=body,
-                                             from_=text_config["twilio_num"],
-                                             to=info["From"])
-
     except Exception as e:
         log_error(e)
         return abort(404)
-    return Response("The text was sent successfully!")
+    # On success, send a response message
+    resp = MessagingResponse()
+    resp.message("The message was processed successfully!")
+    return str(resp)
 
 
 @app.route('/_call_self', methods=["POST"])
@@ -789,32 +772,6 @@ def create_user():
         log_error(e)
         return Response("There was an error accessing the database", status=500)
     return Response("User successfully created!"), 201
-
-
-@app.route('/_proxy_switch', methods=["POST"])
-@admin_required_post
-def proxy_switch():
-    manager_file = "proxyManager.sh"
-    try:
-        action_dict = dict(request.form)
-        action_dict = check_dict(action_dict, ("is_enable",))
-        action_dict["is_enable"] = action_dict["is_enable"][0]
-        if action_dict["is_enable"] == 'true':
-            action = "start"
-        else:
-            action = "stop"
-        retcode = call([proxy_path+manager_file, action])
-        if retcode == 0:
-            if action == "start":
-                status = "on"
-            else:
-                status = "off"
-        else:
-            status = "unknown"
-    except Exception as e:
-        log_error(e)
-        return Response("There was an error changing the proxy", status=500)
-    return jsonify(message="Proxy switched!", status=status), 201
 
 
 @app.route('/_create_job', methods=["POST"])
