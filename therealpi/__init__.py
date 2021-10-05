@@ -783,7 +783,7 @@ def clear_texting_logs():
         if not form:
             return Response("Not all required fields were sent", status=400)
 
-        clear_all = form["clear_all"]
+        clear_all = form["clear_all"][0]
         if clear_all not in ["true", "false"]:
             return Response("Improper formatting", status=400)
         clear_all = True if (clear_all == "true") else False
