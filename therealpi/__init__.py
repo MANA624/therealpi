@@ -701,8 +701,8 @@ def send_text():
 
 @app.route('/_recv_text', methods=["GET"])  # POST throws an error?!
 def recv_text():
+    validated = True
     try:
-        # TODO: Authenticate
         text_config = app.config["TEXT"]
         info = dict(request.args)
         # Everything is a list of a single string for some reason
@@ -710,15 +710,17 @@ def recv_text():
             info[key] = info[key][0]
         headers = dict(request.headers)
 
-        if "X-Twilio-Signature" not in headers:
+        if "X-Twilio-Signature" not in headers or ("From" not in info) or ("Body" not in info):
             raise KeyError("No X-Twilio-Signature key found in request %s", str(headers))
         twilio_sig = headers["X-Twilio-Signature"]
 
         validator = RequestValidator(text_config["auth_token"])
         url = request.url
+
+        body = info["Body"]
         if not validator.validate(url, None, twilio_sig):  # GET needs no POST params...
-            # db.debug.insert({"url": url, "twilio_sig": twilio_sig})
-            raise KeyError("Incorrect X-Twilio-Signature used!!")
+            validated = False
+            body = "(Unvalidated!): " + body
 
         if info["From"] == text_config["my_num"]:
             sender = "Matt"
@@ -727,7 +729,10 @@ def recv_text():
         else:
             sender = info["From"]
 
-        texts.insert({"sender": sender, "body": info["Body"], "date": datetime.now()})
+        texts.insert({"sender": sender, "body": body, "date": datetime.now()})
+
+        if not validated:
+            raise KeyError("Incorrect X-Twilio-Signature used!!")
 
     except Exception as e:
         log_error(e)
