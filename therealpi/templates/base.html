@@ -63,11 +63,6 @@
             <li class="nav-item {% if default == 'contact' %}active{% else %}{% endif %}">
                 <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
             </li>
-            {% if session.roommate or session.employer %}
-                <li class="nav-item {% if default == 'roommates' %}active{% else %}{% endif %}">
-                    <a class="nav-link" href="{{ url_for('roommates') }}">Roommates</a>
-                </li>
-            {% endif %}
             {% if session.admin or session.employer %}
                 <li class="nav-item {% if default == 'cal' %}active{% else %}{% endif %}">
                     <a class="nav-link" href="{{ url_for('calendar') }}">Calendar</a>

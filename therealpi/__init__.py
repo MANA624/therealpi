@@ -34,7 +34,6 @@ db = client.schedule
 jobs = db.jobs
 users = db.users
 schedule = db.events
-roommate = db.roommate
 sharon = db.sharon
 texts = db.texts
 iv = "G4XO4L\X<J;MPPLD"
@@ -161,19 +160,6 @@ def login_required(f):
     return wrap
 
 
-def roommate_required_post(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if "logged_in" in session:
-            if "roommate" in session:
-                return f(*args, **kwargs)
-            else:
-                return Response("You don't have the privileges to do that!", status=403)
-        else:
-            return Response("You are not logged in", status=401)
-    return wrap
-
-
 def sharon_required_post(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -239,25 +225,6 @@ def resume():
 @app.route('/contact')
 def contact():
     return render_template("contact.html", default="contact")
-
-
-@app.route('/roommates')
-@login_required
-def roommates():
-    month = (datetime.now() - timedelta(days=2)).strftime("%B")
-    search = {}
-    try:
-        search = roommate.find_one({"month": month})
-        if search is None:
-            new_month = (datetime.now() + timedelta(days=15)).strftime("%B")
-            search = {"month": new_month, "rent": [2300, 0, 0, 0], "aaron": ["", ""],
-                      "michael": ["", ""], "matt": ["", ""], "ryan": ["", ""]}
-            roommate.insert_one(search)
-        my_flash("success", "Notice!", "You rock!")
-    except Exception as e:
-        log_error(e)
-        abort(500)
-    return render_template("roommates.html", default="roommates", info=search)
 
 
 @app.route('/calendar')
@@ -588,23 +555,6 @@ def send_email():
         log_error(e)
         return Response("There was an error sending the email", status=500)
     return Response("Email sent!")
-
-
-@app.route('/_update_roommate', methods=["POST"])
-@roommate_required_post
-def update_roommate():
-    month = (datetime.now() - timedelta(days=1)).strftime("%B")
-    try:
-        update = request.form.to_dict(flat=False)
-        update = check_dict(update, ("rent", "ryan", "aaron", "matt", "michael"))
-        if not update:
-            return Response("Not all required fields were sent", status=400)
-        update["month"] = month
-        roommate.find_one_and_replace({"month": month}, update)
-        return Response("Successfully updated info")
-    except Exception as e:
-        log_error(e)
-        return Response("Couldn't update information in database", status=500)
 
 
 @app.route('/_add_event', methods=["POST"])
