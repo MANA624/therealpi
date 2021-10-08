@@ -100,7 +100,7 @@ $(document).ready(function(){
         else{
             $.ajax({
                 data: {
-                    "old_title": $("#old-job-title").val(),
+                    "job_id": $("#job-id").val(),
                     "job_title": $("#new-job-title").val(),
                     "dates_worked": $("#new-dates").val(),
                     "heading": $("#new-heading").val(),

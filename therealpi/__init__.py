@@ -332,6 +332,7 @@ def admin():
 def sharon_page():
     # form = PostForm()
     phase, next_day = get_phase()
+    # phase = '33'
     additional_info = {}
     if phase == '10':
         sequences = [
@@ -424,6 +425,7 @@ def get_phase():
     day = 0
     while curr_time > day_begins[day]:
         day += 1
+    # day -= 1
 
     # increment_phase(amount=1)
     # reset_phase()
@@ -831,19 +833,22 @@ def create_job():
 def edit_job():
     try:
         job = request.form.to_dict()
-        job = check_dict(job, ("old_title", "job_title", "dates_worked", "heading", "order", "job_description"))
+        job = check_dict(job, ("job_id", "job_title", "dates_worked", "heading", "order", "job_description"))
         if not job:
             return Response("Not all required fields were sent", status=400)
-        if jobs.find({"job_title": job["old_title"]}).count() == 0:
-            return Response("No job with that title", status=400)
+        try:
+            job["job_id"] = int(job["job_id"])
+        except ValueError:
+            return Response("Not a real job id", status=400)
+        if jobs.find({"order": job["job_id"]}).count() == 0:
+            return Response("No job with that job id", status=400)
         final_dict = {}
         for key in job:
-            if key != "old_title" and job[key]:
+            if job[key]:
                 final_dict[key] = job[key]
         if "order" in final_dict:
             final_dict["order"] = int(final_dict["order"])
-        print(final_dict)
-        jobs.update({"job_title": job["old_title"]}, {"$set": final_dict})
+        jobs.update({"order": job["job_id"]}, {"$set": final_dict})
     except Exception as e:
         log_error(e)
         return Response("There was an error accessing the database", status=500)
