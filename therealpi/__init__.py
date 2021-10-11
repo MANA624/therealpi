@@ -32,6 +32,7 @@ WTF_CSRF_TIME_LIMIT = None
 client = MongoClient('localhost')
 db = client.schedule
 jobs = db.jobs
+stats = db.hstats
 users = db.users
 schedule = db.events
 sharon = db.sharon
@@ -442,7 +443,6 @@ def validate_image(stream):
     return '.' + (format if format != 'jpeg' else 'jpg')
 
 
-@csrf.exempt
 @sharon_required_post
 @app.route('/_submit_photo', methods=['POST'])
 def upload_files():
@@ -468,15 +468,6 @@ def upload_files():
         uploaded_file.save(path)
     my_flash("success", "Upload Successful!", "Refresh often to check for approval!")
     return redirect(url_for('sharon_page'))
-
-
-
-
-
-
-
-
-
 
 
 """
@@ -796,6 +787,35 @@ def edit_job():
         return Response("There was an error accessing the database", status=500)
     return Response("Job successfully edited!"), 201
 
+
+@app.route('/_edit_stats', methods=["POST"])
+@admin_required_post
+def edit_stats():
+    try:
+        stats_dict = request.form.to_dict()
+        stats_dict = check_dict(stats_dict, ("crackmes", "cyhi", "htb", "otw"))
+        if not stats_dict:
+            return Response("Not all required fields were sent", status=400)
+
+        try:
+            for key in stats_dict:
+                if stats_dict[key]:
+                    stats_dict[key] = int(stats_dict[key])
+        except ValueError:
+            return Response("Not a real job id", status=400)
+        final_dict = dict()
+        for key in stats_dict:
+            if stats_dict[key]:
+                final_dict[key] = stats_dict[key]
+
+        if stats.find().count() == 0:
+            stats.insert_one(final_dict)
+        else:
+            stats.update({}, {"$set": final_dict})
+    except Exception as e:
+        log_error(e)
+        return Response("There was an error accessing the database", status=500)
+    return Response("Job successfully edited!"), 201
 
 """
     END SECTION: AJAX REQUESTS

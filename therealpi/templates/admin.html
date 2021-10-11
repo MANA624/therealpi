@@ -30,6 +30,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#jobs">Jobs</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#stats">Stats</a>
+            </li>
             {% if session.admin %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#sharon">Sharon</a>
@@ -219,6 +222,52 @@
                     </div>
 
                     <button class="btn btn-primary submit-button" type="submit">Edit Job</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- The Hacking Stats tab-->
+
+        <div id="stats" class="tab-pane fade">
+
+            <!--  Edit the stats  -->
+
+            <div class="p-section content-div">
+                <form class="needs-validation" id="hack-stats-form">
+                    <h2 class="div-header">Edit Stats</h2>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="crackmes">Crackmes Solved</label>
+                            <input type="text" class="form-control" id="crackmes" placeholder="Crackme" value="4" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="cyhi">Can You Hack It</label>
+                            <input type="text" class="form-control" id="cyhi" placeholder="CYHI" value="2570">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="htb">New Dates Worked</label>
+                            <input type="text" class="form-control" id="htb" placeholder="htb" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-5">
+                            <label for="otw">Over The Wire</label>
+                            <input type="text" class="form-control" id="otw" placeholder="OtW" value="37">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary submit-button" type="submit">Edit Stats</button>
                 </form>
             </div>
         </div>

@@ -118,4 +118,29 @@ $(document).ready(function(){
             event.preventDefault();
         }
     });
+
+    $("#hack-stats-form").submit(function(event){
+        var form = $('#hack-stats-form');
+        if(form[0].checkValidity() == false){
+            return false;
+        }
+        else{
+            $.ajax({
+                data: {
+                    "crackmes": $("#crackmes").val(),
+                    "cyhi": $("#cyhi").val(),
+                    "htb": $("#htb").val(),
+                    "otw": $("#otw").val(),
+                },
+                type: "POST",
+                url: "_edit_stats"
+            }).done(function(data){
+                form[0].reset();
+                createAlert("success", "Success!", data)
+            }).fail(function(data){
+                createAlert("danger", "Oops!", data.responseText)
+            });
+            event.preventDefault();
+        }
+    });
 });
