@@ -538,7 +538,7 @@ def send_email():
 
 
 @app.route('/_add_event', methods=["POST"])
-@admin_required_post
+@sharon_required_post
 def add_event():
     try:
         event = request.form.to_dict()
