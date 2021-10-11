@@ -13,6 +13,9 @@
 {% block body %}
 
     <h1>The Resume Page</h1>
+
+    <!-- File downloads and links -->
+
     <div class="col-12 col-md-10 col-xl-10 content-div">
         <h2 class="div-header">File Downloads</h2>
         <p class="info-text">
@@ -28,6 +31,8 @@
             My GitHub portfolio: <a href="https://github.com/MANA624/Portfolio" target="_blank">Click here</a> to see.
         </p>
     </div>
+
+    <!-- Extended Work Experience -->
 
     <div class="col-12 col-md-10 col-xl-10 content-div">
         <h2 class="div-header">Extended Work Experience</h2>
@@ -67,6 +72,31 @@
                 There don't appear to be any jobs in the database. Must have been an error. Sorry about that.
             </p>
         {% endif %}
+    </div>
+
+    <!-- Hacking Challenges -->
+
+    <div class="col-12 col-md-10 col-xl-10 content-div">
+        <h2 class="div-header">Hacking Challenges</h2>
+        <p class="info-text">
+            These are some of the challenges that I've done outside of work and school to hone my security knowledge,
+            learn more about systems, and have a little fun!
+        </p>
+
+        <div id="hacking-stats" class="col-6 col-md-5 col-xl-5 content-div" >
+            <p class="float-right">
+                {{ stats["crackme"] }}   <br>
+                {{ stats["cyhi"] }}/3170 <br>
+                {{ stats["htb"] }}       <br>
+                {{ stats["otw"] }}       <br>
+            </p>
+
+            Number of <a href="https://crackmes.one/">crackmes</a> solved:    <br>
+            <a href="https://hack.ainfosec.com/">Can You Hack It</a> points:                        <br>
+            Number of <a href="https://www.hackthebox.eu/">Hack the Box</a>s pwnd:                  <br>
+            Number of <a href="https://overthewire.org/wargames/">Over The Wire</a> Wargames:       <br>
+
+        </div>
     </div>
 
 {% endblock %}

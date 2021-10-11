@@ -214,12 +214,18 @@ def employer():
 @app.route('/resume')
 def resume():
     listings = []
+    stats = {
+        "crackme": "4",
+        "cyhi": "2570",
+        "htb": "0",
+        "otw": "37",
+    }
     try:
         for listing in jobs.find().sort([("order", DESCENDING)]):
             listings.append(listing)
     except Exception as e:
         log_error(e)
-    return render_template("resume.html", default="res", listings=listings)
+    return render_template("resume.html", default="res", listings=listings, stats=stats)
 
 
 @app.route('/contact')
@@ -280,26 +286,12 @@ def admin():
     return render_template("admin.html", default="admin", pics=pics)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/sharon2')
 @sharon_login_required
 def sharon_page():
     # form = PostForm()
     phase, next_day = get_phase()
-    # phase = '33'
+    # phase = '12'
     additional_info = {}
     if phase == '10':
         sequences = [
