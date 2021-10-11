@@ -215,18 +215,13 @@ def employer():
 @app.route('/resume')
 def resume():
     listings = []
-    stats = {
-        "crackme": "4",
-        "cyhi": "2570",
-        "htb": "0",
-        "otw": "37",
-    }
+    stats_dict = stats.find_one({})
     try:
         for listing in jobs.find().sort([("order", DESCENDING)]):
             listings.append(listing)
     except Exception as e:
         log_error(e)
-    return render_template("resume.html", default="res", listings=listings, stats=stats)
+    return render_template("resume.html", default="res", listings=listings, stats=stats_dict)
 
 
 @app.route('/contact')
@@ -800,18 +795,15 @@ def edit_stats():
         try:
             for key in stats_dict:
                 if stats_dict[key]:
+                    print(stats_dict[key])
                     stats_dict[key] = int(stats_dict[key])
         except ValueError:
-            return Response("Not a real job id", status=400)
-        final_dict = dict()
-        for key in stats_dict:
-            if stats_dict[key]:
-                final_dict[key] = stats_dict[key]
+            return Response("All inputs must be numbers", status=400)
 
         if stats.find().count() == 0:
-            stats.insert_one(final_dict)
+            stats.insert_one(stats_dict)
         else:
-            stats.update({}, {"$set": final_dict})
+            stats.update({}, {"$set": stats_dict})
     except Exception as e:
         log_error(e)
         return Response("There was an error accessing the database", status=500)
