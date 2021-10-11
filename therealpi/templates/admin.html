@@ -239,7 +239,7 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-5">
                             <label for="crackmes">Crackmes Solved</label>
-                            <input type="text" class="form-control" id="crackmes" placeholder="Crackme" value="4" required>
+                            <input type="text" class="form-control" id="crackmes" placeholder="Crackme" value="{{stats['crackmes']}}" required>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -249,21 +249,21 @@
                     <div class="form-row">
                         <div class="col-md-6 mb-5">
                             <label for="cyhi">Can You Hack It</label>
-                            <input type="text" class="form-control" id="cyhi" placeholder="CYHI" value="2570">
+                            <input type="text" class="form-control" id="cyhi" placeholder="CYHI" value="{{stats['cyhi']}}">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-6 mb-5">
                             <label for="htb">Hack the Box Pwnd</label>
-                            <input type="text" class="form-control" id="htb" placeholder="htb" value="0">
+                            <input type="text" class="form-control" id="htb" placeholder="htb" value="{{stats['htb']}}">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-6 mb-5">
                             <label for="otw">Over The Wire</label>
-                            <input type="text" class="form-control" id="otw" placeholder="OtW" value="37">
+                            <input type="text" class="form-control" id="otw" placeholder="OtW" value="{{stats['otw']}}">
                         </div>
                     </div>
 

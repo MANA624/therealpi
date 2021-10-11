@@ -279,7 +279,9 @@ def admin():
     # print(url_for('static', filename="uploads/Sharon.JPG"))
     # End Sharon stuff
 
-    return render_template("admin.html", default="admin", pics=pics)
+    stats_dict = stats.find_one({})
+
+    return render_template("admin.html", default="admin", pics=pics, stats=stats_dict)
 
 
 @app.route('/sharon2')
