@@ -21,7 +21,11 @@
 
         {% if session.admin %}
             {% for message in messages1 %}
-                <p> <b>{{message["sender"]}} ({{message["date"]}}):</b> {{message["body"]}}</p>
+                {% if message["sender"] == "Matt" %}
+                    <p align="right">{{message["body"]}} :<b>{{message["sender"]}} ({{message["date"]}})</b></p>
+                {% else %}
+                    <p> <b>{{message["sender"]}} ({{message["date"]}}):</b> {{message["body"]}}</p>
+                {% endif %}
             {% endfor %}
 
         {% else %}

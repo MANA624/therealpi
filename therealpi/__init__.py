@@ -262,12 +262,18 @@ def texting():
     def stringify(message):
         message["date"] = message["date"].strftime("%m/%d/%Y, %H:%M")
         return message
-    messages = list(map(stringify, messages))
 
-    # Split into two groups
-    num_msgs_on_top = 10
-    messages1 = messages[:num_msgs_on_top]
-    messages2 = messages[num_msgs_on_top:]
+    convert = lambda msgs: list(map(stringify, msgs)) ^ M
+    # Split into two groups (today and not today)^M
+    messages1 = []
+    messages2 = []
+    for msg in messages:
+        if msg["date"].date() == datetime.today().date():
+            messages1.append(msg)
+    else:
+        messages2.append(msg)
+        messages1 = convert(messages1)
+        messages2 = convert(messages2)
     return render_template("texting.html", messages1=messages1, messages2=messages2, default="text")
 
 
