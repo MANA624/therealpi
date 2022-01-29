@@ -263,8 +263,8 @@ def texting():
         message["date"] = message["date"].strftime("%m/%d/%Y, %H:%M")
         return message
 
-    convert = lambda msgs: list(map(stringify, msgs)) ^ M
-    # Split into two groups (today and not today)^M
+    convert = lambda msgs: list(map(stringify, msgs))
+    # Split into two groups (today and not today)
     messages1 = []
     messages2 = []
     for msg in messages:
@@ -272,8 +272,8 @@ def texting():
             messages1.append(msg)
     else:
         messages2.append(msg)
-        messages1 = convert(messages1)
-        messages2 = convert(messages2)
+    messages1 = convert(messages1)
+    messages2 = convert(messages2)
     return render_template("texting.html", messages1=messages1, messages2=messages2, default="text")
 
 
