@@ -630,7 +630,8 @@ def send_text():
         message = twilio_cli.messages.create(body=msg,
                                              from_=text_config["twilio_num"],
                                              to=num)
-        texts.insert({"sender": "Matt", "body": msg, "date": datetime.now()})
+        if recipient != "matt":
+            texts.insert({"sender": "Matt", "body": msg, "date": datetime.now()})
 
     except Exception as e:
         log_error(e)
