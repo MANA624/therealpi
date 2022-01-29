@@ -270,8 +270,8 @@ def texting():
     for msg in messages:
         if msg["date"].date() == datetime.today().date():
             messages1.append(msg)
-    else:
-        messages2.append(msg)
+        else:
+            messages2.append(msg)
     messages1 = convert(messages1)
     messages2 = convert(messages2)
     return render_template("texting.html", messages1=messages1, messages2=messages2, default="text")
