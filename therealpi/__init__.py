@@ -676,9 +676,9 @@ def recv_text():
     try:
         text_config = app.config["TEXT"]
         info = dict(request.args)
-        # Everything is a list of a single string for some reason
+        # Everything used to be a list of a single string for some reason?? But it's not anymore...
         for key in info:
-            info[key] = info[key][0]
+            info[key] = info[key]
         headers = dict(request.headers)
 
         if "X-Twilio-Signature" not in headers or ("From" not in info) or ("Body" not in info):
