@@ -93,7 +93,7 @@ def check_dict(old_dict, keys):
 
 def format_error(stack, err):
     err = err.split('\n')
-    ret = "\n******* ERROR IN PROGRAM at {0} ********\n\n{1}\n".format(datetime.datetime.now(), err[0])
+    ret = "\n******* ERROR IN PROGRAM at {0} ********\n\n{1}\n".format(datetime.now(), err[0])
     for item in StackSummary.from_list(stack).format():
         ret += item
     ret += '\n'.join(err[1:]) + "\n****** END OF STACK TRACE ********\n"
