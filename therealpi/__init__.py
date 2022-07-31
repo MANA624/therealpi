@@ -23,6 +23,8 @@ from time import sleep
 from subprocess import call
 from random import choice
 import imghdr
+from traceback import StackSummary, extract_stack, format_exc
+import logging
 
 
 app = Flask(__name__)
@@ -38,6 +40,7 @@ schedule = db.events
 sharon = db.sharon
 texts = db.texts
 iv = "G4XO4L\X<J;MPPLD"
+logging.basicConfig(filename="/var/log/therealpi.log", level=logging.INFO)
 
 """
     BEGIN BLOCK: HELPER FUNCTIONS
@@ -88,9 +91,29 @@ def check_dict(old_dict, keys):
         return False
 
 
-def log_error(e):
-    print(e)
+def format_error(stack, err):
+    err = err.split('\n')
+    ret = "\n******* ERROR IN PROGRAM at {0} ********\n\n{1}\n".format(datetime.datetime.now(), err[0])
+    for item in StackSummary.from_list(stack).format():
+        ret += item
+    ret += '\n'.join(err[1:]) + "\n****** END OF STACK TRACE ********\n"
+    return ret
 
+
+def log_error(stack, err):
+    err_string = format_error(stack, err)
+    logging.error(err_string)
+
+
+# TODO: Implement and finish
+def set_log_level(new_level):
+    log_levels = {'info': logging.INFO, 'error': logging.ERROR}
+    logging.getLogger().setLevel(log_levels['info'])
+
+
+def get_log_level():
+    log_levels = {logging.INFO: 'info', logging.ERROR: 'error'}
+    return log_levels.get(logging.getLogger().level, "unknown")
 
 # Sanitizing input in Python and MongoDB usually isn't that big of a deal,
 # but just to be safe we'll take away all capabilities that can be found through
@@ -220,7 +243,8 @@ def resume():
         for listing in jobs.find().sort([("order", DESCENDING)]):
             listings.append(listing)
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
     return render_template("resume.html", default="res", listings=listings, stats=stats_dict)
 
 
@@ -245,7 +269,8 @@ def calendar():
             }
             events.append(new_doc)
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
     return render_template("calendar.html", default="cal", date=date_today, events=events)
 
 
@@ -509,7 +534,8 @@ def check_login():
             username = request.args.get("username")
             password = request.args.get("password")
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("Could not get username or password", status=500)
     try:
         user = users.find_one({"username": username})
@@ -523,7 +549,8 @@ def check_login():
         else:
             return Response("Bad credentials. Please try again", status=401)
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("Credentials generated an error.", status=500)
 
 
@@ -539,7 +566,8 @@ def send_email():
         email = request.form.to_dict()
         send_mail(email["name"], email["email"], email["subject"], email["message"])
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("There was an error sending the email", status=500)
     return Response("Email sent!")
 
@@ -584,7 +612,8 @@ def add_event():
             current_date += delta
 
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("Could not create an event!", status=500)
     send_dict = {
         'title': event['title'] + ':' + event["more_info"],
@@ -603,7 +632,8 @@ def delete_event():
         if not result.deleted_count:
             raise NameError("No object with that id found!")
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("Could not delete that event!", status=500)
     return Response("You successfully deleted that event")
 
@@ -634,7 +664,8 @@ def send_text():
             texts.insert({"sender": "Matt", "body": msg, "date": datetime.now()})
 
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("There was an error!", status=500)
     return Response("The text was sent successfully!")
 
@@ -675,7 +706,8 @@ def recv_text():
             raise KeyError("Incorrect X-Twilio-Signature used!!")
 
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return abort(404)
     # On success, send a response message
     resp = MessagingResponse()
@@ -696,7 +728,8 @@ def call_self():
             url="http://demo.twilio.com/docs/voice.xml"
         )
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("Could not call yourself!", status=500)
     return Response("Call going through now!")
 
@@ -714,7 +747,8 @@ def create_user():
         user['username'] = user['username']
         users.insert_one(user)
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("There was an error accessing the database", status=500)
     return Response("User successfully created!"), 201
 
@@ -741,7 +775,8 @@ def clear_texting_logs():
             all_texts = all_texts[:10]
             texts.insert(all_texts)
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("There was an error accessing the database", status=500)
     return Response("Logs cleared successfully!"), 201
 
@@ -761,7 +796,8 @@ def create_job():
         job["order"] = max_job
         jobs.insert_one(job)
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("There was an error accessing the database", status=500)
     return Response("Job successfully created!"), 201
 
@@ -788,7 +824,8 @@ def edit_job():
             final_dict["order"] = int(final_dict["order"])
         jobs.update({"order": job["job_id"]}, {"$set": final_dict})
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("There was an error accessing the database", status=500)
     return Response("Job successfully edited!"), 201
 
@@ -815,7 +852,8 @@ def edit_stats():
         else:
             stats.update({}, {"$set": stats_dict})
     except Exception as e:
-        log_error(e)
+        stack, err = extract_stack(), format_exc()
+        log_error(stack, err)
         return Response("There was an error accessing the database", status=500)
     return Response("Job successfully edited!"), 201
 
