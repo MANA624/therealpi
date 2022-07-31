@@ -661,7 +661,7 @@ def send_text():
                                              from_=text_config["twilio_num"],
                                              to=num)
         if recipient != "matt":
-            texts.insert({"sender": "Matt", "body": msg, "date": datetime.now()})
+            texts.insert_one({"sender": "Matt", "body": msg, "date": datetime.now()})
 
     except Exception as e:
         stack, err = extract_stack(), format_exc()
@@ -773,7 +773,8 @@ def clear_texting_logs():
         if not clear_all and all_texts:
             all_texts = sorted(all_texts, key=lambda x: x["date"], reverse=True)
             all_texts = all_texts[:10]
-            texts.insert(all_texts)
+            for text in all_texts:
+                texts.insert_one(text)
     except Exception as e:
         stack, err = extract_stack(), format_exc()
         log_error(stack, err)
