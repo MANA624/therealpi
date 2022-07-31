@@ -700,7 +700,7 @@ def recv_text():
         else:
             sender = info["From"]
 
-        texts.insert({"sender": sender, "body": body, "date": datetime.now()})
+        texts.insert_one({"sender": sender, "body": body, "date": datetime.now()})
 
         if not validated:
             raise KeyError("Incorrect X-Twilio-Signature used!!")
