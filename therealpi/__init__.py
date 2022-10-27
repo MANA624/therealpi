@@ -230,6 +230,11 @@ def main_page():
     return render_template("home.html", default="home")
 
 
+@app.route('/dad')
+def dad():
+    return render_template("dad.html", default="res")
+
+
 @app.route('/employer')
 def employer():
     return redirect(url_for('check_login', username="employer", password="hireme123"))
