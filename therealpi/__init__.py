@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, session, redirect, url_for, abort, send_file, safe_join, \
+from flask import Flask, render_template, request, session, redirect, url_for, abort, send_file, \
     flash, Response, jsonify
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename, safe_join
 from pymongo import MongoClient, DESCENDING
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
